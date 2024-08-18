@@ -73,18 +73,21 @@ const Sidenav = () => {
               <li key={index} className="mb-1">
                 {item.submenu ? (
                   <>
-                    <div
-                      className={`rounded-md flex items-center justify-between menu-title p-2 cursor-pointer ${
-                        activeMenu === index ? "bg-[#F71869] text-white" : ""
-                      }`}
-                      onClick={() => handleMenuClick(index)}
-                    >
-                      <p>{item.title}</p>
-                      <i
-                        className={`fa-solid fa-angle-right transition-transform ${
-                          activeMenu === index ? "rotate-90" : ""
+                    <div className="group">
+                      <div
+                        className={`rounded-md flex items-center justify-between menu-title p-2 cursor-pointer hover:text-[#F71869] transition-all duration-500 ${
+                          activeMenu === index ? "bg-[#F71869] text-white" : ""
                         }`}
-                      ></i>
+                        onClick={() => handleMenuClick(index)}
+                      >
+                        <p>{item.title}</p>
+                        <i
+                          className={`fa-solid fa-angle-right transition-transform ${
+                            activeMenu === index ? "rotate-90" : ""
+                          }`}
+                        ></i>
+                      </div>
+                      <div className="h-[1px] w-full bg-gray-200 group-hover:bg-[#F71869] transition-all duration-500"></div>
                     </div>
                     {activeMenu === index && (
                       <ul className="pl-5 mt-1">
@@ -92,7 +95,7 @@ const Sidenav = () => {
                           <li key={subindex}>
                             <Link
                               to={subitem.link}
-                              className={`block p-2 rounded-md ${
+                              className={`block p-2 rounded-md hover:text-[#F71869] transition-all duration-500 ${
                                 currentPath === subitem.link
                                   ? "bg-[#050828] text-white"
                                   : ""
@@ -107,15 +110,20 @@ const Sidenav = () => {
                     )}
                   </>
                 ) : (
-                  <Link
-                    to={item.link}
-                    className={`block p-2 rounded-md ${
-                      currentPath === item.link ? "bg-[#F71869] text-white" : ""
-                    }`}
-                    onClick={toggleSidebar}
-                  >
-                    {item.title}
-                  </Link>
+                  <div className="group">
+                    <Link
+                      to={item.link}
+                      className={`block p-2 rounded-md hover:text-[#F71869] transition-all duration-500 ${
+                        currentPath === item.link
+                          ? "bg-[#F71869] text-white"
+                          : ""
+                      }`}
+                      onClick={toggleSidebar}
+                    >
+                      {item.title}
+                    </Link>
+                    <div className="h-[1px] w-full bg-gray-200 rounded-md group-hover:bg-[#F71869] transition-all duration-500"></div>
+                  </div>
                 )}
               </li>
             ))}
