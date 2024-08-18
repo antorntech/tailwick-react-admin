@@ -7,10 +7,18 @@ import {
   PopoverHandler,
 } from "@material-tailwind/react";
 import React from "react";
+import moment from "moment";
+import { Link, useNavigate } from "react-router-dom";
 
 const Header = () => {
   const [searchText, setSearchText] = React.useState("");
   const onChange = ({ target }) => setSearchText(target.value);
+  const navigate = useNavigate();
+
+  const handleLogOut = () => {
+    localStorage.clear();
+    navigate("/login");
+  };
   return (
     <div className="px-5 min-h-[70px] flex items-center">
       <div className="w-full hidden md:flex items-center justify-between">
@@ -37,7 +45,18 @@ const Header = () => {
             </Button>
           </div>
         </div>
-        <div>
+        <div className="flex items-center gap-5">
+          <div className="flex items-center gap-2">
+            <i class="fa-solid fa-calendar-days text-[30px]"></i>
+            <div>
+              <p className="text-[14px] font-semibold text-black">
+                {moment().format("dddd, MMMM Do")}
+              </p>
+              <p className="text-[12px] text-gray-500">
+                {moment().format("hh:mm a")}
+              </p>
+            </div>
+          </div>
           <div className="flex items-center ">
             <Avatar
               src="https://docs.material-tailwind.com/img/face-2.jpg"
@@ -60,12 +79,17 @@ const Header = () => {
                   </Button>
                 </PopoverHandler>
                 <PopoverContent className="mt-2">
-                  <div className="flex items-center gap-2 pr-12">
-                    <i class="fa-regular fa-user"></i>
-                    <p>Profile</p>
-                  </div>
+                  <Link to={"/profile"}>
+                    <div className="flex items-center gap-2 pr-12">
+                      <i class="fa-regular fa-user"></i>
+                      <p>Profile</p>
+                    </div>
+                  </Link>
                   <div className="h-[1px] w-full bg-gray-200 my-2"></div>
-                  <div className="flex items-center gap-2">
+                  <div
+                    className="flex items-center gap-2 cursor-pointer"
+                    onClick={handleLogOut}
+                  >
                     <i class="fa-solid fa-arrow-right-from-bracket"></i>
                     <p>Log Out</p>
                   </div>
