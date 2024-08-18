@@ -50,10 +50,10 @@ const Header = () => {
             <i class="fa-solid fa-calendar-days text-[30px]"></i>
             <div>
               <p className="text-[14px] font-semibold text-black">
-                {moment().format("dddd, MMMM Do")}
+                {moment().format("dddd")}
               </p>
               <p className="text-[12px] text-gray-500">
-                {moment().format("hh:mm a")}
+                {moment().format("Do MMMM, YYYY")}
               </p>
             </div>
           </div>
