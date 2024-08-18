@@ -53,36 +53,34 @@ const Blogs = () => {
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-5">
             {allBlogs.map((blog) => (
-              <div key={blog.id} className="w-full">
-                <div>
-                  <div className="custom-shadow2 flex flex-col items-center justify-center">
-                    <div className="">
-                      <img
-                        src={blog.banner}
-                        alt=""
-                        className="w-full h-full object-cover"
-                      />
+              <div key={blog.id} className="w-full rounded-md">
+                <div className="custom-shadow2 flex flex-col items-center justify-center rounded-md">
+                  <div className="">
+                    <img
+                      src={blog.banner}
+                      alt=""
+                      className="w-full h-full object-cover rounded-tr-md rounded-tl-md"
+                    />
+                  </div>
+                  <div className="">
+                    <div className="w-full h-full flex flex-col justify-center p-2">
+                      <h1 className="text-lg font-bold text-black">
+                        {blog.title}
+                      </h1>
+                      <p className="text-sm text-gray-500">
+                        {blog.description}
+                      </p>
                     </div>
-                    <div className="">
-                      <div className="w-full h-full flex flex-col justify-center p-2">
-                        <h1 className="text-lg font-bold text-black">
-                          {blog.title}
-                        </h1>
-                        <p className="text-sm text-gray-500">
-                          {blog.description}
-                        </p>
-                      </div>
-                      <div className="flex gap-2 pb-3 px-2">
-                        <button className="bg-orange-800 text-white px-4 py-1 rounded-md">
-                          Edit
-                        </button>
-                        <button
-                          onClick={handleOpen}
-                          className="bg-red-800 text-white px-4 py-1 rounded-md"
-                        >
-                          Delete
-                        </button>
-                      </div>
+                    <div className="flex gap-2 pb-3 px-2">
+                      <button className="bg-orange-800 text-white px-4 py-1 rounded-md">
+                        Edit
+                      </button>
+                      <button
+                        onClick={handleOpen}
+                        className="bg-red-800 text-white px-4 py-1 rounded-md"
+                      >
+                        Delete
+                      </button>
                     </div>
                   </div>
                 </div>
