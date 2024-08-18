@@ -65,7 +65,7 @@ const Sidenav = () => {
         } md:translate-x-0`}
       >
         <div className="bg-[#050828] px-3 min-h-[70px] flex items-center justify-center">
-          <img src="/img/logo.png" alt="Logo" className="min-h-[70px]" />
+          <img src="/img/logo.png" alt="Logo" />
         </div>
         <div className="p-3 flex flex-col h-full">
           <ul className="w-full flex flex-col">
@@ -87,7 +87,7 @@ const Sidenav = () => {
                           }`}
                         ></i>
                       </div>
-                      <div className="h-[1px] w-full bg-gray-200 group-hover:bg-[#F71869] transition-all duration-500"></div>
+                      <div className="h-[1px] w-full bg-gray-200"></div>
                     </div>
                     {activeMenu === index && (
                       <ul className="pl-5 mt-1">
@@ -122,7 +122,7 @@ const Sidenav = () => {
                     >
                       {item.title}
                     </Link>
-                    <div className="h-[1px] w-full bg-gray-200 rounded-md group-hover:bg-[#F71869] transition-all duration-500"></div>
+                    <div className="h-[1px] w-full bg-gray-200 rounded-md"></div>
                   </div>
                 )}
               </li>

@@ -27,7 +27,7 @@ export function DeleteConfirmModal({ open, handleOpen }) {
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor"
-            className="size-6"
+            className="size-8 text-red-800"
           >
             <path
               fillRule="evenodd"
@@ -35,7 +35,9 @@ export function DeleteConfirmModal({ open, handleOpen }) {
               clipRule="evenodd"
             />
           </svg>
-          <h1 className="text-xl font-bold">Do you want to delete this?</h1>
+          <h1 className="text-xl font-bold text-black">
+            Do you want to delete this?
+          </h1>
         </div>
         <DialogBody>
           After click the confirm button the data will be deleted parmanently.
@@ -43,13 +45,13 @@ export function DeleteConfirmModal({ open, handleOpen }) {
         <DialogFooter>
           <Button
             variant="text"
-            color="red"
+            color="black"
             onClick={handleOpen}
             className="mr-1"
           >
             <span>Cancel</span>
           </Button>
-          <Button variant="gradient" color="green" onClick={handleDelete}>
+          <Button variant="gradient" color="red" onClick={handleDelete}>
             <span>Confirm</span>
           </Button>
         </DialogFooter>

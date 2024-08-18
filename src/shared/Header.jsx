@@ -6,7 +6,7 @@ const Header = () => {
   const onChange = ({ target }) => setSearchText(target.value);
   return (
     <div className="px-5 min-h-[70px] flex items-center">
-      <div className="w-full flex items-center justify-between">
+      <div className="w-full hidden md:flex items-center justify-between">
         <div>
           <div className="hidden relative md:flex w-full max-w-[24rem]">
             <Input
@@ -35,6 +35,13 @@ const Header = () => {
             Logout
           </button>
         </div>
+      </div>
+      <div className="w-full min-h-[70px] flex justify-end md:hidden fixed right-5 z-40 bg-white">
+        <button>
+          <span className="px-4 py-2 bg-[#050828] text-white rounded-md">
+            Logout
+          </span>
+        </button>
       </div>
     </div>
   );
