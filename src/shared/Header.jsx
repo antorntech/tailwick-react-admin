@@ -21,9 +21,10 @@ const Header = () => {
             />
             <Button
               size="sm"
-              color={searchText ? "gray" : "blue-gray"}
               disabled={!searchText}
-              className="!absolute right-1 top-1 rounded"
+              className={`!absolute right-1 top-1 rounded transition-all duration-500 ${
+                searchText ? "bg-[#050828]" : "bg-[#c9c8c8]"
+              }`}
             >
               <i class="fa-solid fa-magnifying-glass"></i>
             </Button>

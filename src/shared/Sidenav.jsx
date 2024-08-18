@@ -75,7 +75,7 @@ const Sidenav = () => {
                   <>
                     <div className="group">
                       <div
-                        className={`rounded-md flex items-center justify-between menu-title p-2 cursor-pointer hover:text-[#F71869] transition-all duration-500 ${
+                        className={`rounded-md flex items-center justify-between menu-title p-2 cursor-pointer hover:text-[#050828] transition-all duration-500 ${
                           activeMenu === index ? "bg-[#F71869] text-white" : ""
                         }`}
                         onClick={() => handleMenuClick(index)}
@@ -95,7 +95,7 @@ const Sidenav = () => {
                           <li key={subindex}>
                             <Link
                               to={subitem.link}
-                              className={`block p-2 rounded-md hover:text-[#F71869] transition-all duration-500 ${
+                              className={`block p-2 rounded-md  ${
                                 currentPath === subitem.link
                                   ? "bg-[#050828] text-white"
                                   : ""
@@ -113,7 +113,7 @@ const Sidenav = () => {
                   <div className="group">
                     <Link
                       to={item.link}
-                      className={`block p-2 rounded-md hover:text-[#F71869] transition-all duration-500 ${
+                      className={`block p-2 rounded-md hover:text-[#050828] transition-all duration-500 ${
                         currentPath === item.link
                           ? "bg-[#F71869] text-white"
                           : ""
