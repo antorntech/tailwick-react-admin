@@ -86,7 +86,7 @@ const Sidenav = () => {
                     <div className="group">
                       <div
                         className={`rounded-md flex items-center justify-between menu-title p-2 cursor-pointer hover:text-[#050828] transition-all duration-500 ${
-                          activeMenu === index ? "bg-[#F71869] text-white" : ""
+                          activeMenu === index ? "bg-[#199bff] text-white" : ""
                         }`}
                         onClick={() => handleMenuClick(index)}
                       >
@@ -125,7 +125,7 @@ const Sidenav = () => {
                       to={item.link}
                       className={`block p-2 rounded-md hover:text-[#050828] transition-all duration-500 ${
                         currentPath === item.link
-                          ? "bg-[#F71869] text-white"
+                          ? "bg-[#199bff] text-white"
                           : ""
                       }`}
                       onClick={toggleSidebar}

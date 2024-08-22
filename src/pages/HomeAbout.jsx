@@ -21,7 +21,7 @@ const HomeAbout = () => {
         <div>
           {!data ? (
             <Link to={"/dashboard/add-home-about"}>
-              <button className="bg-[#F71869] text-white px-4 py-2 rounded-md">
+              <button className="bg-[#199bff] text-white px-4 py-2 rounded-md">
                 Add Details
               </button>
             </Link>
