@@ -19,3 +19,13 @@
   -webkit-backdrop-filter: blur(1px);
   border: 1px solid rgba(255, 255, 255, 0.18);
 }
+
+/* login page design */
+.login-blur {
+  background: rgba(0, 0, 0, 0.014);
+  box-shadow: 0 0 10px 0 rgba(8, 127, 207, 0.377);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}

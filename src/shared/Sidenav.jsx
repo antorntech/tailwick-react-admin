@@ -7,6 +7,10 @@ const menuItems = [
     link: "/",
   },
   {
+    title: "Slider",
+    link: "/slider",
+  },
+  {
     title: "About",
     submenu: [
       { text: "Main About", link: "/main-about" },
@@ -23,6 +27,10 @@ const menuItems = [
   {
     title: "Services",
     link: "/services",
+  },
+  {
+    title: "Software",
+    link: "/software",
   },
   {
     title: "Training",

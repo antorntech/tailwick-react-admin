@@ -6,21 +6,26 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const AppLayout = () => {
+  const user = false;
   return (
     <>
-      <div className="flex items-start">
-        <div className="md:w-[250px]">
-          <Sidenav />
-        </div>
-        <div className="w-full md:w-[calc(100%-250px)]">
-          <div className="min-h-[70px] w-full float-right">
-            <Header />
+      {user ? (
+        <div className="flex items-start">
+          <div className="md:w-[250px]">
+            <Sidenav />
           </div>
-          <div className="bg-[#F8F6F5] custom-shadow min-h-[calc(100vh-70px)] p-5 mt-[70px]">
-            <AppRoutes />
+          <div className="w-full md:w-[calc(100%-250px)]">
+            <div className="min-h-[70px] w-full float-right">
+              <Header />
+            </div>
+            <div className="bg-[#F8F6F5] custom-shadow min-h-[calc(100vh-70px)] p-5 mt-[70px]">
+              <AppRoutes />
+            </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <AppRoutes />
+      )}
       <ToastContainer />
     </>
   );
