@@ -40,13 +40,13 @@ const Header = () => {
                 searchText ? "bg-[#050828]" : "bg-[#c9c8c8]"
               }`}
             >
-              <i class="fa-solid fa-magnifying-glass"></i>
+              <i className="fa-solid fa-magnifying-glass"></i>
             </Button>
           </div>
         </div>
         <div className="flex items-center gap-5">
           <div className="flex items-center gap-2">
-            <i class="fa-solid fa-calendar-days text-[30px]"></i>
+            <i className="fa-solid fa-calendar-days text-[30px]"></i>
             <div>
               <p className="text-[14px] font-semibold text-black">
                 {moment().format("dddd")}
@@ -72,7 +72,7 @@ const Header = () => {
                     <p className="text-[12px] text-gray-500">
                       Admin{" "}
                       <span>
-                        <i class="fa-solid fa-caret-down text-gray-500"></i>
+                        <i className="fa-solid fa-caret-down text-gray-500"></i>
                       </span>
                     </p>
                   </Button>
@@ -80,7 +80,7 @@ const Header = () => {
                 <PopoverContent className="mt-2">
                   <Link to={"/profile"}>
                     <div className="flex items-center gap-2 pr-12">
-                      <i class="fa-regular fa-user"></i>
+                      <i className="fa-regular fa-user"></i>
                       <p>Profile</p>
                     </div>
                   </Link>
@@ -89,7 +89,7 @@ const Header = () => {
                     className="flex items-center gap-2 cursor-pointer"
                     onClick={handleLogOut}
                   >
-                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    <i className="fa-solid fa-arrow-right-from-bracket"></i>
                     <p>Log Out</p>
                   </div>
                 </PopoverContent>

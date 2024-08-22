@@ -117,7 +117,7 @@ const AddHomeAbout = () => {
               className="bg-red-800 text-white w-8 h-8 rounded-full absolute top-2 right-2 flex items-center justify-center"
               onClick={clearPreview}
             >
-              <i class="fa-solid fa-xmark text-white"></i>
+              <i className="fa-solid fa-xmark text-white"></i>
             </button>
             <img
               src={imagePreview ? imagePreview : "https://placehold.co/530x480"}
