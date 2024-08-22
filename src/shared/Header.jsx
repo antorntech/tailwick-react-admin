@@ -20,8 +20,8 @@ const Header = () => {
     navigate("/login");
   };
   return (
-    <div className="px-5 min-h-[70px] flex items-center">
-      <div className="w-full hidden md:flex items-center justify-between">
+    <div className="px-5 min-h-[70px] bg-white header-shadow flex items-center fixed top-0 w-[calc(100%-250px)]">
+      <div className="w-full hidden md:flex items-center justify-between bg-whtie">
         <div>
           <div className="hidden relative md:flex w-full max-w-[24rem]">
             <Input

@@ -1,5 +1,6 @@
 import { Button, Card, Input, Typography } from "@material-tailwind/react";
 import React from "react";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const [email, setEmail] = React.useState("");
@@ -35,10 +36,24 @@ const Login = () => {
       // send the form data to the local storage
       localStorage.setItem("email", email);
 
+      toast.success("Successfully Logged In!", {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 1000);
+
       // reset the form
       setEmail("");
       setPassword("");
-      setErrors({}); // Clear errors on successful submission
+      setErrors({});
     } else {
       setErrors(formErrors);
     }
