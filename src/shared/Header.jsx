@@ -8,16 +8,15 @@ import {
 } from "@material-tailwind/react";
 import React from "react";
 import moment from "moment";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const [searchText, setSearchText] = React.useState("");
   const onChange = ({ target }) => setSearchText(target.value);
-  const navigate = useNavigate();
 
   const handleLogOut = () => {
     localStorage.clear();
-    navigate("/login");
+    window.location.href = "/login";
   };
   return (
     <div className="px-5 min-h-[70px] bg-white header-shadow flex items-center fixed top-0 w-[calc(100%-250px)]">
