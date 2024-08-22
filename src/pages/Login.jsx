@@ -131,7 +131,7 @@ const Login = () => {
                   </Typography>
                   <Input
                     size="lg"
-                    placeholder="name@mail.com"
+                    placeholder="name@gmail.com"
                     className="!border-t-blue-gray-200 focus:!border-[#199bff] text-white"
                     labelProps={{
                       className: "before:content-none after:content-none",
