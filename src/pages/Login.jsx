@@ -9,22 +9,42 @@ const Login = () => {
   const [password, setPassword] = React.useState("");
   const [errors, setErrors] = React.useState({});
 
+  // Optimized validation function
+  const validateField = (fieldName, value) => {
+    let errorMessage = "";
+
+    switch (fieldName) {
+      case "email":
+        if (!value) {
+          errorMessage = "Email is required.";
+        } else if (!/\S+@\S+\.\S+/.test(value)) {
+          errorMessage = "Email address is invalid.";
+        }
+        break;
+      case "password":
+        if (!value) {
+          errorMessage = "Password is required.";
+        } else if (value.length < 6) {
+          errorMessage = "Password must be at least 6 characters.";
+        }
+        break;
+      default:
+        break;
+    }
+
+    return errorMessage;
+  };
+
   const validateForm = () => {
-    let formErrors = {};
+    const emailError = validateField("email", email);
+    const passwordError = validateField("password", password);
 
-    if (!email) {
-      formErrors.email = "Email is required.";
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      formErrors.email = "Email address is invalid.";
-    }
+    const newErrors = {
+      ...(emailError && { email: emailError }),
+      ...(passwordError && { password: passwordError }),
+    };
 
-    if (!password) {
-      formErrors.password = "Password is required.";
-    } else if (password.length < 6) {
-      formErrors.password = "Password must be at least 6 characters.";
-    }
-
-    return formErrors;
+    return newErrors;
   };
 
   const handleLogin = (e) => {
@@ -32,46 +52,46 @@ const Login = () => {
     const formErrors = validateForm();
 
     if (Object.keys(formErrors).length === 0) {
-      console.log("handleLogin triggered");
-      console.log("Email: ", email);
+      const regEmail = "admin@gmail.com";
+      const regPassword = "125125";
 
-      // send the form data to the local storage
-      localStorage.setItem("email", email);
+      if (email === regEmail && password === regPassword) {
+        // Store email in localStorage
+        localStorage.setItem("email", email);
 
-      toast.success("Successfully Logged In!", {
-        position: "top-right",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+        // Display success message
+        toast.success("Successfully Logged In!", {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
 
-      setTimeout(() => {
-        window.location.href = "/";
-      }, 1000);
-
-      // reset the form
-      setEmail("");
-      setPassword("");
-      setErrors({});
+        // Redirect to home after 1 second
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 1000);
+      } else {
+        setErrors({
+          ...(email !== regEmail && { email: "Email is invalid." }),
+          ...(password !== regPassword && { password: "Password is invalid." }),
+        });
+      }
     } else {
       setErrors(formErrors);
     }
   };
 
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-    if (errors.email) {
-      setErrors((prevErrors) => ({ ...prevErrors, email: "" }));
-    }
-  };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    name === "email" ? setEmail(value) : setPassword(value);
 
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-    if (errors.password) {
-      setErrors((prevErrors) => ({ ...prevErrors, password: "" }));
+    // Clear error when the user starts typing
+    if (errors[name]) {
+      setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
     }
   };
 
@@ -79,22 +99,29 @@ const Login = () => {
     <div className="w-full h-screen flex items-center justify-center bg-[url('/img/login-bg.jpg')] p-5 md:p-0">
       <div className="md:min-w-[700px] md:min-h-[500px] p-3 md:p-0 flex items-center justify-center rounded-md login-blur">
         <div className="w-full h-full flex justify-center items-center rounded-md">
-          <Card color="transparent" shadow={false}>
+          <Card
+            color="transparent"
+            shadow={false}
+            className="bg-opacity-50 backdrop-filter backdrop-blur-lg p-6"
+          >
             <img
               src="/img/logo.png"
-              alt=""
+              alt="Logo"
               width={200}
-              className="mx-auto mb-3"
+              className="mx-auto mb-4"
             />
-            <Typography className="text-center text-4xl text-white font-[1000]">
+            <Typography className="text-center text-4xl text-white font-bold mb-2">
               Log In
             </Typography>
-            <Typography className="mt-1 font-normal text-center text-[#a0a0a0]">
+            <Typography className="mb-8 font-normal text-center text-[#a0a0a0]">
               Nice to meet you! Enter your details to login.
             </Typography>
-            <form className="mt-8 mb-2 w-80 max-w-screen-lg sm:w-96">
-              <div className="mb-1 flex flex-col gap-6">
-                <div className="relative">
+            <form
+              onSubmit={handleLogin}
+              className="w-80 max-w-screen-lg sm:w-96 mx-auto"
+            >
+              <div className="mb-6">
+                <div className="relative mb-4">
                   <Typography
                     variant="h6"
                     color="white"
@@ -110,7 +137,8 @@ const Login = () => {
                       className: "before:content-none after:content-none",
                     }}
                     value={email}
-                    onChange={handleEmailChange}
+                    name="email"
+                    onChange={handleChange}
                   />
                   {errors.email && (
                     <Typography className="text-red-800 text-sm mt-1 absolute">
@@ -118,11 +146,11 @@ const Login = () => {
                     </Typography>
                   )}
                 </div>
-                <div className="relative">
+                <div className="relative mb-4">
                   <Typography
                     variant="h6"
                     color="white"
-                    className="mb-1 font-normal"
+                    className="mb-1 font-normal mt-6"
                   >
                     Password
                   </Typography>
@@ -135,7 +163,8 @@ const Login = () => {
                       className: "before:content-none after:content-none",
                     }}
                     value={password}
-                    onChange={handlePasswordChange}
+                    name="password"
+                    onChange={handleChange}
                   />
                   {errors.password && (
                     <Typography className="text-red-800 text-sm mt-1 absolute">
@@ -145,11 +174,11 @@ const Login = () => {
                 </div>
               </div>
               <Button
-                onClick={handleLogin}
-                className="mt-6 text-lg flex items-center justify-center gap-2 hover:bg-[#199bff] transition-all duration-500"
+                type="submit"
+                className="mt-10 text-lg flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 transition-all duration-500"
                 fullWidth
               >
-                <span>log in</span>
+                <span>Log In</span>
                 <lord-icon
                   src="https://cdn.lordicon.com/vduvxizq.json"
                   trigger="loop"
