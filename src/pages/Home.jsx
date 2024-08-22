@@ -71,7 +71,9 @@ const Home = () => {
                 <h1 className="text-3xl md:text-5xl font-bold text-white">
                   Hi <span className="text-[#199bff]">Admin !</span>
                 </h1>
-                <p className="text-lg text-white">Welcome to Marcline</p>
+                <p className="text-lg text-white">
+                  Welcome to Intelligent System
+                </p>
               </div>
             </div>
           </div>
