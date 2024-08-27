@@ -112,7 +112,7 @@ const Home = () => {
           </div>
           <div className="w-full text-center mt-1">
             <h2 className="text-xl font-bold">Mr. Admin</h2>
-            <p className="text-sm text-gray-500">Admin, Marcline</p>
+            <p className="text-sm text-gray-500">Admin, ISSL</p>
           </div>
         </div>
         <div className="w-full mt-5">
