@@ -82,7 +82,11 @@ const Sidenav = () => {
       >
         <div className="bg-[#050828] px-3 min-h-[70px] flex items-center justify-center">
           <Link to={"/"}>
-            <img src="/img/logo.png" alt="Logo" />
+            <img
+              src="/img/logo.png"
+              alt="Logo"
+              className="w-[150px] h-[40px]"
+            />
           </Link>
         </div>
         <div className="p-3 flex flex-col h-full">
