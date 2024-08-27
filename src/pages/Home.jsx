@@ -72,7 +72,7 @@ const Home = () => {
                   Hi <span className="text-[#199bff]">Admin !</span>
                 </h1>
                 <p className="text-lg text-white">
-                  Welcome to Intelligent System
+                  Welcome to Intelligent Systems & Solutions Limited
                 </p>
               </div>
             </div>
