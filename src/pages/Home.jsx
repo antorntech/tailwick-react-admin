@@ -68,10 +68,10 @@ const Home = () => {
             />
             <div className="absolute top-0 left-0 bg-green-200 w-full h-full custom-blur rounded-md">
               <div className="w-full h-full flex flex-col justify-center items-center">
-                <h1 className="text-3xl md:text-5xl font-bold text-white">
+                <h1 className="text-2xl md:text-5xl font-bold text-white">
                   Hi <span className="text-[#199bff]">Admin !</span>
                 </h1>
-                <p className="text-lg text-white">
+                <p className="text-sm md:text-lg text-white text-center">
                   Welcome to Intelligent Systems & Solutions Limited
                 </p>
               </div>
