@@ -41,9 +41,9 @@ const Sponsors = () => {
     <div>
       <div className="w-full flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold">Home Contact</h1>
+          <h1 className="text-xl font-bold">Sponsors</h1>
           <p className="text-sm text-gray-500">
-            All home contact are {sponsors ? "" : "not"} available here.
+            All sponsor are {sponsors ? "" : "not"} available here.
           </p>
         </div>
         <div>
