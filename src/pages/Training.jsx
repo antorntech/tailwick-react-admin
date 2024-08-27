@@ -9,7 +9,7 @@ const Training = () => {
   const trainings = [
     {
       id: 1,
-      title: "Training Title",
+      title: "Responsive Website Development",
       details:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid, quod.",
       link: "/training",
@@ -17,7 +17,7 @@ const Training = () => {
     },
     {
       id: 2,
-      title: "Training Title",
+      title: "Mobile App Development with Flutter",
       details:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid, quod.",
       link: "/training",
@@ -25,7 +25,7 @@ const Training = () => {
     },
     {
       id: 3,
-      title: "Training Title",
+      title: "Cloud Computing Consultancy",
       details:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid, quod.",
       link: "/training",

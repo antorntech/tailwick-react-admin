@@ -13,6 +13,7 @@ import Profile from "../pages/Profile";
 import AddBlog from "../pages/AddBlog";
 import AddSlider from "../pages/AddSlider";
 import AddTraining from "../pages/AddTraining";
+import AddSoftware from "../pages/AddSoftware";
 
 const AppRoutes = () => {
   const user = localStorage.getItem("email");
@@ -28,6 +29,7 @@ const AppRoutes = () => {
           <Route path="/home-about" element={<HomeAbout />} />
           <Route path="/services" element={<Services />} />
           <Route path="/software" element={<Software />} />
+          <Route path="/software/add-software" element={<AddSoftware />} />
           <Route path="/training" element={<Training />} />
           <Route path="/training/add-training" element={<AddTraining />} />
           <Route path="/blogs" element={<Blogs />} />
