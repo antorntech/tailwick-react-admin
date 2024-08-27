@@ -19,7 +19,7 @@ const Header = () => {
     window.location.href = "/login";
   };
   return (
-    <div className="px-5 min-h-[70px] bg-white header-shadow flex items-center fixed top-0 w-[calc(100%-250px)] z-50">
+    <div className="px-5 min-h-[70px] bg-white header-shadow flex items-center fixed top-0 w-[calc(100%-250px)] z-40">
       <div className="w-full hidden md:flex items-center justify-between bg-whtie">
         <div>
           <div className="hidden relative md:flex w-full max-w-[24rem]">
@@ -98,8 +98,8 @@ const Header = () => {
           </div>
         </div>
       </div>
-      <div className="w-full min-h-[70px] flex justify-end md:hidden fixed right-5 z-40 bg-white">
-        <button>
+      <div className="w-full min-h-[70px] md:hidden fixed top-0 left-0 z-40 bg-white flex justify-end">
+        <button className="me-4" onClick={handleLogOut}>
           <span className="px-4 py-2 bg-[#050828] text-white rounded-md">
             Logout
           </span>

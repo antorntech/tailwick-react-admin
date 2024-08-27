@@ -7,8 +7,8 @@ const Profile = () => {
     name: "John Doe",
     designation: "Software Engineer",
     email: "admin@gmail.com",
-    phone: "1234567890",
-    address: "123 Main St, Anytown USA",
+    phone: "01795 937 735",
+    address: "Lalmatia, Mohammadpur, Dhaka",
     avatar: "/img/avatar.png",
   };
   return (

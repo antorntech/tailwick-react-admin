@@ -39,7 +39,7 @@ const Sponsors = () => {
   ];
   return (
     <div>
-      <div className="w-full flex items-center justify-between">
+      <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between">
         <div>
           <h1 className="text-xl font-bold">Sponsors</h1>
           <p className="text-sm text-gray-500">
@@ -48,7 +48,7 @@ const Sponsors = () => {
         </div>
         <div>
           <Link to={"/sponsors/add-sponsor"}>
-            <button className="bg-[#199bff] text-white px-4 py-2 rounded-md">
+            <button className="bg-[#199bff] text-white px-4 py-2 rounded-md mt-2 md:mt-0">
               Add Sponsor
             </button>
           </Link>
@@ -65,7 +65,7 @@ const Sponsors = () => {
                 <img
                   src={sponsor.logo}
                   alt={sponsor.name}
-                  className="w-full h-full md:w-[100px] md:h-[100px] mx-auto"
+                  className="w-[100px] h-[100px] mx-auto"
                 />
                 <div className="flex justify-center gap-3 mt-3">
                   <Link to={`/sponsors/edit/${sponsor.id}`}>

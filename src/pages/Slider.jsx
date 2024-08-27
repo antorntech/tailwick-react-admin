@@ -31,7 +31,7 @@ const Slider = () => {
   ];
   return (
     <div>
-      <div className="w-full flex items-center justify-between">
+      <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between">
         <div>
           <h1 className="text-xl font-bold">Slider</h1>
           <p className="text-sm text-gray-500">
@@ -40,7 +40,7 @@ const Slider = () => {
         </div>
         <div>
           <Link to={"/slider/add-slider"}>
-            <button className="bg-[#199bff] text-white px-4 py-2 rounded-md">
+            <button className="bg-[#199bff] text-white px-4 py-2 rounded-md mt-2 md:mt-0">
               Add Slider
             </button>
           </Link>
