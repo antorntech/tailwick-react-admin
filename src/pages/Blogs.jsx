@@ -10,7 +10,7 @@ const Blogs = () => {
     {
       id: 1,
       title: "This is Blog Title",
-      description:
+      details:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid, quod.",
       link: "/blogs",
       banner: "/img/blog-banner.jpg",
@@ -18,7 +18,7 @@ const Blogs = () => {
     {
       id: 2,
       title: "This is Blog Title",
-      description:
+      details:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid, quod.",
       link: "/blogs",
       banner: "/img/blog-banner.jpg",
@@ -26,7 +26,7 @@ const Blogs = () => {
     {
       id: 3,
       title: "This is Blog Title",
-      description:
+      details:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid, quod.",
       link: "/blogs",
       banner: "/img/blog-banner.jpg",
@@ -68,7 +68,7 @@ const Blogs = () => {
                         {blog.title}
                       </h1>
                       <p className="text-sm text-gray-500">
-                        {blog.description.slice(0, 20)}...
+                        {blog.details.slice(0, 20)}...
                       </p>
                     </div>
                     <div className="flex gap-2 pb-3 px-1">

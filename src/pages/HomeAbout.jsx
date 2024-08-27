@@ -32,19 +32,23 @@ const HomeAbout = () => {
         <>
           <div className="flex flex-col md:flex-row items-center gap-4 py-5">
             <div className="w-full md:w-1/2">
-              <img src="/img/home-decor-2.jpeg" alt="" className="rounded-md" />
+              <img
+                src="/img/home-about.jpg"
+                alt=""
+                className="rounded-md w-full"
+              />
             </div>
             <div className="w-full md:w-1/2">
-              <p className=" text-gray-500 text-sm w-full md:w-3/4">
-                Marcline LTD is a rapidly expanding offshore and onshore
-                software development, skill development, and outsourcing company
-                based in Bangladesh. We specialize in delivering global systems
-                and solutions while ensuring top-notch customer service. Our
-                core competencies include technology solutions, desktop
-                applications, web applications, mobile applications, business
-                solutions, engineering solutions, system upgrades, system
-                implementation, system development, training, and other
-                essential services.
+              <p className=" text-gray-500 text-sm md:text-lg text-justify w-full md:w-3/4">
+                Intelligent Systems & Solutions Limited is a rapidly expanding
+                offshore and onshore software development, skill development,
+                and outsourcing company based in Bangladesh. We specialize in
+                delivering global systems and solutions while ensuring top-notch
+                customer service. Our core competencies include technology
+                solutions, desktop applications, web applications, mobile
+                applications, business solutions, engineering solutions, system
+                upgrades, system implementation, system development, training,
+                and other essential services.
               </p>
               <div className="flex gap-2 mt-3">
                 <Link to={"/dashboard/edit-home-about/1"}>

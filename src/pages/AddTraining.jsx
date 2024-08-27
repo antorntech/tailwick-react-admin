@@ -9,7 +9,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const AddBlog = () => {
+const AddTraining = () => {
   const navigate = useNavigate();
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(
@@ -127,9 +127,9 @@ const AddBlog = () => {
   return (
     <div>
       <div>
-        <h1 className="text-xl font-bold">Add Blog</h1>
+        <h1 className="text-xl font-bold">Add Training</h1>
         <p className="text-sm text-gray-500">
-          You can add blog details from here.
+          You can add training details from here.
         </p>
       </div>
       <div className="mt-5 w-full md:flex">
@@ -141,7 +141,7 @@ const AddBlog = () => {
             <Input
               type="text"
               size="lg"
-              placeholder="Enter blog title"
+              placeholder="Enter training title"
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#199bff] focus:!border-t-border-[#199bff] focus:ring-border-[#199bff]/10"
               labelProps={{
                 className: "before:content-none after:content-none",
@@ -167,7 +167,7 @@ const AddBlog = () => {
               }}
               onChange={handleDetailsChange}
               rows={5}
-              placeholder="Enter blog details"
+              placeholder="Enter training details"
             />
           </div>
           <div>
@@ -186,7 +186,7 @@ const AddBlog = () => {
               }}
               onChange={handleBlockQuoteChange}
               rows={5}
-              placeholder="Enter blog block quote"
+              placeholder="Enter training block quote"
             />
           </div>
           {/* Tags input field */}
@@ -315,4 +315,4 @@ const AddBlog = () => {
   );
 };
 
-export default AddBlog;
+export default AddTraining;
