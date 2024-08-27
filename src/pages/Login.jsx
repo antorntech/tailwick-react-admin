@@ -97,7 +97,7 @@ const Login = () => {
 
   return (
     <div className="w-full h-screen flex items-center justify-center bg-[url('/img/login-bg.jpg')] p-5 md:p-0">
-      <div className="w-full md:min-w-[700px] md:min-h-[500px] p-3 md:p-0 flex items-center justify-center rounded-md login-blur">
+      <div className="w-full md:max-w-[700px] md:max-h-[500px] p-3 md:p-0 flex items-center justify-center rounded-md login-blur">
         <div className="w-full h-full flex justify-center items-center rounded-md">
           <Card
             color="transparent"
