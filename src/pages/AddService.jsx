@@ -9,7 +9,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const AddSoftware = () => {
+const AddService = () => {
   const navigate = useNavigate();
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(
@@ -92,7 +92,7 @@ const AddSoftware = () => {
         progress: undefined,
         theme: "light",
       });
-      navigate("/software");
+      navigate("/services");
 
       // Reset the form
       setImage(null);
@@ -127,9 +127,9 @@ const AddSoftware = () => {
   return (
     <div>
       <div>
-        <h1 className="text-xl font-bold">Add Software</h1>
+        <h1 className="text-xl font-bold">Add Service</h1>
         <p className="text-sm text-gray-500">
-          You can add software details from here.
+          You can add service details from here.
         </p>
       </div>
       <div className="mt-5 w-full md:flex">
@@ -141,7 +141,7 @@ const AddSoftware = () => {
             <Input
               type="text"
               size="lg"
-              placeholder="Enter software title"
+              placeholder="Enter service title"
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#199bff] focus:!border-t-border-[#199bff] focus:ring-border-[#199bff]/10"
               labelProps={{
                 className: "before:content-none after:content-none",
@@ -167,7 +167,7 @@ const AddSoftware = () => {
               }}
               onChange={handleDetailsChange}
               rows={5}
-              placeholder="Enter software details"
+              placeholder="Enter service details"
             />
           </div>
           <div>
@@ -186,7 +186,7 @@ const AddSoftware = () => {
               }}
               onChange={handleBlockQuoteChange}
               rows={5}
-              placeholder="Enter software block quote"
+              placeholder="Enter service block quote"
             />
           </div>
           {/* Tags input field */}
@@ -315,4 +315,4 @@ const AddSoftware = () => {
   );
 };
 
-export default AddSoftware;
+export default AddService;

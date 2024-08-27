@@ -18,6 +18,7 @@ import HomeContact from "../pages/HomeContact";
 import MainContact from "../pages/MainContact";
 import Sponsors from "../pages/Sponsors";
 import AddSponsor from "../pages/AddSponsor";
+import AddService from "../pages/AddService";
 
 const AppRoutes = () => {
   const user = localStorage.getItem("email");
@@ -34,6 +35,7 @@ const AppRoutes = () => {
           <Route path="/main-contact" element={<MainContact />} />
           <Route path="/home-contact" element={<HomeContact />} />
           <Route path="/services" element={<Services />} />
+          <Route path="/services/add-service" element={<AddService />} />
           <Route path="/software" element={<Software />} />
           <Route path="/software/add-software" element={<AddSoftware />} />
           <Route path="/sponsors" element={<Sponsors />} />
