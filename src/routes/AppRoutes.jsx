@@ -19,6 +19,8 @@ import MainContact from "../pages/MainContact";
 import Sponsors from "../pages/Sponsors";
 import AddSponsor from "../pages/AddSponsor";
 import AddService from "../pages/AddService";
+import Faqs from "../pages/Faqs";
+import AddFaq from "../pages/AddFaq";
 
 const AppRoutes = () => {
   const user = localStorage.getItem("email");
@@ -44,6 +46,8 @@ const AppRoutes = () => {
           <Route path="/training/add-training" element={<AddTraining />} />
           <Route path="/blogs" element={<Blogs />} />
           <Route path="/blogs/add-blog" element={<AddBlog />} />
+          <Route path="/faqs" element={<Faqs />} />
+          <Route path="/faqs/add-faq" element={<AddFaq />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="*" element={<Navigate to="/" />} />
         </>

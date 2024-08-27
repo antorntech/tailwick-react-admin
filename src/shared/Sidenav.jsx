@@ -29,6 +29,10 @@ const menuItems = [
     link: "/sponsors",
   },
   {
+    title: "Faqs",
+    link: "/faqs",
+  },
+  {
     title: "Services",
     link: "/services",
   },
