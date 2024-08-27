@@ -25,6 +25,10 @@ const menuItems = [
     ],
   },
   {
+    title: "Sponsors",
+    link: "/sponsors",
+  },
+  {
     title: "Services",
     link: "/services",
   },
