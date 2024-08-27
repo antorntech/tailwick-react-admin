@@ -12,21 +12,21 @@ const Slider = () => {
       title: "Innovative Cloud Solutions",
       details:
         "Transform your business with cutting-edge cloud technology. Our scalable solutions offer seamless integration, enhanced security, and the flexibility to adapt to your growing needs. Experience the future of cloud computing today.",
-      image: "/img/1.jpg",
+      banner: "/img/1.jpg",
     },
     {
       id: 2,
       title: "Next-Gen AI Development",
       details:
         "Unlock the power of artificial intelligence with our advanced AI solutions. From machine learning to natural language processing, our expertise in AI technologies helps you gain valuable insights and drive innovation in your industry.",
-      image: "/img/2.jpg",
+      banner: "/img/2.jpg",
     },
     {
       id: 3,
       title: "Robust Cybersecurity Services",
       details:
         "Protect your digital assets with our comprehensive cybersecurity services. We provide state-of-the-art solutions to safeguard your business from cyber threats, ensuring your data remains secure and your operations run smoothly.",
-      image: "/img/3.jpg",
+      banner: "/img/3.jpg",
     },
   ];
   return (
@@ -48,14 +48,14 @@ const Slider = () => {
       </div>
       {sliders ? (
         <>
-          <div className="mt-5 flex flex-col md:flex-row gap-5">
+          <div className="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {sliders.map((slider) => (
               <div
                 key={slider.id}
-                className="w-full md:w-1/3 flex flex-col shadow-md rounded-md p-3"
+                className="w-full flex flex-col shadow-md rounded-md p-3"
               >
                 <img
-                  src={slider.image}
+                  src={slider.banner}
                   alt={slider.title}
                   className="w-full h-full md:h-[250px]"
                 />

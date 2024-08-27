@@ -183,7 +183,7 @@ const AddSlider = () => {
           </button>
         </div>
         {imagePreview && (
-          <div className="relative w-full md:w-1/2 h-[330px] mt-5 md:mt-0 md:ml-5 border-[1px] border-gray-400 rounded-md">
+          <div className="relative w-full md:w-1/2 h-[370px] mt-5 md:mt-0 md:ml-5 border-[1px] border-gray-400 rounded-md">
             <button
               className="bg-red-800 text-white w-8 h-8 rounded-full absolute top-2 right-2 flex items-center justify-center"
               onClick={clearPreview}
