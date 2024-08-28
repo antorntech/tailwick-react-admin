@@ -9,6 +9,7 @@ import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import JoditEditor from "jodit-react";
+import moment from "moment";
 
 const AddBlog = () => {
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ const AddBlog = () => {
   const [tags, setTags] = useState([]); // Tags as an array
   const [currentTag, setCurrentTag] = useState(""); // To handle the input value for the tag
   const [category, setCategory] = useState("Skill Development Training"); // Default category
+  const date = moment().format("Do MMMM, YYYY");
   const [fileKey, setFileKey] = useState(Date.now());
   const [uploadProgress, setUploadProgress] = useState(0);
   const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB limit
@@ -85,6 +87,8 @@ const AddBlog = () => {
     formData.append("blockQuote", blockQuote);
     formData.append("tags", JSON.stringify(tags)); // Include tags array in the form data
     formData.append("category", category);
+    formData.append("author", "Admin");
+    formData.append("date", date);
 
     console.log(title, details, blockQuote, tags, category);
 
@@ -100,6 +104,8 @@ const AddBlog = () => {
         blockQuote,
         tags,
         category,
+        date: date,
+        author: "Admin",
         banner: imagePreview, // Assuming imagePreview holds the URL or base64 of the image
       };
 

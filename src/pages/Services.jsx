@@ -96,6 +96,12 @@ const Services = () => {
                       Details
                     </th>
                     <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                      Author
+                    </th>
+                    <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                      Date
+                    </th>
+                    <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                       Actions
                     </th>
                   </tr>
@@ -114,7 +120,13 @@ const Services = () => {
                         <h1 className="text-sm font-bold">{service.title}</h1>
                       </td>
                       <td className="px-6 py-4 border-b text-sm text-gray-500">
-                        {service.details.slice(0, 80)}...
+                        {service.details.slice(0, 50)}...
+                      </td>
+                      <td className="px-6 py-4 border-b text-sm text-gray-500">
+                        {service.author}
+                      </td>
+                      <td className="px-6 py-4 border-b text-sm text-gray-500">
+                        {service.date}
                       </td>
                       <td className="px-6 py-4 border-b text-sm">
                         <div className="flex gap-3">
