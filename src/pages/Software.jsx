@@ -173,7 +173,7 @@ const Software = () => {
                   : "bg-blue-500 text-white"
               }`}
             >
-              <i class="fa-solid fa-angle-left"></i>
+              <i className="fa-solid fa-angle-left"></i>
             </button>
 
             {Array.from({ length: totalPages }, (_, index) => (
@@ -199,7 +199,7 @@ const Software = () => {
                   : "bg-blue-500 text-white"
               }`}
             >
-              <i class="fa-solid fa-angle-right"></i>
+              <i className="fa-solid fa-angle-right"></i>
             </button>
           </div>
         </>

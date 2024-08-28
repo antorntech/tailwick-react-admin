@@ -1,50 +1,44 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Loader from "../loader/Loader";
 import { DeleteConfirmModal } from "../components/DeleteConfirmModal";
 
 const Blogs = () => {
   const [open, setOpen] = useState(false);
+  const [selectedBlogId, setSelectedBlogId] = useState(null);
+  const [blogs, setBlogs] = useState([]);
   const handleOpen = () => setOpen(!open);
   const [layout, setLayout] = useState(true);
+
+  const handleDelete = () => {
+    // Refresh the blog list after deletion
+    const storedBlogs = JSON.parse(localStorage.getItem("blogsData")) || [];
+    setBlogs(storedBlogs);
+  };
+
+  useEffect(() => {
+    // Retrieve data from local storage
+    const storedBlogs = localStorage.getItem("blogsData");
+    if (storedBlogs) {
+      setBlogs(JSON.parse(storedBlogs));
+    }
+  }, []);
+
+  const openDeleteConfirmModal = (blogId) => {
+    setSelectedBlogId(blogId);
+    handleOpen();
+  };
 
   const handleLayout = () => setLayout(!layout);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5; // Adjust as needed
 
-  const allBlogs = [
-    {
-      id: 1,
-      title: "This is Blog Title",
-      details:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid, quod.",
-      link: "/blogs",
-      banner: "/img/blog-banner.jpg",
-    },
-    {
-      id: 2,
-      title: "This is Blog Title",
-      details:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid, quod.",
-      link: "/blogs",
-      banner: "/img/blog-banner.jpg",
-    },
-    {
-      id: 3,
-      title: "This is Blog Title",
-      details:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid, quod.",
-      link: "/blogs",
-      banner: "/img/blog-banner.jpg",
-    },
-  ];
-
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = allBlogs.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = blogs.slice(indexOfFirstItem, indexOfLastItem);
 
-  const totalPages = Math.ceil(allBlogs.length / itemsPerPage);
+  const totalPages = Math.ceil(blogs.length / itemsPerPage);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -66,7 +60,7 @@ const Blogs = () => {
         <div>
           <h1 className="text-xl font-bold">Blogs</h1>
           <p className="text-sm text-gray-500">
-            All blogs are {allBlogs ? "" : "not"} available here.
+            All blogs are {blogs.length > 0 ? "" : "not"} available here.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -83,7 +77,7 @@ const Blogs = () => {
           </Link>
         </div>
       </div>
-      {allBlogs ? (
+      {blogs.length > 0 ? (
         <>
           {layout ? (
             <div className="mt-5 overflow-x-auto">
@@ -118,7 +112,7 @@ const Blogs = () => {
                             </button>
                           </Link>
                           <button
-                            onClick={handleOpen}
+                            onClick={() => openDeleteConfirmModal(blog.id)}
                             className="bg-red-800 text-white px-4 py-1 rounded-md text-sm"
                           >
                             Delete
@@ -153,7 +147,7 @@ const Blogs = () => {
                       </button>
                     </Link>
                     <button
-                      onClick={handleOpen}
+                      onClick={() => openDeleteConfirmModal(blog.id)}
                       className="bg-red-800 text-white px-4 py-1 rounded-md text-sm"
                     >
                       Delete
@@ -163,7 +157,12 @@ const Blogs = () => {
               ))}
             </div>
           )}
-          <DeleteConfirmModal open={open} handleOpen={handleOpen} />
+          <DeleteConfirmModal
+            open={open}
+            handleOpen={handleOpen}
+            blogId={selectedBlogId}
+            onDelete={handleDelete}
+          />
 
           {/* Enhanced Pagination */}
           <div className="flex justify-center mt-5">
@@ -176,7 +175,7 @@ const Blogs = () => {
                   : "bg-blue-500 text-white"
               }`}
             >
-              <i class="fa-solid fa-angle-left"></i>
+              <i className="fa-solid fa-angle-left"></i>
             </button>
 
             {Array.from({ length: totalPages }, (_, index) => (
@@ -202,7 +201,7 @@ const Blogs = () => {
                   : "bg-blue-500 text-white"
               }`}
             >
-              <i class="fa-solid fa-angle-right"></i>
+              <i className="fa-solid fa-angle-right"></i>
             </button>
           </div>
         </>

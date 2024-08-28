@@ -89,6 +89,27 @@ const AddBlog = () => {
     console.log(title, details, blockQuote, tags, category);
 
     try {
+      // Retrieve existing data from local storage
+      const existingData = JSON.parse(localStorage.getItem("blogsData")) || [];
+
+      // Create new entry object
+      const newEntry = {
+        id: Date.now(), // Unique ID for the new entry
+        title,
+        details,
+        blockQuote,
+        tags,
+        category,
+        image: imagePreview, // Assuming imagePreview holds the URL or base64 of the image
+      };
+
+      // Add the new entry to the existing data
+      const updatedData = [...existingData, newEntry];
+
+      // Save the updated data back to local storage
+      localStorage.setItem("blogsData", JSON.stringify(updatedData));
+
+      // Show success toast
       toast.success("Upload successful", {
         position: "top-right",
         hideProgressBar: false,
@@ -99,6 +120,8 @@ const AddBlog = () => {
         progress: undefined,
         theme: "light",
       });
+
+      // Navigate to the blogs page
       navigate("/blogs");
 
       // Reset the form
@@ -112,7 +135,7 @@ const AddBlog = () => {
       setUploadProgress(0);
     } catch (error) {
       console.error("Error uploading file", error);
-      // Reset the form
+      // Reset the form in case of error
       setImage(null);
       setImagePreview(null);
       setTitle("");
