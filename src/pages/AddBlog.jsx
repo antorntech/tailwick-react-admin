@@ -5,18 +5,25 @@ import {
   Textarea,
   Typography,
 } from "@material-tailwind/react";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import JoditEditor from "jodit-react";
 
 const AddBlog = () => {
   const navigate = useNavigate();
+  const config = {
+    readonly: false,
+    height: 300,
+    placeholder: "Write your blog block quote...",
+  };
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(
     "https://placehold.co/530x480"
   );
   const [title, setTitle] = useState("");
   const [details, setDetails] = useState("");
+  const editor = useRef(null);
   const [blockQuote, setBlockQuote] = useState("");
   const [tags, setTags] = useState([]); // Tags as an array
   const [currentTag, setCurrentTag] = useState(""); // To handle the input value for the tag
@@ -178,15 +185,13 @@ const AddBlog = () => {
             >
               Block Quote
             </Typography>
-            <Textarea
+            <JoditEditor
+              ref={editor}
               value={blockQuote}
-              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#199bff] focus:!border-t-border-[#199bff] focus:ring-border-[#199bff]/10"
-              labelProps={{
-                className: "before:content-none after:content-none",
-              }}
-              onChange={handleBlockQuoteChange}
-              rows={5}
-              placeholder="Enter blog block quote"
+              config={config}
+              tabIndex={1} // tabIndex of textarea
+              onBlur={(newContent) => setBlockQuote(newContent)} // preferred to use only this option to update the content for performance reasons
+              onChange={(newContent) => {}}
             />
           </div>
           {/* Tags input field */}
