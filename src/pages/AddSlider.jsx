@@ -1,10 +1,4 @@
-import {
-  Input,
-  Option,
-  Select,
-  Textarea,
-  Typography,
-} from "@material-tailwind/react";
+import { Input, Textarea, Typography } from "@material-tailwind/react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -41,31 +35,30 @@ const AddSlider = () => {
 
   const handleUpload = async () => {
     const formData = new FormData();
-    formData.append("image", image);
+    formData.append("banner", image);
     formData.append("title", title);
     formData.append("details", details);
 
-    console.log(title, details);
-
     try {
-      //   const response = await fetch("/api/upload", {
-      //     method: "POST",
-      //     body: formData,
-      //     headers: {
-      //       "X-Requested-With": "XMLHttpRequest",
-      //     },
-      //     onUploadProgress: (event) => {
-      //       setUploadProgress(Math.round((event.loaded * 100) / event.total));
-      //     },
-      //   });
+      // Retrieve existing data from local storage
+      const existingData =
+        JSON.parse(localStorage.getItem("slidersData")) || [];
 
-      //   if (!response.ok) {
-      //     throw new Error("Upload failed");
-      //   }
+      // Create new entry object
+      const newEntry = {
+        id: Date.now(), // Unique ID for the new entry
+        title,
+        details,
+        banner: imagePreview, // Assuming imagePreview holds the URL or base64 of the image
+      };
 
-      //   const result = await response.json();
-      //   console.log("Upload successful", result);
+      // Add the new entry to the existing data
+      const updatedData = [...existingData, newEntry];
 
+      // Save the updated data back to local storage
+      localStorage.setItem("slidersData", JSON.stringify(updatedData));
+
+      // Show success toast
       toast.success("Upload successful", {
         position: "top-right",
         hideProgressBar: false,
@@ -76,7 +69,9 @@ const AddSlider = () => {
         progress: undefined,
         theme: "light",
       });
-      navigate("/slider");
+
+      // Navigate to the sliders page
+      navigate("/sliders");
 
       // Reset the form
       setImage(null);
@@ -87,7 +82,7 @@ const AddSlider = () => {
       setUploadProgress(0);
     } catch (error) {
       console.error("Error uploading file", error);
-      // Reset the form
+      // Reset the form in case of error
       setImage(null);
       setImagePreview(null);
       setTitle("");
@@ -131,7 +126,6 @@ const AddSlider = () => {
               onChange={handleTitleChange}
             />
           </div>
-
           <div>
             <Typography
               variant="h6"
@@ -152,7 +146,7 @@ const AddSlider = () => {
             />
           </div>
           <div className="flex flex-col md:flex-row items-center gap-3">
-            <div className="w-full">
+            <div className="w-full md:w-[45%]">
               <Typography
                 variant="h6"
                 color="gray"

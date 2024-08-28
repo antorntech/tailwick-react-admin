@@ -37,7 +37,7 @@ const AddSponsor = () => {
 
   const handleUpload = async () => {
     const formData = new FormData();
-    formData.append("image", image);
+    formData.append("banner", image);
     formData.append("name", name);
 
     console.log(name);

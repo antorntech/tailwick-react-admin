@@ -7,8 +7,8 @@ const menuItems = [
     link: "/",
   },
   {
-    title: "Slider",
-    link: "/slider",
+    title: "Sliders",
+    link: "/sliders",
   },
   {
     title: "About",
@@ -37,12 +37,12 @@ const menuItems = [
     link: "/services",
   },
   {
-    title: "Software",
-    link: "/software",
+    title: "Softwares",
+    link: "/softwares",
   },
   {
-    title: "Training",
-    link: "/training",
+    title: "Trainings",
+    link: "/trainings",
   },
   {
     title: "Blogs",

@@ -5,7 +5,7 @@ import { DeleteConfirmModal } from "../components/DeleteConfirmModal";
 
 const Blogs = () => {
   const [open, setOpen] = useState(false);
-  const [selectedBlogId, setSelectedBlogId] = useState(null);
+  const [selectedItemId, setSelectedItemId] = useState(null);
   const [blogs, setBlogs] = useState([]);
   const handleOpen = () => setOpen(!open);
   const [layout, setLayout] = useState(true);
@@ -24,8 +24,8 @@ const Blogs = () => {
     }
   }, []);
 
-  const openDeleteConfirmModal = (blogId) => {
-    setSelectedBlogId(blogId);
+  const openDeleteConfirmModal = (itemId) => {
+    setSelectedItemId(itemId);
     handleOpen();
   };
 
@@ -85,6 +85,9 @@ const Blogs = () => {
                 <thead>
                   <tr>
                     <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                      Banner
+                    </th>
+                    <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                       Title
                     </th>
                     <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
@@ -98,6 +101,13 @@ const Blogs = () => {
                 <tbody>
                   {currentItems.map((blog) => (
                     <tr key={blog.id} className="hover:bg-gray-100">
+                      <td className="px-6 py-4 border-b">
+                        <img
+                          src={blog.banner}
+                          alt={blog.title}
+                          className="w-20 h-20 object-cover rounded"
+                        />
+                      </td>
                       <td className="px-6 py-4 border-b">
                         <h1 className="text-sm font-bold">{blog.title}</h1>
                       </td>
@@ -160,8 +170,9 @@ const Blogs = () => {
           <DeleteConfirmModal
             open={open}
             handleOpen={handleOpen}
-            blogId={selectedBlogId}
+            itemId={selectedItemId}
             onDelete={handleDelete}
+            itemName="blogsData"
           />
 
           {/* Enhanced Pagination */}

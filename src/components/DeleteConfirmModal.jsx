@@ -7,12 +7,18 @@ import {
 } from "@material-tailwind/react";
 import { toast } from "react-toastify";
 
-export function DeleteConfirmModal({ open, handleOpen, blogId, onDelete }) {
+export function DeleteConfirmModal({
+  open,
+  handleOpen,
+  itemId,
+  onDelete,
+  itemName,
+}) {
   const handleDelete = () => {
     // Perform deletion from local storage
-    let storedBlogs = JSON.parse(localStorage.getItem("blogsData")) || [];
-    storedBlogs = storedBlogs.filter((blog) => blog.id !== blogId);
-    localStorage.setItem("blogsData", JSON.stringify(storedBlogs));
+    let storedItems = JSON.parse(localStorage.getItem(`${itemName}`)) || [];
+    storedItems = storedItems.filter((item) => item.id !== itemId);
+    localStorage.setItem(`${itemName}`, JSON.stringify(storedItems));
 
     // Notify user
     toast.success("Successfully Deleted!", {

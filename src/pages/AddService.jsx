@@ -79,7 +79,7 @@ const AddService = () => {
 
   const handleUpload = async () => {
     const formData = new FormData();
-    formData.append("image", image);
+    formData.append("banner", image);
     formData.append("title", title);
     formData.append("details", details);
     formData.append("blockQuote", blockQuote);
@@ -89,6 +89,28 @@ const AddService = () => {
     console.log(title, details, blockQuote, tags, category);
 
     try {
+      // Retrieve existing data from local storage
+      const existingData =
+        JSON.parse(localStorage.getItem("servicesData")) || [];
+
+      // Create new entry object
+      const newEntry = {
+        id: Date.now(), // Unique ID for the new entry
+        title,
+        details,
+        blockQuote,
+        tags,
+        category,
+        banner: imagePreview, // Assuming imagePreview holds the URL or base64 of the image
+      };
+
+      // Add the new entry to the existing data
+      const updatedData = [...existingData, newEntry];
+
+      // Save the updated data back to local storage
+      localStorage.setItem("servicesData", JSON.stringify(updatedData));
+
+      // Show success toast
       toast.success("Upload successful", {
         position: "top-right",
         hideProgressBar: false,
@@ -99,7 +121,9 @@ const AddService = () => {
         progress: undefined,
         theme: "light",
       });
-      navigate("/blogs");
+
+      // Navigate to the services page
+      navigate("/services");
 
       // Reset the form
       setImage(null);
@@ -112,7 +136,7 @@ const AddService = () => {
       setUploadProgress(0);
     } catch (error) {
       console.error("Error uploading file", error);
-      // Reset the form
+      // Reset the form in case of error
       setImage(null);
       setImagePreview(null);
       setTitle("");

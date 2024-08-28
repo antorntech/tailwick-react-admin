@@ -1,48 +1,44 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Loader from "../loader/Loader";
 import { DeleteConfirmModal } from "../components/DeleteConfirmModal";
 
 const Training = () => {
   const [open, setOpen] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState(null);
+  const [trainings, setTrainings] = useState([]);
   const handleOpen = () => setOpen(!open);
   const [layout, setLayout] = useState(true);
+
+  const handleDelete = () => {
+    // Refresh the training list after deletion
+    const storedTrainings =
+      JSON.parse(localStorage.getItem("trainingsData")) || [];
+    setTrainings(storedTrainings);
+  };
+
+  useEffect(() => {
+    // Retrieve data from local storage
+    const storedTrainings = localStorage.getItem("trainingsData");
+    if (storedTrainings) {
+      setTrainings(JSON.parse(storedTrainings));
+    }
+  }, []);
+
+  const openDeleteConfirmModal = (itemId) => {
+    setSelectedItemId(itemId);
+    handleOpen();
+  };
 
   const handleLayout = () => setLayout(!layout);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5; // Adjust as needed
 
-  const trainings = [
-    {
-      id: 1,
-      title: "Responsive Website Development",
-      details:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid, quod.",
-      link: "/training",
-      banner: "/img/training1.jpg",
-    },
-    {
-      id: 2,
-      title: "Mobile App Development with Flutter",
-      details:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid, quod.",
-      link: "/training",
-      banner: "/img/training2.jpg",
-    },
-    {
-      id: 3,
-      title: "Cloud Computing Consultancy",
-      details:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid, quod.",
-      link: "/training",
-      banner: "/img/training3.jpg",
-    },
-  ];
-
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = trainings.slice(indexOfFirstItem, indexOfLastItem);
+  console.log(currentItems);
 
   const totalPages = Math.ceil(trainings.length / itemsPerPage);
 
@@ -64,9 +60,10 @@ const Training = () => {
     <div>
       <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between">
         <div>
-          <h1 className="text-xl font-bold">Training</h1>
+          <h1 className="text-xl font-bold">Trainings</h1>
           <p className="text-sm text-gray-500">
-            All training are {trainings ? "" : "not"} available here.
+            All trainings are {trainings.length > 0 ? "" : "not"} available
+            here.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -76,20 +73,23 @@ const Training = () => {
           >
             Change Layout
           </button>
-          <Link to={"/training/add-training"}>
+          <Link to={"/trainings/add-training"}>
             <button className="bg-[#199bff] text-white px-4 py-2 rounded-md mt-2 md:mt-0">
               Add Training
             </button>
           </Link>
         </div>
       </div>
-      {trainings ? (
+      {trainings.length > 0 ? (
         <>
           {layout ? (
             <div className="mt-5 overflow-x-auto">
               <table className="min-w-full bg-white border">
                 <thead>
                   <tr>
+                    <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                      Banner
+                    </th>
                     <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                       Title
                     </th>
@@ -105,6 +105,13 @@ const Training = () => {
                   {currentItems.map((training) => (
                     <tr key={training.id} className="hover:bg-gray-100">
                       <td className="px-6 py-4 border-b">
+                        <img
+                          src={training.banner}
+                          alt={training.title}
+                          className="w-20 h-20 object-cover rounded"
+                        />
+                      </td>
+                      <td className="px-6 py-4 border-b">
                         <h1 className="text-sm font-bold">{training.title}</h1>
                       </td>
                       <td className="px-6 py-4 border-b text-sm text-gray-500">
@@ -118,7 +125,7 @@ const Training = () => {
                             </button>
                           </Link>
                           <button
-                            onClick={handleOpen}
+                            onClick={() => openDeleteConfirmModal(training.id)}
                             className="bg-red-800 text-white px-4 py-1 rounded-md text-sm"
                           >
                             Delete
@@ -147,13 +154,13 @@ const Training = () => {
                     {training.details.slice(0, 80)}...
                   </p>
                   <div className="flex gap-3 mt-3">
-                    <Link to={`/training/edit/${training.id}`}>
+                    <Link to={`/trainings/edit/${training.id}`}>
                       <button className="bg-orange-800 text-white px-4 py-1 rounded-md text-sm">
                         Edit
                       </button>
                     </Link>
                     <button
-                      onClick={handleOpen}
+                      onClick={() => openDeleteConfirmModal(training.id)}
                       className="bg-red-800 text-white px-4 py-1 rounded-md text-sm"
                     >
                       Delete
@@ -163,7 +170,13 @@ const Training = () => {
               ))}
             </div>
           )}
-          <DeleteConfirmModal open={open} handleOpen={handleOpen} />
+          <DeleteConfirmModal
+            open={open}
+            handleOpen={handleOpen}
+            itemId={selectedItemId}
+            onDelete={handleDelete}
+            itemName={"trainingsData"}
+          />
 
           {/* Enhanced Pagination */}
           <div className="flex justify-center mt-5">

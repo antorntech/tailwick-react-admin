@@ -30,20 +30,20 @@ const AppRoutes = () => {
       {user ? (
         <>
           <Route path="/" element={<Home />} />
-          <Route path="/slider" element={<Slider />} />
-          <Route path="/slider/add-slider" element={<AddSlider />} />
+          <Route path="/sliders" element={<Slider />} />
+          <Route path="/sliders/add-slider" element={<AddSlider />} />
           <Route path="/main-about" element={<MainAbout />} />
           <Route path="/home-about" element={<HomeAbout />} />
           <Route path="/main-contact" element={<MainContact />} />
           <Route path="/home-contact" element={<HomeContact />} />
           <Route path="/services" element={<Services />} />
           <Route path="/services/add-service" element={<AddService />} />
-          <Route path="/software" element={<Software />} />
-          <Route path="/software/add-software" element={<AddSoftware />} />
+          <Route path="/softwares" element={<Software />} />
+          <Route path="/softwares/add-software" element={<AddSoftware />} />
           <Route path="/sponsors" element={<Sponsors />} />
           <Route path="/sponsors/add-sponsor" element={<AddSponsor />} />
-          <Route path="/training" element={<Training />} />
-          <Route path="/training/add-training" element={<AddTraining />} />
+          <Route path="/trainings" element={<Training />} />
+          <Route path="/trainings/add-training" element={<AddTraining />} />
           <Route path="/blogs" element={<Blogs />} />
           <Route path="/blogs/add-blog" element={<AddBlog />} />
           <Route path="/faqs" element={<Faqs />} />

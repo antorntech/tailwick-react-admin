@@ -79,7 +79,7 @@ const AddBlog = () => {
 
   const handleUpload = async () => {
     const formData = new FormData();
-    formData.append("image", image);
+    formData.append("banner", image);
     formData.append("title", title);
     formData.append("details", details);
     formData.append("blockQuote", blockQuote);
@@ -100,7 +100,7 @@ const AddBlog = () => {
         blockQuote,
         tags,
         category,
-        image: imagePreview, // Assuming imagePreview holds the URL or base64 of the image
+        banner: imagePreview, // Assuming imagePreview holds the URL or base64 of the image
       };
 
       // Add the new entry to the existing data

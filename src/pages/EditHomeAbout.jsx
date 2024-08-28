@@ -33,7 +33,7 @@ const EditHomeAbout = ({ initialDetails, initialImage }) => {
 
   const handleUpload = async () => {
     const formData = new FormData();
-    formData.append("image", image);
+    formData.append("banner", image);
     formData.append("details", details);
 
     try {

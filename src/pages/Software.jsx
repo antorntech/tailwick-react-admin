@@ -1,45 +1,44 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Loader from "../loader/Loader";
 import { DeleteConfirmModal } from "../components/DeleteConfirmModal";
 
 const Software = () => {
   const [open, setOpen] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState(null);
+  const [softwares, setSoftwares] = useState([]);
   const handleOpen = () => setOpen(!open);
   const [layout, setLayout] = useState(true);
+
+  const handleDelete = () => {
+    // Refresh the software list after deletion
+    const storedSoftwares =
+      JSON.parse(localStorage.getItem("softwaresData")) || [];
+    setSoftwares(storedSoftwares);
+  };
+
+  useEffect(() => {
+    // Retrieve data from local storage
+    const storedSoftwares = localStorage.getItem("softwaresData");
+    if (storedSoftwares) {
+      setSoftwares(JSON.parse(storedSoftwares));
+    }
+  }, []);
+
+  const openDeleteConfirmModal = (itemId) => {
+    setSelectedItemId(itemId);
+    handleOpen();
+  };
 
   const handleLayout = () => setLayout(!layout);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5; // Adjust as needed
 
-  const softwares = [
-    {
-      id: 1,
-      title: "University Project Management System",
-      details:
-        "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt labore et dolore magna aliqua. enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim.",
-      banner: "/img/13.jpg",
-    },
-    {
-      id: 2,
-      title: "Hotel Project Management System",
-      details:
-        "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt labore et dolore magna aliqua. enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim.",
-      banner: "/img/14.jpg",
-    },
-    {
-      id: 3,
-      title: "Payroll Project Management System",
-      details:
-        "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt labore et dolore magna aliqua. enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim.",
-      banner: "/img/15.jpg",
-    },
-  ];
-
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = softwares.slice(indexOfFirstItem, indexOfLastItem);
+  console.log(currentItems);
 
   const totalPages = Math.ceil(softwares.length / itemsPerPage);
 
@@ -61,9 +60,10 @@ const Software = () => {
     <div>
       <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between">
         <div>
-          <h1 className="text-xl font-bold">Software</h1>
+          <h1 className="text-xl font-bold">Softwares</h1>
           <p className="text-sm text-gray-500">
-            All software are {softwares ? "" : "not"} available here.
+            All softwares are {softwares.length > 0 ? "" : "not"} available
+            here.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -73,20 +73,23 @@ const Software = () => {
           >
             Change Layout
           </button>
-          <Link to={"/software/add-software"}>
+          <Link to={"/softwares/add-software"}>
             <button className="bg-[#199bff] text-white px-4 py-2 rounded-md mt-2 md:mt-0">
               Add Software
             </button>
           </Link>
         </div>
       </div>
-      {softwares ? (
+      {softwares.length > 0 ? (
         <>
           {layout ? (
             <div className="mt-5 overflow-x-auto">
               <table className="min-w-full bg-white border">
                 <thead>
                   <tr>
+                    <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                      Banner
+                    </th>
                     <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                       Title
                     </th>
@@ -102,6 +105,13 @@ const Software = () => {
                   {currentItems.map((software) => (
                     <tr key={software.id} className="hover:bg-gray-100">
                       <td className="px-6 py-4 border-b">
+                        <img
+                          src={software.banner}
+                          alt={software.title}
+                          className="w-20 h-20 object-cover rounded"
+                        />
+                      </td>
+                      <td className="px-6 py-4 border-b">
                         <h1 className="text-sm font-bold">{software.title}</h1>
                       </td>
                       <td className="px-6 py-4 border-b text-sm text-gray-500">
@@ -109,13 +119,13 @@ const Software = () => {
                       </td>
                       <td className="px-6 py-4 border-b text-sm">
                         <div className="flex gap-3">
-                          <Link to={`/software/edit/${software.id}`}>
+                          <Link to={`/softwares/edit/${software.id}`}>
                             <button className="bg-orange-800 text-white px-4 py-1 rounded-md text-sm">
                               Edit
                             </button>
                           </Link>
                           <button
-                            onClick={handleOpen}
+                            onClick={() => openDeleteConfirmModal(software.id)}
                             className="bg-red-800 text-white px-4 py-1 rounded-md text-sm"
                           >
                             Delete
@@ -150,7 +160,7 @@ const Software = () => {
                       </button>
                     </Link>
                     <button
-                      onClick={handleOpen}
+                      onClick={() => openDeleteConfirmModal(software.id)}
                       className="bg-red-800 text-white px-4 py-1 rounded-md text-sm"
                     >
                       Delete
@@ -160,7 +170,13 @@ const Software = () => {
               ))}
             </div>
           )}
-          <DeleteConfirmModal open={open} handleOpen={handleOpen} />
+          <DeleteConfirmModal
+            open={open}
+            handleOpen={handleOpen}
+            itemId={selectedItemId}
+            onDelete={handleDelete}
+            itemName={"softwaresData"}
+          />
 
           {/* Enhanced Pagination */}
           <div className="flex justify-center mt-5">

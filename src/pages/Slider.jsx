@@ -1,65 +1,85 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Loader from "../loader/Loader";
 import { DeleteConfirmModal } from "../components/DeleteConfirmModal";
 
 const Slider = () => {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState(null);
+  const [sliders, setSliders] = useState([]);
   const handleOpen = () => setOpen(!open);
-  const [layout, setLayout] = React.useState(true);
+  const [layout, setLayout] = useState(true);
+
+  const handleDelete = () => {
+    // Refresh the slider list after deletion
+    const storedSliders = JSON.parse(localStorage.getItem("slidersData")) || [];
+    setSliders(storedSliders);
+  };
+
+  useEffect(() => {
+    // Retrieve data from local storage
+    const storedSliders = localStorage.getItem("slidersData");
+    if (storedSliders) {
+      setSliders(JSON.parse(storedSliders));
+    }
+  }, []);
+
+  const openDeleteConfirmModal = (itemId) => {
+    setSelectedItemId(itemId);
+    handleOpen();
+  };
 
   const handleLayout = () => setLayout(!layout);
 
-  const sliders = [
-    {
-      id: 1,
-      title: "Innovative Cloud Solutions",
-      details:
-        "Transform your business with cutting-edge cloud technology. Our scalable solutions offer seamless integration, enhanced security, and the flexibility to adapt to your growing needs. Experience the future of cloud computing today.",
-      banner: "/img/1.jpg",
-    },
-    {
-      id: 2,
-      title: "Next-Gen AI Development",
-      details:
-        "Unlock the power of artificial intelligence with our advanced AI solutions. From machine learning to natural language processing, our expertise in AI technologies helps you gain valuable insights and drive innovation in your industry.",
-      banner: "/img/2.jpg",
-    },
-    {
-      id: 3,
-      title: "Robust Cybersecurity Services",
-      details:
-        "Protect your digital assets with our comprehensive cybersecurity services. We provide state-of-the-art solutions to safeguard your business from cyber threats, ensuring your data remains secure and your operations run smoothly.",
-      banner: "/img/3.jpg",
-    },
-  ];
-  return (
-    <>
-      {layout ? (
-        <div>
-          <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between">
-            <div>
-              <h1 className="text-xl font-bold">Slider</h1>
-              <p className="text-sm text-gray-500">
-                All sliders are {sliders ? "" : "not"} available here.
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <button
-                className="bg-[#2e961a] text-white px-4 py-2 rounded-md mt-2 md:mt-0"
-                onClick={handleLayout}
-              >
-                Change Layout
-              </button>
-              <Link to={"/slider/add-slider"}>
-                <button className="bg-[#199bff] text-white px-4 py-2 rounded-md mt-2 md:mt-0">
-                  Add Slider
-                </button>
-              </Link>
-            </div>
-          </div>
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5; // Adjust as needed
 
-          {sliders ? (
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = sliders.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(sliders.length / itemsPerPage);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const nextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  return (
+    <div>
+      <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between">
+        <div>
+          <h1 className="text-xl font-bold">Sliders</h1>
+          <p className="text-sm text-gray-500">
+            All sliders are {sliders.length > 0 ? "" : "not"} available here.
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <button
+            className="bg-[#2e961a] text-white px-4 py-2 rounded-md mt-2 md:mt-0"
+            onClick={handleLayout}
+          >
+            Change Layout
+          </button>
+          <Link to={"/sliders/add-slider"}>
+            <button className="bg-[#199bff] text-white px-4 py-2 rounded-md mt-2 md:mt-0">
+              Add Slider
+            </button>
+          </Link>
+        </div>
+      </div>
+      {sliders.length > 0 ? (
+        <>
+          {layout ? (
             <div className="mt-5 overflow-x-auto">
               <table className="min-w-full bg-white border">
                 <thead>
@@ -79,13 +99,13 @@ const Slider = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {sliders.map((slider) => (
+                  {currentItems.map((slider) => (
                     <tr key={slider.id} className="hover:bg-gray-100">
                       <td className="px-6 py-4 border-b">
                         <img
                           src={slider.banner}
                           alt={slider.title}
-                          className="w-32 h-20 object-cover"
+                          className="w-20 h-20 object-cover rounded"
                         />
                       </td>
                       <td className="px-6 py-4 border-b">
@@ -102,7 +122,7 @@ const Slider = () => {
                             </button>
                           </Link>
                           <button
-                            onClick={handleOpen}
+                            onClick={() => openDeleteConfirmModal(slider.id)}
                             className="bg-red-800 text-white px-4 py-1 rounded-md text-sm"
                           >
                             Delete
@@ -113,77 +133,93 @@ const Slider = () => {
                   ))}
                 </tbody>
               </table>
-              <DeleteConfirmModal open={open} handleOpen={handleOpen} />
             </div>
           ) : (
-            <Loader />
-          )}
-        </div>
-      ) : (
-        <div>
-          <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between">
-            <div>
-              <h1 className="text-xl font-bold">Slider</h1>
-              <p className="text-sm text-gray-500">
-                All sliders are {sliders ? "" : "not"} available here.
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <button
-                className="bg-[#2e961a] text-white px-4 py-2 rounded-md mt-2 md:mt-0"
-                onClick={handleLayout}
-              >
-                Change Layout
-              </button>
-              <Link to={"/slider/add-slider"}>
-                <button className="bg-[#199bff] text-white px-4 py-2 rounded-md mt-2 md:mt-0">
-                  Add Slider
-                </button>
-              </Link>
-            </div>
-          </div>
-          {sliders ? (
-            <>
-              <div className="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                {sliders.map((slider) => (
-                  <div
-                    key={slider.id}
-                    className="w-full flex flex-col shadow-md rounded-md p-3"
-                  >
-                    <img
-                      src={slider.banner}
-                      alt={slider.title}
-                      className="w-full h-full md:h-[250px]"
-                    />
-                    <h1 className="text-xl font-bold mt-3">{slider.title}</h1>
-                    <p className="text-sm text-gray-500">
-                      {slider.details.slice(0, 80)}...
-                    </p>
-                    <div className="flex gap-3 mt-3">
-                      <Link to={`/slider/edit/${slider.id}`}>
-                        <button className="bg-orange-800 text-white px-4 py-1 rounded-md text-sm">
-                          Edit
-                        </button>
-                      </Link>
-
-                      <button
-                        onClick={handleOpen}
-                        className="bg-red-800 text-white px-4 py-1 rounded-md text-sm"
-                      >
-                        Delete
+            <div className="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {currentItems.map((slider) => (
+                <div
+                  key={slider.id}
+                  className="w-full flex flex-col shadow-md rounded-md p-3"
+                >
+                  <img
+                    src={slider.banner}
+                    alt={slider.title}
+                    className="w-full h-full md:h-[250px]"
+                  />
+                  <h1 className="text-xl font-bold mt-3">{slider.title}</h1>
+                  <p className="text-sm text-gray-500">
+                    {slider.details.slice(0, 80)}...
+                  </p>
+                  <div className="flex gap-3 mt-3">
+                    <Link to={`/slider/edit/${slider.id}`}>
+                      <button className="bg-orange-800 text-white px-4 py-1 rounded-md text-sm">
+                        Edit
                       </button>
-                    </div>
+                    </Link>
+                    <button
+                      onClick={() => openDeleteConfirmModal(slider.id)}
+                      className="bg-red-800 text-white px-4 py-1 rounded-md text-sm"
+                    >
+                      Delete
+                    </button>
                   </div>
-                ))}
-              </div>
-              <DeleteConfirmModal open={open} handleOpen={handleOpen} />
-            </>
-          ) : (
-            <Loader />
+                </div>
+              ))}
+            </div>
           )}
-        </div>
+          <DeleteConfirmModal
+            open={open}
+            handleOpen={handleOpen}
+            itemId={selectedItemId}
+            onDelete={handleDelete}
+            itemName="slidersData"
+          />
+
+          {/* Enhanced Pagination */}
+          <div className="flex justify-center mt-5">
+            <button
+              onClick={prevPage}
+              disabled={currentPage === 1}
+              className={`mx-1 px-3 py-1 rounded ${
+                currentPage === 1
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-blue-500 text-white"
+              }`}
+            >
+              <i className="fa-solid fa-angle-left"></i>
+            </button>
+
+            {Array.from({ length: totalPages }, (_, index) => (
+              <button
+                key={index + 1}
+                onClick={() => paginate(index + 1)}
+                className={`mx-1 px-3 py-1 rounded ${
+                  currentPage === index + 1
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-300 text-gray-700"
+                }`}
+              >
+                {index + 1}
+              </button>
+            ))}
+
+            <button
+              onClick={nextPage}
+              disabled={currentPage === totalPages}
+              className={`mx-1 px-3 py-1 rounded ${
+                currentPage === totalPages
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-blue-500 text-white"
+              }`}
+            >
+              <i className="fa-solid fa-angle-right"></i>
+            </button>
+          </div>
+        </>
+      ) : (
+        <Loader />
       )}
-    </>
+    </div>
   );
 };
 
