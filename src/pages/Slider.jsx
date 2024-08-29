@@ -115,7 +115,7 @@ const Slider = () => {
                         {slider.details.slice(0, 80)}...
                       </td>
                       <td className="px-6 py-4 border-b text-sm">
-                        <div className="flex gap-3">
+                        <div className="flex gap-2">
                           <Link to={`/slider/edit/${slider.id}`}>
                             <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
                               <i class="fa-solid fa-pencil"></i>

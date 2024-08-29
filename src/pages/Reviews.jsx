@@ -114,14 +114,14 @@ const Reviews = () => {
                       <td className="px-6 py-4 border-b">
                         <h1 className="text-sm font-bold">{review.name}</h1>
                       </td>
-                      <td className="px-6 py-4 border-b">
+                      <td className="px-6 py-4 border-b text-sm">
                         {review.designation}
                       </td>
                       <td className="px-6 py-4 border-b text-sm text-gray-500">
                         {review?.comments.slice(0, 50)}...
                       </td>
                       <td className="px-6 py-4 border-b text-sm">
-                        <div className="flex gap-3">
+                        <div className="flex gap-2">
                           <Link to={`/reviews/edit-review/${review.id}`}>
                             <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
                               <i class="fa-solid fa-pencil"></i>
@@ -157,7 +157,7 @@ const Reviews = () => {
                   <p className="text-sm text-gray-500">
                     {review?.comments.slice(0, 50)}...
                   </p>
-                  <div className="flex gap-3 mt-3">
+                  <div className="flex gap-3 mt-2">
                     <Link to={`/reviews/edit-review/${review.id}`}>
                       <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
                         <i class="fa-solid fa-pencil"></i>

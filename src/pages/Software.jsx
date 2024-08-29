@@ -96,6 +96,12 @@ const Software = () => {
                       Details
                     </th>
                     <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                      Author
+                    </th>
+                    <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                      Date
+                    </th>
+                    <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                       Actions
                     </th>
                   </tr>
@@ -116,9 +122,15 @@ const Software = () => {
                       <td className="px-6 py-4 border-b text-sm text-gray-500">
                         {software.details.slice(0, 80)}...
                       </td>
+                      <td className="px-6 py-4 border-b text-sm text-gray-500">
+                        {software.author}
+                      </td>
+                      <td className="px-6 py-4 border-b text-sm text-gray-500">
+                        {software.date}
+                      </td>
                       <td className="px-6 py-4 border-b text-sm">
-                        <div className="flex gap-3">
-                          <Link to={`/softwares/edit/${software.id}`}>
+                        <div className="flex gap-2">
+                          <Link to={`/softwares/edit-software/${software.id}`}>
                             <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
                               <i class="fa-solid fa-pencil"></i>
                             </button>
@@ -152,17 +164,17 @@ const Software = () => {
                   <p className="text-sm text-gray-500">
                     {software.details.slice(0, 80)}...
                   </p>
-                  <div className="flex gap-3 mt-3">
-                    <Link to={`/software/edit/${software.id}`}>
-                      <button className="bg-orange-800 text-white px-4 py-1 rounded-md text-sm">
-                        Edit
+                  <div className="flex gap-2 mt-2">
+                    <Link to={`/softwares/edit-software/${software.id}`}>
+                      <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
+                        <i class="fa-solid fa-pencil"></i>
                       </button>
                     </Link>
                     <button
                       onClick={() => openDeleteConfirmModal(software.id)}
-                      className="bg-red-800 text-white px-4 py-1 rounded-md text-sm"
+                      className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-500"
                     >
-                      Delete
+                      <i class="fa-regular fa-trash-can"></i>
                     </button>
                   </div>
                 </div>

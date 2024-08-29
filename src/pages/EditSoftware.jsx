@@ -1,17 +1,12 @@
-import {
-  Input,
-  Option,
-  Select,
-  Textarea,
-  Typography,
-} from "@material-tailwind/react";
-import React, { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Input, Textarea, Typography, Select } from "@material-tailwind/react";
+import React, { useState, useEffect, useRef } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import JoditEditor from "jodit-react";
 import moment from "moment";
 
-const AddSoftware = () => {
+const EditSoftware = () => {
+  const { id } = useParams(); // Get the review ID from the URL
   const navigate = useNavigate();
   const config = {
     readonly: false,
@@ -33,6 +28,36 @@ const AddSoftware = () => {
   const [fileKey, setFileKey] = useState(Date.now());
   const [uploadProgress, setUploadProgress] = useState(0);
   const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB limit
+
+  useEffect(() => {
+    // Retrieve the specific review from local storage
+    const storedSoftwares =
+      JSON.parse(localStorage.getItem("softwaresData")) || [];
+    const softwareToEdit = storedSoftwares.find(
+      (software) => software.id === parseInt(id)
+    );
+
+    if (softwareToEdit) {
+      setTitle(softwareToEdit.title);
+      setDetails(softwareToEdit.details);
+      setBlockQuote(softwareToEdit.blockQuote);
+      setTags(softwareToEdit.tags);
+      setCategory(softwareToEdit.category);
+      setImagePreview(softwareToEdit.banner);
+    } else {
+      toast.error("Training not found", {
+        position: "top-right",
+        hideProgressBar: false,
+        autoClose: 1000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      navigate("/softwares");
+    }
+  }, [id, navigate]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -79,7 +104,7 @@ const AddSoftware = () => {
     setCategory(value);
   };
 
-  const handleUpload = async () => {
+  const handleUpdate = () => {
     const formData = new FormData();
     formData.append("banner", image);
     formData.append("title", title);
@@ -93,31 +118,26 @@ const AddSoftware = () => {
     console.log(title, details, blockQuote, tags, category);
 
     try {
-      // Retrieve existing data from local storage
-      const existingData =
+      const storedSoftwares =
         JSON.parse(localStorage.getItem("softwaresData")) || [];
+      const updatedSoftwares = storedSoftwares.map((software) =>
+        software.id === parseInt(id)
+          ? {
+              ...software,
+              title,
+              details,
+              blockQuote,
+              tags,
+              category,
+              date,
+              banner: image ? URL.createObjectURL(image) : imagePreview,
+            }
+          : review
+      );
 
-      // Create new entry object
-      const newEntry = {
-        id: Date.now(), // Unique ID for the new entry
-        title,
-        details,
-        blockQuote,
-        tags,
-        category,
-        date: date,
-        author: "Admin",
-        banner: imagePreview, // Assuming imagePreview holds the URL or base64 of the image
-      };
+      localStorage.setItem("softwaresData", JSON.stringify(updatedSoftwares));
 
-      // Add the new entry to the existing data
-      const updatedData = [...existingData, newEntry];
-
-      // Save the updated data back to local storage
-      localStorage.setItem("softwaresData", JSON.stringify(updatedData));
-
-      // Show success toast
-      toast.success("Upload successful", {
+      toast.success("Training updated successfully", {
         position: "top-right",
         hideProgressBar: false,
         autoClose: 1000,
@@ -128,27 +148,16 @@ const AddSoftware = () => {
         theme: "light",
       });
 
-      // Navigate to the software page
       navigate("/softwares");
 
-      // Reset the form
       setImage(null);
       setImagePreview(null);
-      setTitle("");
-      setDetails("");
-      setTags([]); // Reset tags array
-      setCategory("Skill Development Training");
       setFileKey(Date.now());
       setUploadProgress(0);
     } catch (error) {
-      console.error("Error uploading file", error);
-      // Reset the form in case of error
+      console.error("Error updating review", error);
       setImage(null);
       setImagePreview(null);
-      setTitle("");
-      setDetails("");
-      setTags([]); // Reset tags array
-      setCategory("Skill Development Training");
       setFileKey(Date.now());
       setUploadProgress(0);
     }
@@ -164,9 +173,9 @@ const AddSoftware = () => {
   return (
     <div>
       <div>
-        <h1 className="text-xl font-bold">Add Software</h1>
+        <h1 className="text-xl font-bold">Edit Training</h1>
         <p className="text-sm text-gray-500">
-          You can add software details from here.
+          You can edit the software details from here.
         </p>
       </div>
       <div className="mt-5 w-full md:flex">
@@ -324,7 +333,7 @@ const AddSoftware = () => {
             </div>
           </div>
           <button
-            onClick={handleUpload}
+            onClick={handleUpdate}
             className="mt-5 bg-[#199bff] text-white px-4 py-2 rounded"
           >
             Upload
@@ -350,4 +359,4 @@ const AddSoftware = () => {
   );
 };
 
-export default AddSoftware;
+export default EditSoftware;
