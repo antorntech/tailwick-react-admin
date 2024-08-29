@@ -31,6 +31,7 @@ import EditService from "../pages/EditService";
 import EditFaq from "../pages/EditFaq";
 import EditSponsor from "../pages/EditSponsor";
 import EditSlider from "../pages/EditSlider";
+import Promotion from "../pages/Promotion";
 
 const AppRoutes = () => {
   const user = localStorage.getItem("email");
@@ -74,6 +75,7 @@ const AppRoutes = () => {
           <Route path="/faqs" element={<Faqs />} />
           <Route path="/faqs/add-faq" element={<AddFaq />} />
           <Route path="/faqs/edit-faq/:id" element={<EditFaq />} />
+          <Route path="/promotion" element={<Promotion />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="*" element={<Navigate to="/" />} />
         </>

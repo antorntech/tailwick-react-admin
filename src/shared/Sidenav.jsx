@@ -33,6 +33,10 @@ const menuItems = [
     link: "/faqs",
   },
   {
+    title: "Promotion",
+    link: "/promotion",
+  },
+  {
     title: "Services",
     link: "/services",
   },
