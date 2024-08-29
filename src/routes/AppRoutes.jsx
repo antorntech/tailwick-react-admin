@@ -27,6 +27,7 @@ import EditReview from "../pages/EditReview";
 import EditBlog from "../pages/EditBlog";
 import EditTraining from "../pages/EditTraining";
 import EditSoftware from "../pages/EditSoftware";
+import EditService from "../pages/EditService";
 
 const AppRoutes = () => {
   const user = localStorage.getItem("email");
@@ -44,6 +45,7 @@ const AppRoutes = () => {
           <Route path="/home-contact" element={<HomeContact />} />
           <Route path="/services" element={<Services />} />
           <Route path="/services/add-service" element={<AddService />} />
+          <Route path="/services/edit-service/:id" element={<EditService />} />
           <Route path="/softwares" element={<Software />} />
           <Route path="/softwares/add-software" element={<AddSoftware />} />
           <Route
