@@ -71,6 +71,11 @@
   background-color: #199bff;
 }
 
+.slider-main:nth-child(2) {
+  background-color: #199bff;
+  margin: 15px;
+}
+
 @media screen and (max-width: 768px) {
   .next-arrow {
     left: 9%;

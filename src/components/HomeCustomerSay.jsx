@@ -105,8 +105,8 @@ const HomeCustomerSay = () => {
     <div>
       <Slider {...settings}>
         {reviews.map((review) => (
-          <div key={review.id}>
-            <div className="border-2 border-gray-300 m-3 p-3 rounded-md">
+          <div key={review.id} className="mt-5">
+            <div className="border-2 border-gray-300 mx-1 p-3 rounded-md">
               <div>
                 <img src={review.image} alt={review.name} />
               </div>
