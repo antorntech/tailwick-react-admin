@@ -96,6 +96,12 @@ const Training = () => {
                       Details
                     </th>
                     <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                      Author
+                    </th>
+                    <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                      Date
+                    </th>
+                    <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                       Actions
                     </th>
                   </tr>
@@ -107,7 +113,7 @@ const Training = () => {
                         <img
                           src={training.banner}
                           alt={training.title}
-                          className="w-20 h-20 object-cover rounded"
+                          className="w-28 h-20 object-cover rounded"
                         />
                       </td>
                       <td className="px-6 py-4 border-b">
@@ -116,9 +122,15 @@ const Training = () => {
                       <td className="px-6 py-4 border-b text-sm text-gray-500">
                         {training.details.slice(0, 80)}...
                       </td>
+                      <td className="px-6 py-4 border-b text-sm text-gray-500">
+                        {training.author}
+                      </td>
+                      <td className="px-6 py-4 border-b text-sm text-gray-500">
+                        {training.date}
+                      </td>
                       <td className="px-6 py-4 border-b text-sm">
                         <div className="flex gap-3">
-                          <Link to={`/training/edit/${training.id}`}>
+                          <Link to={`/trainings/edit-training/${training.id}`}>
                             <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
                               <i class="fa-solid fa-pencil"></i>
                             </button>
@@ -153,7 +165,7 @@ const Training = () => {
                     {training.details.slice(0, 80)}...
                   </p>
                   <div className="flex gap-3 mt-3">
-                    <Link to={`/trainings/edit/${training.id}`}>
+                    <Link to={`/trainings/edit-training/${training.id}`}>
                       <button className="bg-orange-800 text-white px-4 py-1 rounded-md text-sm">
                         Edit
                       </button>

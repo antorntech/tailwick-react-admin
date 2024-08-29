@@ -25,6 +25,7 @@ import Reviews from "../pages/Reviews";
 import AddReview from "../pages/AddReview";
 import EditReview from "../pages/EditReview";
 import EditBlog from "../pages/EditBlog";
+import EditTraining from "../pages/EditTraining";
 
 const AppRoutes = () => {
   const user = localStorage.getItem("email");
@@ -48,6 +49,10 @@ const AppRoutes = () => {
           <Route path="/sponsors/add-sponsor" element={<AddSponsor />} />
           <Route path="/trainings" element={<Training />} />
           <Route path="/trainings/add-training" element={<AddTraining />} />
+          <Route
+            path="/trainings/edit-training/:id"
+            element={<EditTraining />}
+          />
           <Route path="/blogs" element={<Blogs />} />
           <Route path="/blogs/add-blog" element={<AddBlog />} />
           <Route path="/blogs/edit-blog/:id" element={<EditBlog />} />
