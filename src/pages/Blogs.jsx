@@ -128,7 +128,7 @@ const Blogs = () => {
                       </td>
                       <td className="px-6 py-4 border-b text-sm">
                         <div className="flex gap-3">
-                          <Link to={`/blog/edit/${blog.id}`}>
+                          <Link to={`/blogs/edit-blog/${blog.id}`}>
                             <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
                               <i class="fa-solid fa-pencil"></i>
                             </button>
@@ -163,7 +163,7 @@ const Blogs = () => {
                     {blog.details.slice(0, 80)}...
                   </p>
                   <div className="flex gap-3 mt-3">
-                    <Link to={`/blog/edit/${blog.id}`}>
+                    <Link to={`/blogs/edit-blog/${blog.id}`}>
                       <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
                         <i class="fa-solid fa-pencil"></i>
                       </button>
