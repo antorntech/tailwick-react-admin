@@ -95,7 +95,7 @@ const EditSponsor = () => {
 
       localStorage.setItem("sponsorsData", JSON.stringify(updatedSponsors));
 
-      toast.success("Update successful", {
+      toast.success("Sponsor updated successfully", {
         position: "top-right",
         hideProgressBar: false,
         autoClose: 1000,

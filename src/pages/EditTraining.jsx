@@ -115,8 +115,6 @@ const EditTraining = () => {
     formData.append("author", "Admin");
     formData.append("date", date);
 
-    console.log(title, details, blockQuote, tags, category);
-
     try {
       const storedTrainings =
         JSON.parse(localStorage.getItem("trainingsData")) || [];
