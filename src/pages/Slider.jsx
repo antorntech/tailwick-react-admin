@@ -152,15 +152,15 @@ const Slider = () => {
                   </p>
                   <div className="flex gap-3 mt-3">
                     <Link to={`/slider/edit/${slider.id}`}>
-                      <button className="bg-orange-800 text-white px-4 py-1 rounded-md text-sm">
-                        Edit
+                      <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
+                        <i class="fa-solid fa-pencil"></i>
                       </button>
                     </Link>
                     <button
                       onClick={() => openDeleteConfirmModal(slider.id)}
-                      className="bg-red-800 text-white px-4 py-1 rounded-md text-sm"
+                      className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-500"
                     >
-                      Delete
+                      <i class="fa-regular fa-trash-can"></i>
                     </button>
                   </div>
                 </div>

@@ -21,6 +21,8 @@ import AddSponsor from "../pages/AddSponsor";
 import AddService from "../pages/AddService";
 import Faqs from "../pages/Faqs";
 import AddFaq from "../pages/AddFaq";
+import Reviews from "../pages/Reviews";
+import AddReview from "../pages/AddReview";
 
 const AppRoutes = () => {
   const user = localStorage.getItem("email");
@@ -46,6 +48,8 @@ const AppRoutes = () => {
           <Route path="/trainings/add-training" element={<AddTraining />} />
           <Route path="/blogs" element={<Blogs />} />
           <Route path="/blogs/add-blog" element={<AddBlog />} />
+          <Route path="/reviews" element={<Reviews />} />
+          <Route path="/reviews/add-review" element={<AddReview />} />
           <Route path="/faqs" element={<Faqs />} />
           <Route path="/faqs/add-faq" element={<AddFaq />} />
           <Route path="/profile" element={<Profile />} />

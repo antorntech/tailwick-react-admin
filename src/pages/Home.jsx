@@ -1,5 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import HomeCustomerSay from "../components/HomeCustomerSay";
+import { Avatar } from "@material-tailwind/react";
 
 const Home = () => {
   const latestBlogs = [
@@ -9,7 +11,7 @@ const Home = () => {
       description:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid, quod.",
       link: "/blogs",
-      banner: "/img/blog-banner.jpg",
+      banner: "/img/1.jpg",
     },
     {
       id: 2,
@@ -17,7 +19,7 @@ const Home = () => {
       description:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid, quod.",
       link: "/blogs",
-      banner: "/img/blog-banner.jpg",
+      banner: "/img/2.jpg",
     },
     {
       id: 3,
@@ -25,7 +27,7 @@ const Home = () => {
       description:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid, quod.",
       link: "/blogs",
-      banner: "/img/blog-banner.jpg",
+      banner: "/img/3.jpg",
     },
   ];
 
@@ -78,37 +80,19 @@ const Home = () => {
             </div>
           </div>
         </div>
-        <div className="w-full mt-5">
-          <div className="flex items-center justify-between">
-            <p className="text-xl font-bold">Popular Training</p>
-            <p className="text-sm text-[#199bff] hover:text-[#050828] transition-all duration-500">
-              <Link to={"/training"}>View All</Link>
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-3">
-            {popularTrainings.map((training) => (
-              <div key={training.id} className="w-full">
-                <div>
-                  <div className="custom-shadow2 flex flex-col items-center justify-center">
-                    <div className="rounded-md">
-                      <img
-                        src={training.banner}
-                        alt=""
-                        className="w-full h-full object-cover rounded-md"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+        <div className="w-full mt-8">
+          <HomeCustomerSay />
         </div>
       </div>
       <div className="w-full lg:w-[30%] bg-white custom-shadow2 rounded-md flex flex-col items-center p-5">
         <div>
-          <div className="w-[100px] h-[100px] rounded-full bg-[#050828] flex items-center justify-center">
-            {/* <img src="/img/avatar.png" alt="" className="" /> */}
-            <h1 className="text-4xl font-semibold text-white">AD</h1>
+          <div className="w-[90px] h-[90px] rounded-full bg-[#050828] flex items-center justify-center">
+            <Avatar
+              src="https://docs.material-tailwind.com/img/face-2.jpg"
+              alt="avatar"
+              size="xl"
+            />
+            {/* <h1 className="text-4xl font-semibold text-white">AD</h1> */}
           </div>
           <div className="w-full text-center mt-1">
             <h2 className="text-xl font-bold">Mr. Admin</h2>

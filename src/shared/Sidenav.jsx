@@ -48,6 +48,10 @@ const menuItems = [
     title: "Blogs",
     link: "/blogs",
   },
+  {
+    title: "Reviews",
+    link: "/reviews",
+  },
 ];
 
 const Sidenav = () => {

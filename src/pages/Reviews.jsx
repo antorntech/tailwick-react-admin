@@ -3,24 +3,24 @@ import { Link } from "react-router-dom";
 import Loader from "../loader/Loader";
 import { DeleteConfirmModal } from "../components/DeleteConfirmModal";
 
-const Faqs = () => {
+const Reviews = () => {
   const [open, setOpen] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(null);
-  const [faqs, setFaqs] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const handleOpen = () => setOpen(!open);
   const [layout, setLayout] = useState(true);
 
   const handleDelete = () => {
-    // Refresh the faq list after deletion
-    const storedFaqs = JSON.parse(localStorage.getItem("faqsData")) || [];
-    setFaqs(storedFaqs);
+    // Refresh the review list after deletion
+    const storedReviews = JSON.parse(localStorage.getItem("reviewsData")) || [];
+    setReviews(storedReviews);
   };
 
   useEffect(() => {
     // Retrieve data from local storage
-    const storedFaqs = localStorage.getItem("faqsData");
-    if (storedFaqs) {
-      setFaqs(JSON.parse(storedFaqs));
+    const storedReviews = localStorage.getItem("reviewsData");
+    if (storedReviews) {
+      setReviews(JSON.parse(storedReviews));
     }
   }, []);
 
@@ -36,10 +36,9 @@ const Faqs = () => {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = faqs.slice(indexOfFirstItem, indexOfLastItem);
-  console.log(currentItems);
+  const currentItems = reviews.slice(indexOfFirstItem, indexOfLastItem);
 
-  const totalPages = Math.ceil(faqs.length / itemsPerPage);
+  const totalPages = Math.ceil(reviews.length / itemsPerPage);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -59,9 +58,9 @@ const Faqs = () => {
     <div>
       <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between">
         <div>
-          <h1 className="text-xl font-bold">Faqs</h1>
+          <h1 className="text-xl font-bold">Reviews</h1>
           <p className="text-sm text-gray-500">
-            faqs are {faqs.length > 0 ? "" : "not"} available here.
+            reviews are {reviews.length > 0 ? "" : "not"} available here.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -71,14 +70,14 @@ const Faqs = () => {
           >
             Change Layout
           </button>
-          <Link to={"/faqs/add-faq"}>
+          <Link to={"/reviews/add-review"}>
             <button className="bg-[#199bff] text-white px-4 py-2 rounded-md mt-2 md:mt-0">
-              Add Faq
+              Add Review
             </button>
           </Link>
         </div>
       </div>
-      {faqs.length > 0 ? (
+      {reviews.length > 0 ? (
         <>
           {layout ? (
             <div className="mt-5 overflow-x-auto">
@@ -86,10 +85,16 @@ const Faqs = () => {
                 <thead>
                   <tr>
                     <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                      Question
+                      Logo
                     </th>
                     <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                      Answer
+                      Name
+                    </th>
+                    <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                      Designation
+                    </th>
+                    <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                      Comments
                     </th>
                     <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                       Actions
@@ -97,24 +102,33 @@ const Faqs = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentItems.map((faq) => (
-                    <tr key={faq.id} className="hover:bg-gray-100">
+                  {currentItems.map((review) => (
+                    <tr key={review.id} className="hover:bg-gray-100">
                       <td className="px-6 py-4 border-b">
-                        <h1 className="text-sm font-bold">{faq?.question}</h1>
+                        <img
+                          src={review.banner}
+                          alt={review.name}
+                          className="w-[150px] h-[50px] object-cover rounded"
+                        />
+                      </td>
+                      <td className="px-6 py-4 border-b">
+                        <h1 className="text-sm font-bold">{review.name}</h1>
+                      </td>
+                      <td className="px-6 py-4 border-b">
+                        {review.designation}
                       </td>
                       <td className="px-6 py-4 border-b text-sm text-gray-500">
-                        {faq?.answer.slice(0, 50)}...
+                        {review?.comments.slice(0, 50)}...
                       </td>
-
                       <td className="px-6 py-4 border-b text-sm">
-                        <div className="flex gap-2">
-                          <Link to={`/faq/edit/${faq.id}`}>
+                        <div className="flex gap-3">
+                          <Link to={`/review/edit/${review.id}`}>
                             <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
                               <i class="fa-solid fa-pencil"></i>
                             </button>
                           </Link>
                           <button
-                            onClick={() => openDeleteConfirmModal(faq.id)}
+                            onClick={() => openDeleteConfirmModal(review.id)}
                             className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-500"
                           >
                             <i class="fa-regular fa-trash-can"></i>
@@ -128,23 +142,29 @@ const Faqs = () => {
             </div>
           ) : (
             <div className="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {currentItems.map((faq) => (
+              {currentItems.map((review) => (
                 <div
-                  key={faq.id}
+                  key={review.id}
                   className="w-full flex flex-col shadow-md rounded-md p-3"
                 >
-                  <h1 className="text-xl font-bold mt-3">{faq?.question}</h1>
+                  <img
+                    src={review.banner}
+                    alt={review.name}
+                    className="w-[150px] h-[50px]"
+                  />
+                  <h1 className="text-xl font-bold mt-3">{review.name}</h1>
+                  <p>{review.designation}</p>
                   <p className="text-sm text-gray-500">
-                    {faq?.answer.slice(0, 80)}...
+                    {review?.comments.slice(0, 50)}...
                   </p>
                   <div className="flex gap-3 mt-3">
-                    <Link to={`/faq/edit/${faq.id}`}>
+                    <Link to={`/review/edit/${review.id}`}>
                       <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
                         <i class="fa-solid fa-pencil"></i>
                       </button>
                     </Link>
                     <button
-                      onClick={() => openDeleteConfirmModal(faq.id)}
+                      onClick={() => openDeleteConfirmModal(review.id)}
                       className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-500"
                     >
                       <i class="fa-regular fa-trash-can"></i>
@@ -159,7 +179,7 @@ const Faqs = () => {
             handleOpen={handleOpen}
             itemId={selectedItemId}
             onDelete={handleDelete}
-            itemName={"faqsData"}
+            itemName="reviewsData"
           />
 
           {/* Enhanced Pagination */}
@@ -210,4 +230,4 @@ const Faqs = () => {
   );
 };
 
-export default Faqs;
+export default Reviews;
