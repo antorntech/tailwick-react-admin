@@ -111,7 +111,7 @@ const Blogs = () => {
                         <img
                           src={blog.banner}
                           alt={blog.title}
-                          className="w-20 h-20 object-cover rounded"
+                          className="w-28 h-20 object-cover rounded"
                         />
                       </td>
                       <td className="px-6 py-4 border-b">
@@ -156,7 +156,7 @@ const Blogs = () => {
                   <img
                     src={blog.banner}
                     alt={blog.title}
-                    className="w-full h-full md:h-[250px]"
+                    className="w-full h-full md:w-[300px] md:h-[250px]"
                   />
                   <h1 className="text-xl font-bold mt-3">{blog.title}</h1>
                   <p className="text-sm text-gray-500">
