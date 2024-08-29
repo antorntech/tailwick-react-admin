@@ -1,33 +1,34 @@
-import { Input, Typography } from "@material-tailwind/react";
+import { Input, Textarea, Typography } from "@material-tailwind/react";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const EditSponsor = () => {
+const EditSlider = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(
-    "https://placehold.co/130x112"
+    "https://placehold.co/1680x805"
   );
   const [title, setTitle] = useState("");
+  const [details, setDetails] = useState("");
   const [fileKey, setFileKey] = useState(Date.now());
   const [uploadProgress, setUploadProgress] = useState(0);
   const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB limit
 
   useEffect(() => {
     // Retrieve the specific review from local storage
-    const storedSponsors =
-      JSON.parse(localStorage.getItem("sponsorsData")) || [];
-    const sponsorToEdit = storedSponsors.find(
-      (sponsor) => sponsor.id === parseInt(id)
+    const storedSliders = JSON.parse(localStorage.getItem("slidersData")) || [];
+    const sliderToEdit = storedSliders.find(
+      (slider) => slider.id === parseInt(id)
     );
 
-    if (sponsorToEdit) {
-      setTitle(sponsorToEdit.title);
-      setImagePreview(sponsorToEdit.banner);
+    if (sliderToEdit) {
+      setTitle(sliderToEdit.title);
+      setDetails(sliderToEdit.details);
+      setImagePreview(sliderToEdit.banner);
     } else {
-      toast.error("Sponsor not found", {
+      toast.error("Slider not found", {
         position: "top-right",
         hideProgressBar: false,
         autoClose: 1000,
@@ -37,7 +38,7 @@ const EditSponsor = () => {
         progress: undefined,
         theme: "light",
       });
-      navigate("/sponsors");
+      navigate("/sliders");
     }
   }, [id, navigate]);
 
@@ -55,47 +56,34 @@ const EditSponsor = () => {
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
   };
+  const handleDetailsChange = (e) => {
+    setDetails(e.target.value);
+  };
 
   const handleUpdate = async () => {
     const formData = new FormData();
     formData.append("banner", image);
     formData.append("title", title);
+    formData.append("details", details);
 
     try {
-      //   const response = await fetch("/api/upload", {
-      //     method: "POST",
-      //     body: formData,
-      //     headers: {
-      //       "X-Requested-With": "XMLHttpRequest",
-      //     },
-      //     onUploadProgress: (event) => {
-      //       setUploadProgress(Math.round((event.loaded * 100) / event.total));
-      //     },
-      //   });
-
-      //   if (!response.ok) {
-      //     throw new Error("Upload failed");
-      //   }
-
-      //   const result = await response.json();
-      //   console.log("Upload successful", result);
-
-      // Retrieve existing data from local storage
-      const storedSponsors =
-        JSON.parse(localStorage.getItem("sponsorsData")) || [];
-      const updatedSponsors = storedSponsors.map((sponsor) =>
-        sponsor.id === parseInt(id)
+      const storedSliders =
+        JSON.parse(localStorage.getItem("slidersData")) || [];
+      const updatedSliders = storedSliders.map((slider) =>
+        slider.id === parseInt(id)
           ? {
-              ...sponsor,
+              ...slider,
               title,
+              details,
               banner: image ? URL.createObjectURL(image) : imagePreview,
             }
-          : sponsor
+          : slider
       );
 
-      localStorage.setItem("sponsorsData", JSON.stringify(updatedSponsors));
+      localStorage.setItem("slidersData", JSON.stringify(updatedSliders));
 
-      toast.success("Update successful", {
+      // Show success toast
+      toast.success("Slider updated successfully", {
         position: "top-right",
         hideProgressBar: false,
         autoClose: 1000,
@@ -105,20 +93,24 @@ const EditSponsor = () => {
         progress: undefined,
         theme: "light",
       });
-      navigate("/sponsors");
+
+      // Navigate to the sliders page
+      navigate("/sliders");
 
       // Reset the form
       setImage(null);
       setImagePreview(null);
       setTitle("");
+      setDetails("");
       setFileKey(Date.now());
       setUploadProgress(0);
     } catch (error) {
       console.error("Error uploading file", error);
-      // Reset the form
+      // Reset the form in case of error
       setImage(null);
       setImagePreview(null);
       setTitle("");
+      setDetails("");
       setFileKey(Date.now());
       setUploadProgress(0);
     }
@@ -126,7 +118,7 @@ const EditSponsor = () => {
 
   const clearPreview = () => {
     setImage(null);
-    setImagePreview("https://placehold.co/130x112");
+    setImagePreview("https://placehold.co/1680x805");
     setFileKey(Date.now());
     setUploadProgress(0);
   };
@@ -134,9 +126,9 @@ const EditSponsor = () => {
   return (
     <div>
       <div>
-        <h1 className="text-xl font-bold">Edit Sponsor</h1>
+        <h1 className="text-xl font-bold">Edit Slider</h1>
         <p className="text-sm text-gray-500">
-          You can edit sponsor details from here.
+          You can edit slider details from here.
         </p>
       </div>
       <div className="mt-5 w-full md:flex">
@@ -148,26 +140,50 @@ const EditSponsor = () => {
             <Input
               type="text"
               size="lg"
-              placeholder="Enter sponsor title"
+              placeholder="Enter slider title"
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#199bff] focus:!border-t-border-[#199bff] focus:ring-border-[#199bff]/10"
               labelProps={{
                 className: "before:content-none after:content-none",
               }}
               value={title}
-              title="title"
+              name="title"
               onChange={handleTitleChange}
             />
           </div>
+          <div>
+            <Typography
+              variant="h6"
+              color="gray"
+              className="mb-1 font-normal mt-2"
+            >
+              Details
+            </Typography>
+            <Textarea
+              value={details}
+              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#199bff] focus:!border-t-border-[#199bff] focus:ring-border-[#199bff]/10"
+              labelProps={{
+                className: "before:content-none after:content-none",
+              }}
+              onChange={handleDetailsChange}
+              rows={5}
+              placeholder="Enter slider details"
+            />
+          </div>
           <div className="flex flex-col md:flex-row items-center gap-3">
-            <div className="w-full">
+            <div className="w-full md:w-[45%]">
               <Typography
                 variant="h6"
                 color="gray"
                 className="mb-1 font-normal mt-2"
               >
-                Logo
+                Banner
               </Typography>
-              <input key={fileKey} type="file" onChange={handleImageChange} />
+              <input
+                key={fileKey}
+                type="file"
+                onChange={handleImageChange}
+                className=""
+              />
               {uploadProgress > 0 && (
                 <div className="mt-3">
                   <progress value={uploadProgress} max="100">
@@ -185,7 +201,7 @@ const EditSponsor = () => {
           </button>
         </div>
         {imagePreview && (
-          <div className="relative w-full md:w-1/2 h-[200px] mt-5 md:mt-0 md:ml-5 border-[1px] border-gray-400 rounded-md flex justify-center items-center">
+          <div className="relative w-full md:w-1/2 h-[370px] mt-5 md:mt-0 md:ml-5 border-[1px] border-gray-400 rounded-md">
             <button
               className="bg-red-800 text-white w-8 h-8 rounded-full absolute top-2 right-2 flex items-center justify-center"
               onClick={clearPreview}
@@ -193,9 +209,11 @@ const EditSponsor = () => {
               <i className="fa-solid fa-xmark text-white"></i>
             </button>
             <img
-              src={imagePreview ? imagePreview : "https://placehold.co/130x112"}
+              src={
+                imagePreview ? imagePreview : "https://placehold.co/1680x805"
+              }
               alt="Selected"
-              className="max-w-full h-full md:w-[130px] md:h-[112px] object-cover rounded-md"
+              className="max-w-full h-full md:w-full object-cover rounded-md"
             />
           </div>
         )}
@@ -204,4 +222,4 @@ const EditSponsor = () => {
   );
 };
 
-export default EditSponsor;
+export default EditSlider;
