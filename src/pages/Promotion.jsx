@@ -72,9 +72,9 @@ const Promotions = () => {
           >
             Change Layout
           </button>
-          <Link to={"/promotions/add-promotion"}>
+          <Link to={"/promotion/add-promotion"}>
             <button className="bg-[#199bff] text-white px-4 py-2 rounded-md mt-2 md:mt-0">
-              Add Faq
+              Add Promotion
             </button>
           </Link>
         </div>
@@ -87,10 +87,19 @@ const Promotions = () => {
                 <thead>
                   <tr>
                     <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                      Question
+                      Title One
                     </th>
                     <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                      Answer
+                      Title Two
+                    </th>
+                    <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                      Title Three
+                    </th>
+                    <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                      Subtitle
+                    </th>
+                    <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                      Video Link
                     </th>
                     <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                       Actions
@@ -101,12 +110,23 @@ const Promotions = () => {
                   {currentItems.map((promotion) => (
                     <tr key={promotion.id} className="hover:bg-gray-100">
                       <td className="px-6 py-4 border-b">
-                        <h1 className="text-sm font-bold">
-                          {promotion?.question}
-                        </h1>
+                        {promotion?.titleOne.slice(0, 50)}...
                       </td>
                       <td className="px-6 py-4 border-b text-sm text-gray-500">
-                        {promotion?.answer.slice(0, 50)}...
+                        {promotion?.titleTwo.slice(0, 50)}...
+                      </td>
+                      <td className="px-6 py-4 border-b text-sm text-gray-500">
+                        {promotion?.titleThree.slice(0, 50)}...
+                      </td>
+                      <td className="px-6 py-4 border-b text-sm text-gray-500">
+                        {promotion?.subtitle.slice(0, 50)}...
+                      </td>
+                      <td className="px-6 py-4 border-b text-sm text-gray-500">
+                        {promotion?.videoLink ? (
+                          <i class="fa-solid fa-check text-green-600 ml-5"></i>
+                        ) : (
+                          <i class="fa-solid fa-xmark text-red-600 ml-5"></i>
+                        )}
                       </td>
 
                       <td className="px-6 py-4 border-b text-sm">
@@ -138,11 +158,20 @@ const Promotions = () => {
                   key={promotion.id}
                   className="w-full flex flex-col shadow-md rounded-md p-3"
                 >
-                  <h1 className="text-xl font-bold mt-3">
-                    {promotion?.question}
-                  </h1>
+                  <ol className="list-decimal list-inside">
+                    <li className="text-xl font-bold">{promotion?.titleOne}</li>
+                    <li className="text-xl font-bold">{promotion?.titleTwo}</li>
+                    <li className="text-xl font-bold">
+                      {promotion?.titleThree}
+                    </li>
+                  </ol>
+                  <p className="text-sm text-gray-500">{promotion?.subtitle}</p>
                   <p className="text-sm text-gray-500">
-                    {promotion?.answer.slice(0, 80)}...
+                    {promotion?.videoLink ? (
+                      <i class="fa-solid fa-check text-green-600"></i>
+                    ) : (
+                      <i class="fa-solid fa-xmark text-red-600"></i>
+                    )}
                   </p>
                   <div className="flex gap-3 mt-2">
                     <Link to={`/promotions/edit-promotion/${promotion.id}`}>
