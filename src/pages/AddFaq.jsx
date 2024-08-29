@@ -41,6 +41,21 @@ const AddFaq = () => {
       //   const result = await response.json();
       //   console.log("Upload successful", result);
 
+      // Retrieve existing data from local storage
+      const existingData = JSON.parse(localStorage.getItem("faqsData")) || [];
+
+      const newEntry = {
+        id: Date.now(), // Unique ID for the new entry
+        question,
+        answer,
+      };
+
+      // Add the new entry to the existing data
+      const updatedData = [...existingData, newEntry];
+
+      // Save the updated data back to local storage
+      localStorage.setItem("faqsData", JSON.stringify(updatedData));
+
       toast.success("Upload successful", {
         position: "top-right",
         hideProgressBar: false,
@@ -51,6 +66,7 @@ const AddFaq = () => {
         progress: undefined,
         theme: "light",
       });
+
       navigate("/faqs");
 
       // Reset the form

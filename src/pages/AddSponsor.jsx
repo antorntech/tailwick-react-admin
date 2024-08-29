@@ -15,7 +15,7 @@ const AddSponsor = () => {
   const [imagePreview, setImagePreview] = useState(
     "https://placehold.co/130x112"
   );
-  const [name, setName] = useState("");
+  const [title, setTitle] = useState("");
   const [fileKey, setFileKey] = useState(Date.now());
   const [uploadProgress, setUploadProgress] = useState(0);
   const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB limit
@@ -31,16 +31,16 @@ const AddSponsor = () => {
     }
   };
 
-  const handleNameChange = (e) => {
-    setName(e.target.value);
+  const handleTitleChange = (e) => {
+    setTitle(e.target.value);
   };
 
   const handleUpload = async () => {
     const formData = new FormData();
     formData.append("banner", image);
-    formData.append("name", name);
+    formData.append("title", title);
 
-    console.log(name);
+    console.log(title);
 
     try {
       //   const response = await fetch("/api/upload", {
@@ -61,6 +61,23 @@ const AddSponsor = () => {
       //   const result = await response.json();
       //   console.log("Upload successful", result);
 
+      // Retrieve existing data from local storage
+      const existingData =
+        JSON.parse(localStorage.getItem("sponsorsData")) || [];
+
+      // Create new entry object
+      const newEntry = {
+        id: Date.now(), // Unique ID for the new entry
+        title,
+        banner: imagePreview, // Assuming imagePreview holds the URL or base64 of the image
+      };
+
+      // Add the new entry to the existing data
+      const updatedData = [...existingData, newEntry];
+
+      // Save the updated data back to local storage
+      localStorage.setItem("sponsorsData", JSON.stringify(updatedData));
+
       toast.success("Upload successful", {
         position: "top-right",
         hideProgressBar: false,
@@ -76,7 +93,7 @@ const AddSponsor = () => {
       // Reset the form
       setImage(null);
       setImagePreview(null);
-      setName("");
+      setTitle("");
       setFileKey(Date.now());
       setUploadProgress(0);
     } catch (error) {
@@ -84,7 +101,7 @@ const AddSponsor = () => {
       // Reset the form
       setImage(null);
       setImagePreview(null);
-      setName("");
+      setTitle("");
       setFileKey(Date.now());
       setUploadProgress(0);
     }
@@ -114,14 +131,14 @@ const AddSponsor = () => {
             <Input
               type="text"
               size="lg"
-              placeholder="Enter sponsor name"
+              placeholder="Enter sponsor title"
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#199bff] focus:!border-t-border-[#199bff] focus:ring-border-[#199bff]/10"
               labelProps={{
                 className: "before:content-none after:content-none",
               }}
-              value={name}
-              name="name"
-              onChange={handleNameChange}
+              value={title}
+              title="title"
+              onChange={handleTitleChange}
             />
           </div>
           <div className="flex flex-col md:flex-row items-center gap-3">

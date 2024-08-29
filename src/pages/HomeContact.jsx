@@ -10,7 +10,7 @@ const HomeContact = () => {
         <div>
           <h1 className="text-xl font-bold">Home Contact</h1>
           <p className="text-sm text-gray-500">
-            All home contact are {data ? "" : "not"} available here.
+            home contact are {data ? "" : "not"} available here.
           </p>
         </div>
         <div>

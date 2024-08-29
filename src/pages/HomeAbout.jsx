@@ -15,7 +15,7 @@ const HomeAbout = () => {
         <div>
           <h1 className="text-xl font-bold">Home About</h1>
           <p className="text-sm text-gray-500">
-            All details are {data ? "" : "not"} available here.
+            details are {data ? "" : "not"} available here.
           </p>
         </div>
         <div>

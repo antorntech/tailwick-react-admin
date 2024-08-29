@@ -1,45 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { DeleteConfirmModal } from "../components/DeleteConfirmModal";
 import Loader from "../loader/Loader";
+import { DeleteConfirmModal } from "../components/DeleteConfirmModal";
 
 const Sponsors = () => {
-  const sponsors = [
-    {
-      id: 1,
-      name: "Sponsor 1",
-      logo: "/img/sponsors/sponsor-1.png",
-    },
-    {
-      id: 2,
-      name: "Sponsor 2",
-      logo: "/img/sponsors/sponsor-2.png",
-    },
-    {
-      id: 3,
-      name: "Sponsor 3",
-      logo: "/img/sponsors/sponsor-3.png",
-    },
-    {
-      id: 4,
-      name: "Sponsor 4",
-      logo: "/img/sponsors/sponsor-4.png",
-    },
-    {
-      id: 5,
-      name: "Sponsor 5",
-      logo: "/img/sponsors/sponsor-5.png",
-    },
-    {
-      id: 6,
-      name: "Sponsor 6",
-      logo: "/img/sponsors/sponsor-6.png",
-    },
-  ];
-
   const [open, setOpen] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState(null);
+  const [sponsors, setSponsors] = useState([]);
   const handleOpen = () => setOpen(!open);
   const [layout, setLayout] = useState(true);
+
+  const handleDelete = () => {
+    // Refresh the sponsor list after deletion
+    const storedSponsors =
+      JSON.parse(localStorage.getItem("sponsorsData")) || [];
+    setSponsors(storedSponsors);
+  };
+
+  useEffect(() => {
+    // Retrieve data from local storage
+    const storedSponsors = localStorage.getItem("sponsorsData");
+    if (storedSponsors) {
+      setSponsors(JSON.parse(storedSponsors));
+    }
+  }, []);
+
+  const openDeleteConfirmModal = (itemId) => {
+    setSelectedItemId(itemId);
+    handleOpen();
+  };
 
   const handleLayout = () => setLayout(!layout);
 
@@ -67,81 +56,118 @@ const Sponsors = () => {
   };
 
   return (
-    <>
-      {layout ? (
+    <div>
+      <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between">
         <div>
-          {/* Table UI */}
-          <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between">
-            <div>
-              <h1 className="text-xl font-bold">Sponsors</h1>
-              <p className="text-sm text-gray-500">
-                All sponsors are {sponsors ? "" : "not"} available here.
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <button
-                className="bg-[#2e961a] text-white px-4 py-2 rounded-md mt-2 md:mt-0"
-                onClick={handleLayout}
-              >
-                Change Layout
-              </button>
-              <Link to={"/sponsors/add-sponsor"}>
-                <button className="bg-[#199bff] text-white px-4 py-2 rounded-md mt-2 md:mt-0">
-                  Add Sponsor
-                </button>
-              </Link>
-            </div>
-          </div>
-          <div className="mt-5 overflow-x-auto">
-            <table className="min-w-full bg-white border">
-              <thead>
-                <tr>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                    Logo
-                  </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                    Name
-                  </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentItems.map((sponsor) => (
-                  <tr key={sponsor.id} className="hover:bg-gray-100">
-                    <td className="px-6 py-4 border-b text-sm">
-                      <img
-                        src={sponsor.logo}
-                        alt={sponsor.name}
-                        className="w-[50px] h-[50px]"
-                      />
-                    </td>
-                    <td className="px-6 py-4 border-b">
-                      <h1 className="text-sm font-bold">{sponsor.name}</h1>
-                    </td>
-                    <td className="px-6 py-4 border-b text-sm">
-                      <div className="flex gap-3">
-                        <Link to={`/sponsors/edit/${sponsor.id}`}>
-                          <button className="bg-orange-800 text-white px-4 py-1 rounded-md text-sm">
-                            Edit
-                          </button>
-                        </Link>
-                        <button
-                          onClick={handleOpen}
-                          className="bg-red-800 text-white px-4 py-1 rounded-md text-sm"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </td>
+          <h1 className="text-xl font-bold">Sponsors</h1>
+          <p className="text-sm text-gray-500">
+            sponsors are {sponsors.length > 0 ? "" : "not"} available here.
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <button
+            className="bg-[#2e961a] text-white px-4 py-2 rounded-md mt-2 md:mt-0"
+            onClick={handleLayout}
+          >
+            Change Layout
+          </button>
+          <Link to={"/sponsors/add-sponsor"}>
+            <button className="bg-[#199bff] text-white px-4 py-2 rounded-md mt-2 md:mt-0">
+              Add Sponsor
+            </button>
+          </Link>
+        </div>
+      </div>
+      {sponsors.length > 0 ? (
+        <>
+          {layout ? (
+            <div className="mt-5 overflow-x-auto">
+              <table className="min-w-full bg-white border">
+                <thead>
+                  <tr>
+                    <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                      Banner
+                    </th>
+                    <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                      Title
+                    </th>
+                    <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                      Actions
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <DeleteConfirmModal open={open} handleOpen={handleOpen} />
-          {/* Pagination */}
+                </thead>
+                <tbody>
+                  {currentItems.map((sponsor) => (
+                    <tr key={sponsor.id} className="hover:bg-gray-100">
+                      <td className="px-6 py-4 border-b">
+                        <img
+                          src={sponsor.banner}
+                          alt={sponsor.title}
+                          className="w-20 h-20 object-cover rounded"
+                        />
+                      </td>
+                      <td className="px-6 py-4 border-b">
+                        <h1 className="text-sm font-bold">{sponsor.title}</h1>
+                      </td>
+                      <td className="px-6 py-4 border-b text-sm">
+                        <div className="flex gap-3">
+                          <Link to={`/sponsor/edit/${sponsor.id}`}>
+                            <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
+                              <i class="fa-solid fa-pencil"></i>
+                            </button>
+                          </Link>
+                          <button
+                            onClick={() => openDeleteConfirmModal(sponsor.id)}
+                            className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-500"
+                          >
+                            <i class="fa-regular fa-trash-can"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {currentItems.map((sponsor) => (
+                <div
+                  key={sponsor.id}
+                  className="w-full flex flex-col shadow-md rounded-md p-3"
+                >
+                  <img
+                    src={sponsor.banner}
+                    alt={sponsor.title}
+                    className="w-full h-full md:h-[250px]"
+                  />
+                  <h1 className="text-xl font-bold mt-3">{sponsor.title}</h1>
+                  <div className="flex gap-3 mt-3">
+                    <Link to={`/sponsor/edit/${sponsor.id}`}>
+                      <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
+                        <i class="fa-solid fa-pencil"></i>
+                      </button>
+                    </Link>
+                    <button
+                      onClick={() => openDeleteConfirmModal(blog.id)}
+                      className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-500"
+                    >
+                      <i class="fa-regular fa-trash-can"></i>
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+          <DeleteConfirmModal
+            open={open}
+            handleOpen={handleOpen}
+            itemId={selectedItemId}
+            onDelete={handleDelete}
+            itemName="sponsorsData"
+          />
+
+          {/* Enhanced Pagination */}
           <div className="flex justify-center mt-5">
             <button
               onClick={prevPage}
@@ -181,67 +207,11 @@ const Sponsors = () => {
               <i className="fa-solid fa-angle-right"></i>
             </button>
           </div>
-        </div>
+        </>
       ) : (
-        <div>
-          <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between">
-            <div>
-              <h1 className="text-xl font-bold">Sponsors</h1>
-              <p className="text-sm text-gray-500">
-                All sponsors are {sponsors ? "" : "not"} available here.
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <button
-                className="bg-[#2e961a] text-white px-4 py-2 rounded-md mt-2 md:mt-0"
-                onClick={handleLayout}
-              >
-                Change Layout
-              </button>
-              <Link to={"/sponsors/add-sponsor"}>
-                <button className="bg-[#199bff] text-white px-4 py-2 rounded-md mt-2 md:mt-0">
-                  Add Sponsor
-                </button>
-              </Link>
-            </div>
-          </div>
-          {sponsors ? (
-            <>
-              <div className="mt-5 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5">
-                {currentItems.map((sponsor) => (
-                  <div
-                    key={sponsor.id}
-                    className="w-full flex flex-col shadow-md rounded-md p-3"
-                  >
-                    <img
-                      src={sponsor.logo}
-                      alt={sponsor.name}
-                      className="w-[100px] h-[100px] mx-auto"
-                    />
-                    <div className="flex justify-center gap-3 mt-3">
-                      <Link to={`/sponsors/edit/${sponsor.id}`}>
-                        <button className="bg-orange-800 text-white px-4 py-1 rounded-md text-sm">
-                          Edit
-                        </button>
-                      </Link>
-                      <button
-                        onClick={handleOpen}
-                        className="bg-red-800 text-white px-4 py-1 rounded-md text-sm"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <DeleteConfirmModal open={open} handleOpen={handleOpen} />
-            </>
-          ) : (
-            <Loader />
-          )}
-        </div>
+        <Loader />
       )}
-    </>
+    </div>
   );
 };
 

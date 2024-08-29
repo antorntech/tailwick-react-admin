@@ -62,8 +62,7 @@ const Training = () => {
         <div>
           <h1 className="text-xl font-bold">Trainings</h1>
           <p className="text-sm text-gray-500">
-            All trainings are {trainings.length > 0 ? "" : "not"} available
-            here.
+            trainings are {trainings.length > 0 ? "" : "not"} available here.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -120,15 +119,15 @@ const Training = () => {
                       <td className="px-6 py-4 border-b text-sm">
                         <div className="flex gap-3">
                           <Link to={`/training/edit/${training.id}`}>
-                            <button className="bg-orange-800 text-white px-4 py-1 rounded-md text-sm">
-                              Edit
+                            <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
+                              <i class="fa-solid fa-pencil"></i>
                             </button>
                           </Link>
                           <button
                             onClick={() => openDeleteConfirmModal(training.id)}
-                            className="bg-red-800 text-white px-4 py-1 rounded-md text-sm"
+                            className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-500"
                           >
-                            Delete
+                            <i class="fa-regular fa-trash-can"></i>
                           </button>
                         </div>
                       </td>

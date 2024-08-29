@@ -10,7 +10,7 @@ const MainContact = () => {
         <div>
           <h1 className="text-xl font-bold">Main Contact</h1>
           <p className="text-sm text-gray-500">
-            All main contact are {data ? "" : "not"} available here.
+            main contact are {data ? "" : "not"} available here.
           </p>
         </div>
         <div>
