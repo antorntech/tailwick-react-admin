@@ -28,6 +28,8 @@ import EditBlog from "../pages/EditBlog";
 import EditTraining from "../pages/EditTraining";
 import EditSoftware from "../pages/EditSoftware";
 import EditService from "../pages/EditService";
+import EditFaq from "../pages/EditFaq";
+import EditSponsor from "../pages/EditSponsor";
 
 const AppRoutes = () => {
   const user = localStorage.getItem("email");
@@ -54,6 +56,7 @@ const AppRoutes = () => {
           />
           <Route path="/sponsors" element={<Sponsors />} />
           <Route path="/sponsors/add-sponsor" element={<AddSponsor />} />
+          <Route path="/sponsors/edit-sponsor/:id" element={<EditSponsor />} />
           <Route path="/trainings" element={<Training />} />
           <Route path="/trainings/add-training" element={<AddTraining />} />
           <Route
@@ -68,6 +71,7 @@ const AppRoutes = () => {
           <Route path="/reviews/edit-review/:id" element={<EditReview />} />
           <Route path="/faqs" element={<Faqs />} />
           <Route path="/faqs/add-faq" element={<AddFaq />} />
+          <Route path="/faqs/edit-faq/:id" element={<EditFaq />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="*" element={<Navigate to="/" />} />
         </>

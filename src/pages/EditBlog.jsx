@@ -128,7 +128,7 @@ const EditBlog = () => {
               date,
               banner: image ? URL.createObjectURL(image) : imagePreview,
             }
-          : review
+          : blog
       );
 
       localStorage.setItem("blogsData", JSON.stringify(updatedBlogs));

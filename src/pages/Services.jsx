@@ -164,7 +164,7 @@ const Services = () => {
                   <p className="text-sm text-gray-500">
                     {service.details.slice(0, 80)}...
                   </p>
-                  <div className="flex gap-3 mt-3">
+                  <div className="flex gap-3 mt-2">
                     <Link to={`/services/edit-service/${service.id}`}>
                       <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
                         <i class="fa-solid fa-pencil"></i>

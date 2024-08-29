@@ -1,15 +1,10 @@
-import {
-  Input,
-  Option,
-  Select,
-  Textarea,
-  Typography,
-} from "@material-tailwind/react";
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Input, Typography } from "@material-tailwind/react";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const AddSponsor = () => {
+const EditSponsor = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(
@@ -19,6 +14,32 @@ const AddSponsor = () => {
   const [fileKey, setFileKey] = useState(Date.now());
   const [uploadProgress, setUploadProgress] = useState(0);
   const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB limit
+
+  useEffect(() => {
+    // Retrieve the specific review from local storage
+    const storedSponsors =
+      JSON.parse(localStorage.getItem("sponsorsData")) || [];
+    const sponsorToEdit = storedSponsors.find(
+      (sponsor) => sponsor.id === parseInt(id)
+    );
+
+    if (sponsorToEdit) {
+      setTitle(sponsorToEdit.title);
+      setImagePreview(sponsorToEdit.banner);
+    } else {
+      toast.error("Service not found", {
+        position: "top-right",
+        hideProgressBar: false,
+        autoClose: 1000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      navigate("/sponsors");
+    }
+  }, [id, navigate]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -35,12 +56,10 @@ const AddSponsor = () => {
     setTitle(e.target.value);
   };
 
-  const handleUpload = async () => {
+  const handleUpdate = async () => {
     const formData = new FormData();
     formData.append("banner", image);
     formData.append("title", title);
-
-    console.log(title);
 
     try {
       //   const response = await fetch("/api/upload", {
@@ -62,23 +81,21 @@ const AddSponsor = () => {
       //   console.log("Upload successful", result);
 
       // Retrieve existing data from local storage
-      const existingData =
+      const storedSponsors =
         JSON.parse(localStorage.getItem("sponsorsData")) || [];
+      const updatedSponsors = storedSponsors.map((sponsor) =>
+        sponsor.id === parseInt(id)
+          ? {
+              ...sponsor,
+              title,
+              banner: image ? URL.createObjectURL(image) : imagePreview,
+            }
+          : sponsor
+      );
 
-      // Create new entry object
-      const newEntry = {
-        id: Date.now(), // Unique ID for the new entry
-        title,
-        banner: imagePreview, // Assuming imagePreview holds the URL or base64 of the image
-      };
+      localStorage.setItem("sponsorsData", JSON.stringify(updatedSponsors));
 
-      // Add the new entry to the existing data
-      const updatedData = [...existingData, newEntry];
-
-      // Save the updated data back to local storage
-      localStorage.setItem("sponsorsData", JSON.stringify(updatedData));
-
-      toast.success("Upload successful", {
+      toast.success("Update successful", {
         position: "top-right",
         hideProgressBar: false,
         autoClose: 1000,
@@ -117,9 +134,9 @@ const AddSponsor = () => {
   return (
     <div>
       <div>
-        <h1 className="text-xl font-bold">Add Sponsor</h1>
+        <h1 className="text-xl font-bold">Edit Sponsor</h1>
         <p className="text-sm text-gray-500">
-          You can add sponsor details from here.
+          You can edit sponsor details from here.
         </p>
       </div>
       <div className="mt-5 w-full md:flex">
@@ -161,10 +178,10 @@ const AddSponsor = () => {
             </div>
           </div>
           <button
-            onClick={handleUpload}
+            onClick={handleUpdate}
             className="mt-5 bg-[#199bff] text-white px-4 py-2 rounded"
           >
-            Upload
+            Update
           </button>
         </div>
         {imagePreview && (
@@ -187,4 +204,4 @@ const AddSponsor = () => {
   );
 };
 
-export default AddSponsor;
+export default EditSponsor;

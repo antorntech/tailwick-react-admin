@@ -132,7 +132,7 @@ const EditSoftware = () => {
               date,
               banner: image ? URL.createObjectURL(image) : imagePreview,
             }
-          : review
+          : software
       );
 
       localStorage.setItem("softwaresData", JSON.stringify(updatedSoftwares));
@@ -336,7 +336,7 @@ const EditSoftware = () => {
             onClick={handleUpdate}
             className="mt-5 bg-[#199bff] text-white px-4 py-2 rounded"
           >
-            Upload
+            Update
           </button>
         </div>
         {imagePreview && (

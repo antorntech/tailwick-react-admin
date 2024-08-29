@@ -111,7 +111,7 @@ const Sponsors = () => {
                       </td>
                       <td className="px-6 py-4 border-b text-sm">
                         <div className="flex gap-2">
-                          <Link to={`/sponsor/edit/${sponsor.id}`}>
+                          <Link to={`/sponsors/edit-sponsor/${sponsor.id}`}>
                             <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
                               <i class="fa-solid fa-pencil"></i>
                             </button>
@@ -143,7 +143,7 @@ const Sponsors = () => {
                   />
                   <h1 className="text-xl font-bold mt-3">{sponsor.title}</h1>
                   <div className="flex gap-3 mt-3">
-                    <Link to={`/sponsor/edit/${sponsor.id}`}>
+                    <Link to={`/sponsors/edit-sponsor/${sponsor.id}`}>
                       <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
                         <i class="fa-solid fa-pencil"></i>
                       </button>

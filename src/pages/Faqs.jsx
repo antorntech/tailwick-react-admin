@@ -108,7 +108,7 @@ const Faqs = () => {
 
                       <td className="px-6 py-4 border-b text-sm">
                         <div className="flex gap-2">
-                          <Link to={`/faq/edit/${faq.id}`}>
+                          <Link to={`/faqs/edit-faq/${faq.id}`}>
                             <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
                               <i class="fa-solid fa-pencil"></i>
                             </button>
@@ -137,8 +137,8 @@ const Faqs = () => {
                   <p className="text-sm text-gray-500">
                     {faq?.answer.slice(0, 80)}...
                   </p>
-                  <div className="flex gap-3 mt-3">
-                    <Link to={`/faq/edit/${faq.id}`}>
+                  <div className="flex gap-3 mt-2">
+                    <Link to={`/faqs/edit-faq/${faq.id}`}>
                       <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
                         <i class="fa-solid fa-pencil"></i>
                       </button>

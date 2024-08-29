@@ -115,8 +115,6 @@ const EditService = () => {
     formData.append("author", "Admin");
     formData.append("date", date);
 
-    console.log(title, details, blockQuote, tags, category);
-
     try {
       const storedServices =
         JSON.parse(localStorage.getItem("servicesData")) || [];
@@ -132,7 +130,7 @@ const EditService = () => {
               date,
               banner: image ? URL.createObjectURL(image) : imagePreview,
             }
-          : review
+          : service
       );
 
       localStorage.setItem("servicesData", JSON.stringify(updatedServices));
@@ -336,7 +334,7 @@ const EditService = () => {
             onClick={handleUpdate}
             className="mt-5 bg-[#199bff] text-white px-4 py-2 rounded"
           >
-            Upload
+            Update
           </button>
         </div>
         {imagePreview && (

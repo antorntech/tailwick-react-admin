@@ -132,7 +132,7 @@ const EditTraining = () => {
               date,
               banner: image ? URL.createObjectURL(image) : imagePreview,
             }
-          : review
+          : training
       );
 
       localStorage.setItem("trainingsData", JSON.stringify(updatedTrainings));
@@ -336,7 +336,7 @@ const EditTraining = () => {
             onClick={handleUpdate}
             className="mt-5 bg-[#199bff] text-white px-4 py-2 rounded"
           >
-            Upload
+            Update
           </button>
         </div>
         {imagePreview && (
