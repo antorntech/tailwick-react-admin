@@ -93,6 +93,7 @@ const AddBlog = () => {
     console.log(title, details, blockQuote, tags, category);
 
     try {
+      // Upload the file
       // Retrieve existing data from local storage
       const existingData = JSON.parse(localStorage.getItem("blogsData")) || [];
 
