@@ -33,6 +33,7 @@ import EditSponsor from "../pages/EditSponsor";
 import EditSlider from "../pages/EditSlider";
 import Promotion from "../pages/Promotion";
 import AddPromotion from "../pages/AddPromotion";
+import EditPromotion from "../pages/EditPromotion";
 
 const AppRoutes = () => {
   const user = localStorage.getItem("email");
@@ -78,6 +79,10 @@ const AppRoutes = () => {
           <Route path="/faqs/edit-faq/:id" element={<EditFaq />} />
           <Route path="/promotion" element={<Promotion />} />
           <Route path="/promotion/add-promotion" element={<AddPromotion />} />
+          <Route
+            path="/promotion/edit-promotion/:id"
+            element={<EditPromotion />}
+          />
           <Route path="/profile" element={<Profile />} />
           <Route path="*" element={<Navigate to="/" />} />
         </>

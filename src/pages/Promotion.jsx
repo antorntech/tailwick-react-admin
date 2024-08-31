@@ -61,7 +61,7 @@ const Promotions = () => {
       <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between">
         <div>
           <h1 className="text-xl font-bold">Promotions</h1>
-          <p className="text-sm text-gray-500">
+          <p className="">
             promotions are {promotions.length > 0 ? "" : "not"} available here.
           </p>
         </div>
@@ -112,16 +112,16 @@ const Promotions = () => {
                       <td className="px-6 py-4 border-b">
                         {promotion?.titleOne.slice(0, 50)}...
                       </td>
-                      <td className="px-6 py-4 border-b text-sm text-gray-500">
+                      <td className="px-6 py-4 border-b ">
                         {promotion?.titleTwo.slice(0, 50)}...
                       </td>
-                      <td className="px-6 py-4 border-b text-sm text-gray-500">
+                      <td className="px-6 py-4 border-b ">
                         {promotion?.titleThree.slice(0, 50)}...
                       </td>
-                      <td className="px-6 py-4 border-b text-sm text-gray-500">
+                      <td className="px-6 py-4 border-b ">
                         {promotion?.subtitle.slice(0, 50)}...
                       </td>
-                      <td className="px-6 py-4 border-b text-sm text-gray-500">
+                      <td className="px-6 py-4 border-b ">
                         {promotion?.videoLink ? (
                           <i class="fa-solid fa-check text-green-600 ml-5"></i>
                         ) : (
@@ -132,7 +132,7 @@ const Promotions = () => {
                       <td className="px-6 py-4 border-b text-sm">
                         <div className="flex gap-2">
                           <Link
-                            to={`/promotions/edit-promotion/${promotion.id}`}
+                            to={`/promotion/edit-promotion/${promotion.id}`}
                           >
                             <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
                               <i class="fa-solid fa-pencil"></i>
@@ -165,8 +165,8 @@ const Promotions = () => {
                       {promotion?.titleThree}
                     </li>
                   </ol>
-                  <p className="text-sm text-gray-500">{promotion?.subtitle}</p>
-                  <p className="text-sm text-gray-500">
+                  <p className="">{promotion?.subtitle}</p>
+                  <p className="">
                     {promotion?.videoLink ? (
                       <i class="fa-solid fa-check text-green-600"></i>
                     ) : (
@@ -174,7 +174,7 @@ const Promotions = () => {
                     )}
                   </p>
                   <div className="flex gap-3 mt-2">
-                    <Link to={`/promotions/edit-promotion/${promotion.id}`}>
+                    <Link to={`/promotion/edit-promotion/${promotion.id}`}>
                       <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
                         <i class="fa-solid fa-pencil"></i>
                       </button>
