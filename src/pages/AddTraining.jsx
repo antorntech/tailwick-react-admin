@@ -149,47 +149,42 @@ const AddTraining = () => {
 
   const handleUpload = async () => {
     const formData = new FormData();
-    formData.append("banner", image);
+
+    // Append the file (banner image) to FormData
+    formData.append("banner", image); // File upload (image)
+
+    // Append text fields
     formData.append("title", title);
     formData.append("details", details);
-    // formData.append("blockQuote", blockQuote);
-    formData.append("benefits", JSON.stringify(benefits)); // Include benefits array in the form data
-    formData.append("courseOffers", JSON.stringify(courseOffers)); // Include courseOffers array in the form data
-    formData.append("works", JSON.stringify(works)); // Include works array in the form data
-    formData.append("tags", JSON.stringify(tags)); // Include tags array in the form data
     formData.append("category", category);
     formData.append("author", "Admin");
     formData.append("date", date);
 
-    console.log(title, details, blockQuote, tags, category);
+    // Append arrays as JSON strings
+    formData.append("benefits", JSON.stringify(benefits));
+    formData.append("courseOffers", JSON.stringify(courseOffers));
+    formData.append("works", JSON.stringify(works));
+    formData.append("tags", JSON.stringify(tags));
+
+    // Log the data for debugging
+    console.log(title, details, tags, category);
 
     try {
-      // Retrieve existing data from local storage
-      const existingData =
-        JSON.parse(localStorage.getItem("trainingsData")) || [];
+      // Make a POST request to the Express.js server
+      const response = await fetch(
+        "http://localhost:8000/api/v1/trainings/add",
+        {
+          method: "POST",
+          body: formData, // Send the FormData containing all fields and files
+        }
+      );
 
-      // Create new entry object
-      const newEntry = {
-        id: Date.now(), // Unique ID for the new entry
-        title,
-        details,
-        // blockQuote,
-        benefits,
-        courseOffers,
-        works,
-        tags,
-        category,
-        module: [],
-        date: date,
-        author: "Admin",
-        banner: imagePreview, // Assuming imagePreview holds the URL or base64 of the image
-      };
+      // Check if the response is okay
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.statusText}`);
+      }
 
-      // Add the new entry to the existing data
-      const updatedData = [...existingData, newEntry];
-
-      // Save the updated data back to local storage
-      localStorage.setItem("trainingsData", JSON.stringify(updatedData));
+      const result = await response.json(); // Parse the server response
 
       // Show success toast
       toast.success("Upload successful", {
@@ -203,15 +198,11 @@ const AddTraining = () => {
         theme: "light",
       });
 
-      // Navigate to the trainings page
-      navigate("/trainings");
-
-      // Reset the form
+      // Reset the form after successful upload
       setImage(null);
       setImagePreview(null);
       setTitle("");
       setDetails("");
-      // setBlockQuote("");
       setBenefits([]);
       setCourseOffers([]);
       setWorks([]);
@@ -219,14 +210,29 @@ const AddTraining = () => {
       setCategory("Skill Development Training");
       setFileKey(Date.now());
       setUploadProgress(0);
+
+      // Navigate to the trainings page
+      navigate("/trainings");
     } catch (error) {
       console.error("Error uploading file", error);
+
+      // Show error toast
+      toast.error("Error uploading file", {
+        position: "top-right",
+        hideProgressBar: false,
+        autoClose: 1000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+
       // Reset the form in case of error
       setImage(null);
       setImagePreview(null);
       setTitle("");
       setDetails("");
-      // setBlockQuote("");
       setBenefits([]);
       setCourseOffers([]);
       setWorks([]);

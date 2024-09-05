@@ -20,13 +20,29 @@ const ViewModule = () => {
   const [selectedModuleId, setSelectedModuleId] = useState(null);
 
   useEffect(() => {
+    fetch(`http://localhost:8000/api/v1/trainings/${id}`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json", // Accepting JSON response
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const moduleList = data?.module;
+        setTitle(data?.title);
+        setModules(moduleList);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+
     const storedTrainings =
       JSON.parse(localStorage.getItem("trainingsData")) || [];
     const trainingData = storedTrainings.find(
       (training) => training.id === parseInt(id)
     );
-    const moduleList = trainingData.module;
-    setTitle(trainingData.title);
+    const moduleList = trainingData?.module;
+    setTitle(trainingData?.title);
     setModules(moduleList);
   }, [id]);
 
@@ -73,7 +89,7 @@ const ViewModule = () => {
               Module list of "<span className="text-blue-500">{title}</span>".
             </h1>
             <p className="text-sm text-gray-500">
-              modules are {modules.length > 0 ? "" : "not"} available here.
+              modules are {modules?.length > 0 ? "" : "not"} available here.
             </p>
           </div>
         </div>
@@ -86,7 +102,7 @@ const ViewModule = () => {
           </Link>
         </div>
       </div>
-      {modules.length > 0 ? (
+      {modules?.length > 0 ? (
         <div className="mt-5 overflow-x-auto">
           <table className="min-w-full bg-white border">
             <thead>

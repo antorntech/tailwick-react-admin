@@ -1,5 +1,5 @@
 import { Input, Typography } from "@material-tailwind/react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -16,22 +16,6 @@ const AddModule = () => {
 
   // State for managing new list item input
   const [newListItem, setNewListItem] = useState("");
-
-  // Retrieve and set the existing module data from local storage
-  useEffect(() => {
-    const storedTrainings =
-      JSON.parse(localStorage.getItem("trainingsData")) || [];
-    const trainingToEdit = storedTrainings.find(
-      (training) => training.id === parseInt(id)
-    );
-
-    if (trainingToEdit) {
-      setModule({
-        ...module,
-        lists: [], // Ensure lists start empty for new modules
-      });
-    }
-  }, [id]);
 
   // Handle changes in title input
   const handleTitleChange = (e) => {
@@ -76,25 +60,36 @@ const AddModule = () => {
   };
 
   // Handle form submission to add new module
-  const handleAddModule = () => {
+  const handleAddModule = async () => {
     if (module.title && module.subTitle && module.lists.length) {
-      const storedTrainings =
-        JSON.parse(localStorage.getItem("trainingsData")) || [];
-      const updatedTrainings = storedTrainings.map((training) =>
-        training.id === parseInt(id)
-          ? {
-              ...training,
-              module: [
-                ...training.module,
-                { id: Date.now(), ...module }, // Add new module with unique id
-              ],
-            }
-          : training
-      );
-      localStorage.setItem("trainingsData", JSON.stringify(updatedTrainings));
+      try {
+        const response = await fetch(
+          `http://localhost:8000/api/v1/trainings/${id}/add-module`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              title: module.title,
+              subTitle: module.subTitle,
+              lists: JSON.stringify(module.lists), // Send lists as a JSON string
+            }),
+          }
+        );
 
-      toast.success("Module added successfully!");
-      navigate(`/trainings/view-module/${id}`); // Navigate to another page
+        const result = await response.json();
+
+        if (response.ok) {
+          toast.success("Module added successfully!");
+          navigate(`/trainings/view-module/${id}`); // Navigate to another page
+        } else {
+          toast.error(result.message || "Failed to add module.");
+        }
+      } catch (error) {
+        toast.error("An error occurred while adding the module.");
+        console.error("Error:", error);
+      }
     } else {
       toast.error("Please fill in all fields and add at least one list item.");
     }
@@ -107,7 +102,7 @@ const AddModule = () => {
           onClick={() => window.history.back()}
           className="flex items-center justify-center gap-1 text-black border-2 border-black px-2 py-2 rounded-md text-sm hover:bg-black hover:text-white transition-all duration-500"
         >
-          <i class="fa-solid fa-hand-point-left"></i>
+          <i className="fa-solid fa-hand-point-left"></i>
         </button>
         <div>
           <h1 className="text-xl font-bold">Add Module</h1>
@@ -170,11 +165,11 @@ const AddModule = () => {
               onClick={addListItem}
             >
               Add
-              <i class="fa-solid fa-plus"></i>
+              <i className="fa-solid fa-plus"></i>
             </button>
           </div>
         </div>
-        {module.lists.map((list, index) => (
+        {module.lists?.map((list, index) => (
           <div key={index} className="flex items-center mb-2">
             <Input
               type="text"
@@ -206,18 +201,3 @@ const AddModule = () => {
 };
 
 export default AddModule;
-
-// {
-//   author: "Admin",
-//   banner: "blob:http://localhost:5173/3dc94c10-c1e4-49e9-b153-e03ce17cfa6c",
-//   benefits: ["fsda", "sdfasd"],
-//   category: "Skill Development Training",
-//   courseOffers: ["fsdfsda", "sdafads"],
-//   date: "5th September, 2024",
-//   details: "dsfgd",
-//   id: 1725515617181,
-//   module: [{ id: 1, lists: ["sfas", "sdfa"], title: "fafd", subTitle: "sfasf" }],
-//   tags: ["sfda", "sdafdas"],
-//   title: "Training",
-//   works: ["sadfsa", "sdfasf"]
-// }

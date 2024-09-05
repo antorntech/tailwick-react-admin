@@ -23,6 +23,20 @@ const Training = () => {
   };
 
   useEffect(() => {
+    fetch("http://localhost:8000/api/v1/trainings", {
+      method: "GET",
+      headers: {
+        Accept: "application/json", // Accepting JSON response
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setTrainings(data);
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
     // Retrieve data from local storage
     const storedTrainings = localStorage.getItem("trainingsData");
     if (storedTrainings) {
@@ -116,7 +130,7 @@ const Training = () => {
                     <tr key={training.id} className="hover:bg-gray-100">
                       <td className="px-6 py-4 border-b">
                         <img
-                          src={training.banner}
+                          src={`http://localhost:8000/${training.banner}`}
                           alt={training.title}
                           className="w-28 h-20 object-cover rounded"
                         />
@@ -142,7 +156,9 @@ const Training = () => {
                               </button>
                             </PopoverHandler>
                             <PopoverContent className="bg-gray-200 shadow-lg border-2 border-gray-300">
-                              <Link to={`/trainings/add-module/${training.id}`}>
+                              <Link
+                                to={`/trainings/add-module/${training._id}`}
+                              >
                                 <button className="w-[130px] flex items-center justify-center gap-1 text-green-700 border-2 border-green-700 px-2 py-1 rounded-md text-sm hover:bg-green-700 hover:text-white transition-all duration-500">
                                   Add Module
                                   <i class="fa-solid fa-plus"></i>
@@ -150,7 +166,7 @@ const Training = () => {
                               </Link>
                               <hr className="py-1" />
                               <Link
-                                to={`/trainings/view-module/${training.id}`}
+                                to={`/trainings/view-module/${training._id}`}
                               >
                                 <button className="w-[130px] flex items-center justify-center gap-1 text-orange-500 border-2 border-orange-500 px-2 py-1 rounded-md text-sm hover:bg-orange-500 hover:text-white transition-all duration-500">
                                   View Module
