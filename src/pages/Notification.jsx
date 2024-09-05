@@ -3,38 +3,25 @@ import { Link } from "react-router-dom";
 import Loader from "../loader/Loader";
 import { DeleteConfirmModal } from "../components/DeleteConfirmModal";
 
-const Blogs = () => {
+const Notification = () => {
   const [open, setOpen] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(null);
-  const [blogs, setBlogs] = useState([]);
+  const [notifications, setNotifications] = useState([]);
   const handleOpen = () => setOpen(!open);
   const [layout, setLayout] = useState(true);
 
   const handleDelete = () => {
-    // Refresh the blog list after deletion
-    const storedBlogs = JSON.parse(localStorage.getItem("blogsData")) || [];
-    setBlogs(storedBlogs);
+    // Refresh the faq list after deletion
+    const storedNotifications =
+      JSON.parse(localStorage.getItem("notificationsData")) || [];
+    setNotifications(storedNotifications);
   };
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/v1/blogs", {
-      method: "GET",
-      headers: {
-        Accept: "application/json", // Accepting JSON response
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setBlogs(data);
-        console.log(data);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
     // Retrieve data from local storage
-    const storedBlogs = localStorage.getItem("blogsData");
-    if (storedBlogs) {
-      setBlogs(JSON.parse(storedBlogs));
+    const storedNotifications = localStorage.getItem("notificationsData");
+    if (storedNotifications) {
+      setNotifications(JSON.parse(storedNotifications));
     }
   }, []);
 
@@ -50,9 +37,10 @@ const Blogs = () => {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = blogs.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = notifications.slice(indexOfFirstItem, indexOfLastItem);
+  console.log(currentItems);
 
-  const totalPages = Math.ceil(blogs.length / itemsPerPage);
+  const totalPages = Math.ceil(notifications.length / itemsPerPage);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -72,9 +60,10 @@ const Blogs = () => {
     <div>
       <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between">
         <div>
-          <h1 className="text-xl font-bold">Blogs</h1>
+          <h1 className="text-xl font-bold">Notifications</h1>
           <p className="text-sm text-gray-500">
-            blogs are {blogs.length > 0 ? "" : "not"} available here.
+            notifications are {notifications.length > 0 ? "" : "not"} available
+            here.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -84,14 +73,9 @@ const Blogs = () => {
           >
             Change Layout
           </button>
-          <Link to={"/blogs/add-blog"}>
-            <button className="bg-[#199bff] text-white px-4 py-2 rounded-md mt-2 md:mt-0">
-              Add Blog
-            </button>
-          </Link>
         </div>
       </div>
-      {blogs.length > 0 ? (
+      {notifications.length > 0 ? (
         <>
           {layout ? (
             <div className="mt-5 overflow-x-auto">
@@ -99,19 +83,16 @@ const Blogs = () => {
                 <thead>
                   <tr>
                     <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                      Banner
+                      Name
                     </th>
                     <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                      Title
+                      Email
                     </th>
                     <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                      Details
+                      Subject
                     </th>
                     <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                      Author
-                    </th>
-                    <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                      Date
+                      Message
                     </th>
                     <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                       Actions
@@ -119,38 +100,25 @@ const Blogs = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentItems.map((blog) => (
-                    <tr key={blog.id} className="hover:bg-gray-100">
+                  {currentItems.map((item) => (
+                    <tr key={item.id} className="hover:bg-gray-100">
                       <td className="px-6 py-4 border-b">
-                        <img
-                          src={`http://localhost:8000/${blog.banner}`}
-                          alt={blog.title}
-                          className="w-28 h-20 object-cover rounded"
-                        />
+                        <h1 className="text-sm font-bold">{item?.name}</h1>
                       </td>
                       <td className="px-6 py-4 border-b">
-                        <h1 className="text-sm font-bold">
-                          {blog.title.slice(0, 20)}...
-                        </h1>
+                        <h1 className="text-sm font-bold">{item?.email}</h1>
+                      </td>
+                      <td className="px-6 py-4 border-b">
+                        <h1 className="text-sm font-bold">{item?.subject}</h1>
                       </td>
                       <td className="px-6 py-4 border-b text-sm text-gray-500">
-                        {blog.details.slice(0, 30)}...
+                        {item?.message.slice(0, 50)}...
                       </td>
-                      <td className="px-6 py-4 border-b text-sm text-gray-500">
-                        {blog.author}
-                      </td>
-                      <td className="px-6 py-4 border-b text-sm text-gray-500">
-                        {blog.date}
-                      </td>
+
                       <td className="px-6 py-4 border-b text-sm">
                         <div className="flex gap-2">
-                          <Link to={`/blogs/edit-blog/${blog._id}`}>
-                            <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
-                              <i class="fa-solid fa-pencil"></i>
-                            </button>
-                          </Link>
                           <button
-                            onClick={() => openDeleteConfirmModal(blog.id)}
+                            onClick={() => openDeleteConfirmModal(item.id)}
                             className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-500"
                           >
                             <i class="fa-regular fa-trash-can"></i>
@@ -164,28 +132,18 @@ const Blogs = () => {
             </div>
           ) : (
             <div className="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {currentItems.map((blog) => (
+              {currentItems.map((item) => (
                 <div
-                  key={blog.id}
+                  key={item.id}
                   className="w-full flex flex-col shadow-md rounded-md p-3"
                 >
-                  <img
-                    src={blog.banner}
-                    alt={blog.title}
-                    className="w-full h-full md:w-[300px] md:h-[250px]"
-                  />
-                  <h1 className="text-xl font-bold mt-3">{blog.title}</h1>
+                  <h1 className="text-xl font-bold mt-3">{item?.Name}</h1>
                   <p className="text-sm text-gray-500">
-                    {blog.details.slice(0, 80)}...
+                    {item?.message.slice(0, 80)}...
                   </p>
                   <div className="flex gap-3 mt-2">
-                    <Link to={`/blogs/edit-blog/${blog.id}`}>
-                      <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
-                        <i class="fa-solid fa-pencil"></i>
-                      </button>
-                    </Link>
                     <button
-                      onClick={() => openDeleteConfirmModal(blog.id)}
+                      onClick={() => openDeleteConfirmModal(item.id)}
                       className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-500"
                     >
                       <i class="fa-regular fa-trash-can"></i>
@@ -200,7 +158,7 @@ const Blogs = () => {
             handleOpen={handleOpen}
             itemId={selectedItemId}
             onDelete={handleDelete}
-            itemName="blogsData"
+            itemName={"notificationsData"}
           />
 
           {/* Enhanced Pagination */}
@@ -251,4 +209,4 @@ const Blogs = () => {
   );
 };
 
-export default Blogs;
+export default Notification;
