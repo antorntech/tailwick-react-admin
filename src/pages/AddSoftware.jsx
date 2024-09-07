@@ -258,7 +258,7 @@ const AddSoftware = () => {
           <i class="fa-solid fa-hand-point-left"></i>
         </button>
         <div>
-          <h1 className="text-xl font-bold">Add software</h1>
+          <h1 className="text-xl font-bold">Add Software</h1>
           <p className="text-sm text-gray-500">
             You can add software details from here.
           </p>

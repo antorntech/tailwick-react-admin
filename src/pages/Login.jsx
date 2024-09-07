@@ -132,7 +132,7 @@ const Login = () => {
                   <Input
                     size="lg"
                     placeholder="name@gmail.com"
-                    className="!border-t-blue-gray-200 focus:!border-[#199bff] text-white"
+                    className="!border !border-gray-300  text-white ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#199bff] focus:!border-t-border-[#199bff] focus:ring-border-[#199bff]/10"
                     labelProps={{
                       className: "before:content-none after:content-none",
                     }}
@@ -158,7 +158,7 @@ const Login = () => {
                     type="password"
                     size="lg"
                     placeholder="********"
-                    className="!border-t-blue-gray-200 focus:!border-[#199bff] text-white"
+                    className="!border !border-gray-300  text-white ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#199bff] focus:!border-t-border-[#199bff] focus:ring-border-[#199bff]/10"
                     labelProps={{
                       className: "before:content-none after:content-none",
                     }}
