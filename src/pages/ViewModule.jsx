@@ -21,25 +21,24 @@ const ViewModule = () => {
 
   const fetchModules = async () => {
     try {
-      fetch(`http://localhost:8000/api/v1/trainings/${id}`, {
-        method: "GET",
-        headers: {
-          Accept: "application/json", // Accepting JSON response
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          const moduleList = data?.module;
-          setTitle(data?.title);
-          setModules(moduleList);
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+      const response = await fetch(
+        `http://localhost:8000/api/v1/trainings/${id}`,
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+          },
+        }
+      );
+      if (!response.ok) throw new Error("Network response was not ok");
+      const data = await response.json();
+      setTitle(data?.title);
+      setModules(data?.module || []);
     } catch (error) {
       console.error("Error fetching modules:", error);
     }
   };
+
   useEffect(() => {
     fetchModules();
   }, [id]);
@@ -48,18 +47,24 @@ const ViewModule = () => {
 
   const openDeleteConfirmModal = (moduleId) => {
     setSelectedModuleId(moduleId);
-    console.log(moduleId);
     handleOpen();
   };
 
-  const deleteModule = (moduleId) => {
-    fetch(`http://localhost:8000/api/v1/trainings/${id}/module/${moduleId}`, {
-      method: "DELETE",
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-      });
+  const deleteModule = async (selectedModuleId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/v1/trainings/${id}/module/${selectedModuleId}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (!response.ok) throw new Error("Network response was not ok");
+      const data = await response.json();
+      console.log(data);
+      fetchModules(); // Refresh the list after deletion
+    } catch (error) {
+      console.error("Error deleting module:", error);
+    }
     handleOpen(); // Close dialog after deletion
   };
 
