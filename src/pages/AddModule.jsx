@@ -81,7 +81,14 @@ const AddModule = () => {
         const result = await response.json();
 
         if (response.ok) {
-          toast.success("Module added successfully!");
+          toast.success("Module added successfully!", {
+            autoClose: 1000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
           navigate(`/trainings/view-module/${id}`); // Navigate to another page
         } else {
           toast.error(result.message || "Failed to add module.");

@@ -1,7 +1,7 @@
 import { Avatar, Chip, Typography } from "@material-tailwind/react";
 import React from "react";
 import { Link } from "react-router-dom";
-import { DeleteConfirmModal } from "../components/DeleteConfirmModal";
+import DeleteConfirmModal from "../components/DeleteConfirmModal";
 import Loader from "../loader/Loader";
 
 const HomeAbout = () => {

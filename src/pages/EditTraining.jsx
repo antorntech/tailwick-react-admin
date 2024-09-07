@@ -1,12 +1,18 @@
-import { Input, Textarea, Typography, Select } from "@material-tailwind/react";
-import React, { useState, useEffect, useRef } from "react";
+import {
+  Input,
+  Option,
+  Select,
+  Textarea,
+  Typography,
+} from "@material-tailwind/react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import JoditEditor from "jodit-react";
 import moment from "moment";
 
 const EditTraining = () => {
-  const { id } = useParams(); // Get the review ID from the URL
+  const { id } = useParams();
   const navigate = useNavigate();
   const config = {
     readonly: false,
@@ -36,37 +42,21 @@ const EditTraining = () => {
   const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB limit
 
   useEffect(() => {
-    // Retrieve the specific review from local storage
-    const storedTrainings =
-      JSON.parse(localStorage.getItem("trainingsData")) || [];
-    const trainingToEdit = storedTrainings.find(
-      (training) => training.id === parseInt(id)
-    );
-
-    if (trainingToEdit) {
-      setTitle(trainingToEdit.title);
-      setDetails(trainingToEdit.details);
-      setBlockQuote(trainingToEdit.blockQuote);
-      setBenefits(trainingToEdit.benefits);
-      setCourseOffers(trainingToEdit.courseOffers);
-      setWorks(trainingToEdit.works);
-      setTags(trainingToEdit.tags);
-      setCategory(trainingToEdit.category);
-      setImagePreview(trainingToEdit.banner);
-    } else {
-      toast.error("Training not found", {
-        position: "top-right",
-        hideProgressBar: false,
-        autoClose: 1000,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
+    fetch(`http://localhost:8000/api/v1/trainings/${id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setTitle(data.title);
+        setDetails(data.details);
+        setBlockQuote(data.blockQuote);
+        setCategory(data.category);
+        setBenefits(data.benefits);
+        setCourseOffers(data.courseOffers);
+        setWorks(data.works);
+        setTags(data.tags);
+        setFileKey(Date.now());
+        setImagePreview(`http://localhost:8000/${data.banner}`);
       });
-      navigate("/trainings");
-    }
-  }, [id, navigate]);
+  }, [id]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -175,40 +165,49 @@ const EditTraining = () => {
     setCategory(value);
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     const formData = new FormData();
-    formData.append("banner", image);
+
+    // Append the file (banner image) to FormData
+    if (image) {
+      formData.append("banner", image);
+    }
+
+    // Append text fields
     formData.append("title", title);
     formData.append("details", details);
-    formData.append("blockQuote", blockQuote);
-    formData.append("tags", JSON.stringify(tags)); // Include tags array in the form data
     formData.append("category", category);
     formData.append("author", "Admin");
     formData.append("date", date);
 
+    // Append arrays as JSON strings
+    formData.append("benefits", JSON.stringify(benefits));
+    formData.append("courseOffers", JSON.stringify(courseOffers));
+    formData.append("works", JSON.stringify(works));
+    formData.append("tags", JSON.stringify(tags));
+
+    // Log the data for debugging
+    console.log(title, details, tags, category);
+
     try {
-      const storedTrainings =
-        JSON.parse(localStorage.getItem("trainingsData")) || [];
-      const updatedTrainings = storedTrainings.map((training) =>
-        training.id === parseInt(id)
-          ? {
-              ...training,
-              title,
-              details,
-              benefits,
-              courseOffers,
-              works,
-              tags,
-              category,
-              date,
-              banner: image ? URL.createObjectURL(image) : imagePreview,
-            }
-          : training
+      // Make a POST request to the Express.js server
+      const response = await fetch(
+        `http://localhost:8000/api/v1/trainings/update/${id}`,
+        {
+          method: "PUT",
+          body: formData, // Send the FormData containing all fields and files
+        }
       );
 
-      localStorage.setItem("trainingsData", JSON.stringify(updatedTrainings));
+      // Check if the response is okay
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.statusText}`);
+      }
 
-      toast.success("Training updated successfully", {
+      const result = await response.json(); // Parse the server response
+
+      // Show success toast
+      toast.success("Update successful", {
         position: "top-right",
         hideProgressBar: false,
         autoClose: 1000,
@@ -219,16 +218,46 @@ const EditTraining = () => {
         theme: "light",
       });
 
-      navigate("/trainings");
-
+      // Reset the form after successful upload
       setImage(null);
       setImagePreview(null);
+      setTitle("");
+      setDetails("");
+      setBenefits([]);
+      setCourseOffers([]);
+      setWorks([]);
+      setTags([]);
+      setCategory("Skill Development Training");
       setFileKey(Date.now());
       setUploadProgress(0);
+
+      // Navigate to the trainings page
+      navigate("/trainings");
     } catch (error) {
-      console.error("Error updating review", error);
+      console.error("Error uploading file", error);
+
+      // Show error toast
+      toast.error("Error uploading file", {
+        position: "top-right",
+        hideProgressBar: false,
+        autoClose: 1000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+
+      // Reset the form in case of error
       setImage(null);
       setImagePreview(null);
+      setTitle("");
+      setDetails("");
+      setBenefits([]);
+      setCourseOffers([]);
+      setWorks([]);
+      setTags([]);
+      setCategory("Skill Development Training");
       setFileKey(Date.now());
       setUploadProgress(0);
     }
@@ -253,7 +282,7 @@ const EditTraining = () => {
         <div>
           <h1 className="text-xl font-bold">Edit Training</h1>
           <p className="text-sm text-gray-500">
-            You can edit the training details from here.
+            You can edit training details from here.
           </p>
         </div>
       </div>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Loader from "../loader/Loader";
-import { DeleteConfirmModal } from "../components/DeleteConfirmModal";
+import DeleteConfirmModal from "../components/DeleteConfirmModal";
 
 const Faqs = () => {
   const [open, setOpen] = useState(false);

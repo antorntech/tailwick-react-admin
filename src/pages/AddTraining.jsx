@@ -260,7 +260,7 @@ const AddTraining = () => {
           <i class="fa-solid fa-hand-point-left"></i>
         </button>
         <div>
-          <h1 className="text-xl font-bold">Add Service</h1>
+          <h1 className="text-xl font-bold">Add Training</h1>
           <p className="text-sm text-gray-500">
             You can add training details from here.
           </p>
