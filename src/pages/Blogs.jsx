@@ -2,139 +2,169 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Loader from "../loader/Loader";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
+import {
+  Popover,
+  PopoverContent,
+  PopoverHandler,
+} from "@material-tailwind/react";
+import { toast } from "react-toastify";
 
 const Blogs = () => {
-  const [open, setOpen] = useState(false);
-  const [selectedItemId, setSelectedItemId] = useState(null);
+  // State variables
   const [blogs, setBlogs] = useState([]);
-  const handleOpen = () => setOpen(!open);
-  const [layout, setLayout] = useState(true);
+  const [isTableLayout, setIsTableLayout] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [selectedBlogId, setSelectedBlogId] = useState(null);
 
-  const handleDelete = () => {
-    // Refresh the blog list after deletion
-    const storedBlogs = JSON.parse(localStorage.getItem("blogsData")) || [];
-    setBlogs(storedBlogs);
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  // Fetch blog data from the server
+  const fetchBlogs = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("http://localhost:8000/api/v1/blogs");
+      const data = await response.json();
+      setBlogs(data);
+    } catch (error) {
+      toast.error("Error fetching blogs.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/v1/blogs", {
-      method: "GET",
-      headers: {
-        Accept: "application/json", // Accepting JSON response
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setBlogs(data);
-        console.log(data);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-    // Retrieve data from local storage
-    const storedBlogs = localStorage.getItem("blogsData");
-    if (storedBlogs) {
-      setBlogs(JSON.parse(storedBlogs));
-    }
+    fetchBlogs();
   }, []);
 
-  const openDeleteConfirmModal = (itemId) => {
-    setSelectedItemId(itemId);
-    handleOpen();
+  // Toggle delete confirmation modal
+  const toggleDeleteModal = () => setOpenDeleteModal(!openDeleteModal);
+
+  // Open delete confirmation modal with selected blog ID
+  const openDeleteConfirmModal = (blogId) => {
+    setSelectedBlogId(blogId);
+    toggleDeleteModal();
   };
 
-  const handleLayout = () => setLayout(!layout);
+  // Handle delete action
+  const handleDelete = async () => {
+    if (selectedBlogId) {
+      try {
+        const response = await fetch(
+          `http://localhost:8000/api/v1/blogs/delete/${selectedBlogId}`,
+          {
+            method: "DELETE",
+          }
+        );
+        if (response.ok) {
+          toast.success("Blog deleted successfully", {
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+          fetchBlogs(); // Refresh blog list
+        } else {
+          toast.error("Failed to delete blog");
+        }
+      } catch (error) {
+        toast.error("An error occurred while deleting the blog");
+      }
+    }
+  };
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // Adjust as needed
+  // Toggle between table and grid layout
+  const toggleLayout = () => setIsTableLayout(!isTableLayout);
 
+  // Pagination calculations
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = blogs.slice(indexOfFirstItem, indexOfLastItem);
-
   const totalPages = Math.ceil(blogs.length / itemsPerPage);
 
+  // Pagination controls
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const nextPage = () =>
+    currentPage < totalPages && setCurrentPage(currentPage + 1);
+  const prevPage = () => currentPage > 1 && setCurrentPage(currentPage - 1);
 
-  const nextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const prevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
+  // Show loader while fetching data
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div>
+      {/* Header Section */}
       <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between">
         <div>
           <h1 className="text-xl font-bold">Blogs</h1>
           <p className="text-sm text-gray-500">
-            blogs are {blogs.length > 0 ? "" : "not"} available here.
+            {blogs.length > 0 ? "Blogs are available" : "No blogs available."}
           </p>
         </div>
         <div className="flex items-center gap-3">
           <button
-            className="bg-[#2e961a] text-white px-4 py-2 rounded-md mt-2 md:mt-0"
-            onClick={handleLayout}
+            className="bg-green-600 text-white px-4 py-2 rounded-md mt-2 md:mt-0"
+            onClick={toggleLayout}
           >
             Change Layout
           </button>
-          <Link to={"/blogs/add-blog"}>
-            <button className="bg-[#199bff] text-white px-4 py-2 rounded-md mt-2 md:mt-0">
+          <Link to="/blogs/add-blog">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-md mt-2 md:mt-0">
               Add Blog
             </button>
           </Link>
         </div>
       </div>
+
+      {/* Blogs List */}
       {blogs.length > 0 ? (
         <>
-          {layout ? (
+          {isTableLayout ? (
+            // Table Layout
             <div className="mt-5 overflow-x-auto">
               <table className="min-w-full bg-white border">
                 <thead>
                   <tr>
-                    <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                      Banner
-                    </th>
-                    <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                      Title
-                    </th>
-                    <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                      Details
-                    </th>
-                    <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                      Author
-                    </th>
-                    <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                      Date
-                    </th>
-                    <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                      Actions
-                    </th>
+                    {/* Table Headers */}
+                    {[
+                      "Banner",
+                      "Title",
+                      "Details",
+                      "Author",
+                      "Date",
+                      "Actions",
+                    ].map((header) => (
+                      <th
+                        key={header}
+                        className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700"
+                      >
+                        {header}
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>
                   {currentItems.map((blog) => (
-                    <tr key={blog.id} className="hover:bg-gray-100">
+                    <tr key={blog._id} className="hover:bg-gray-100">
+                      {/* Blog Data */}
                       <td className="px-6 py-4 border-b">
                         <img
                           src={`http://localhost:8000/${blog.banner}`}
                           alt={blog.title}
-                          className="w-28 h-20 object-cover rounded"
+                          className="w-32 h-20 object-cover rounded"
                         />
                       </td>
                       <td className="px-6 py-4 border-b">
-                        <h1 className="text-sm font-bold">
-                          {blog.title.slice(0, 20)}...
-                        </h1>
+                        <h1 className="text-sm font-bold">{blog.title}</h1>
                       </td>
                       <td className="px-6 py-4 border-b text-sm text-gray-500">
-                        {blog.details.slice(0, 30)}...
+                        {blog.details.slice(0, 80)}...
                       </td>
                       <td className="px-6 py-4 border-b text-sm text-gray-500">
                         {blog.author}
@@ -143,17 +173,20 @@ const Blogs = () => {
                         {blog.date}
                       </td>
                       <td className="px-6 py-4 border-b text-sm">
+                        {/* Action Buttons */}
                         <div className="flex gap-2">
+                          {/* Edit Blog */}
                           <Link to={`/blogs/edit-blog/${blog._id}`}>
                             <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
-                              <i class="fa-solid fa-pencil"></i>
+                              <i className="fa-solid fa-pencil"></i>
                             </button>
                           </Link>
+                          {/* Delete Blog */}
                           <button
-                            onClick={() => openDeleteConfirmModal(blog.id)}
+                            onClick={() => openDeleteConfirmModal(blog._id)}
                             className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-500"
                           >
-                            <i class="fa-regular fa-trash-can"></i>
+                            <i className="fa-regular fa-trash-can"></i>
                           </button>
                         </div>
                       </td>
@@ -163,48 +196,48 @@ const Blogs = () => {
               </table>
             </div>
           ) : (
+            // Grid Layout
             <div className="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {currentItems.map((blog) => (
                 <div
-                  key={blog.id}
+                  key={blog._id}
                   className="w-full flex flex-col shadow-md rounded-md p-3"
                 >
+                  {/* Blog Image */}
                   <img
-                    src={blog.banner}
+                    src={`http://localhost:8000/${blog.banner}`}
                     alt={blog.title}
-                    className="w-full h-full md:w-[300px] md:h-[250px]"
+                    className="w-full h-full md:h-[250px] object-cover rounded"
                   />
+                  {/* Blog Details */}
                   <h1 className="text-xl font-bold mt-3">{blog.title}</h1>
                   <p className="text-sm text-gray-500">
                     {blog.details.slice(0, 80)}...
                   </p>
-                  <div className="flex gap-3 mt-2">
-                    <Link to={`/blogs/edit-blog/${blog.id}`}>
+                  {/* Action Buttons */}
+                  <div className="flex gap-2 mt-2">
+                    {/* Edit Blog */}
+                    <Link to={`/blogs/edit-blog/${blog._id}`}>
                       <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
-                        <i class="fa-solid fa-pencil"></i>
+                        <i className="fa-solid fa-pencil"></i>
                       </button>
                     </Link>
+                    {/* Delete Blog */}
                     <button
-                      onClick={() => openDeleteConfirmModal(blog.id)}
+                      onClick={() => openDeleteConfirmModal(blog._id)}
                       className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-500"
                     >
-                      <i class="fa-regular fa-trash-can"></i>
+                      <i className="fa-regular fa-trash-can"></i>
                     </button>
                   </div>
                 </div>
               ))}
             </div>
           )}
-          <DeleteConfirmModal
-            open={open}
-            handleOpen={handleOpen}
-            itemId={selectedItemId}
-            onDelete={handleDelete}
-            itemName="blogsData"
-          />
 
-          {/* Enhanced Pagination */}
+          {/* Pagination Controls */}
           <div className="flex justify-center mt-5">
+            {/* Previous Page Button */}
             <button
               onClick={prevPage}
               disabled={currentPage === 1}
@@ -217,6 +250,7 @@ const Blogs = () => {
               <i className="fa-solid fa-angle-left"></i>
             </button>
 
+            {/* Page Numbers */}
             {Array.from({ length: totalPages }, (_, index) => (
               <button
                 key={index + 1}
@@ -231,6 +265,7 @@ const Blogs = () => {
               </button>
             ))}
 
+            {/* Next Page Button */}
             <button
               onClick={nextPage}
               disabled={currentPage === totalPages}
@@ -247,6 +282,15 @@ const Blogs = () => {
       ) : (
         <Loader />
       )}
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmModal
+        open={openDeleteModal}
+        handleOpen={toggleDeleteModal}
+        onDelete={handleDelete}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this blog? This action cannot be undone."
+      />
     </div>
   );
 };

@@ -189,10 +189,11 @@ const AddModule = () => {
               }}
             />
             <button
-              className="ml-2 bg-red-600 px-4 py-1 rounded-md text-white"
+              className="flex items-center gap-1 ml-2 bg-red-600 px-4 py-1 rounded-md text-white"
               onClick={() => removeListItem(index)}
             >
-              Remove
+              <i class="fa-solid fa-delete-left"></i>
+              Trash
             </button>
           </div>
         ))}

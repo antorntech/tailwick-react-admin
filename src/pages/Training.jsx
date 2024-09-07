@@ -106,7 +106,7 @@ const Training = () => {
           <h1 className="text-xl font-bold">Trainings</h1>
           <p className="text-sm text-gray-500">
             {trainings.length > 0
-              ? "Here are your trainings."
+              ? "Trainings are available"
               : "No trainings available."}
           </p>
         </div>
@@ -160,7 +160,7 @@ const Training = () => {
                         <img
                           src={`http://localhost:8000/${training.banner}`}
                           alt={training.title}
-                          className="w-28 h-20 object-cover rounded"
+                          className="w-32 h-20 object-cover rounded"
                         />
                       </td>
                       <td className="px-6 py-4 border-b">
