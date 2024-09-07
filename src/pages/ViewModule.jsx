@@ -19,52 +19,47 @@ const ViewModule = () => {
   const [open, setOpen] = useState(false);
   const [selectedModuleId, setSelectedModuleId] = useState(null);
 
-  useEffect(() => {
-    fetch(`http://localhost:8000/api/v1/trainings/${id}`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json", // Accepting JSON response
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        const moduleList = data?.module;
-        setTitle(data?.title);
-        setModules(moduleList);
+  const fetchModules = async () => {
+    try {
+      fetch(`http://localhost:8000/api/v1/trainings/${id}`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json", // Accepting JSON response
+        },
       })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-
-    const storedTrainings =
-      JSON.parse(localStorage.getItem("trainingsData")) || [];
-    const trainingData = storedTrainings.find(
-      (training) => training.id === parseInt(id)
-    );
-    const moduleList = trainingData?.module;
-    setTitle(trainingData?.title);
-    setModules(moduleList);
+        .then((response) => response.json())
+        .then((data) => {
+          const moduleList = data?.module;
+          setTitle(data?.title);
+          setModules(moduleList);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    } catch (error) {
+      console.error("Error fetching modules:", error);
+    }
+  };
+  useEffect(() => {
+    fetchModules();
   }, [id]);
 
   const handleOpen = () => setOpen(!open);
 
   const openDeleteConfirmModal = (moduleId) => {
     setSelectedModuleId(moduleId);
+    console.log(moduleId);
     handleOpen();
   };
 
   const deleteModule = (moduleId) => {
-    const updatedModules = modules.filter((module) => module.id !== moduleId);
-    setModules(updatedModules);
-    // Update the localStorage as well
-    const storedTrainings =
-      JSON.parse(localStorage.getItem("trainingsData")) || [];
-    const updatedTrainingData = storedTrainings.map((training) =>
-      training.id === parseInt(id)
-        ? { ...training, module: updatedModules }
-        : training
-    );
-    localStorage.setItem("trainingsData", JSON.stringify(updatedTrainingData));
+    fetch(`http://localhost:8000/api/v1/trainings/${id}/module/${moduleId}`, {
+      method: "DELETE",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      });
     handleOpen(); // Close dialog after deletion
   };
 
@@ -122,8 +117,8 @@ const ViewModule = () => {
               </tr>
             </thead>
             <tbody>
-              {modules.map((module) => (
-                <tr key={module.id} className="hover:bg-gray-100">
+              {modules.map((module, index) => (
+                <tr key={index} className="hover:bg-gray-100">
                   <td className="px-6 py-4 border-b">
                     <h1 className="text-sm font-bold">{module.title}</h1>
                   </td>
@@ -139,9 +134,9 @@ const ViewModule = () => {
                         </button>
                       </PopoverHandler>
                       <PopoverContent className="bg-gray-200 shadow-lg border-2 border-gray-300">
-                        {module.lists.map((list) => (
+                        {module.lists.map((list, index) => (
                           <li
-                            key={list.id}
+                            key={index}
                             className="list-disc list-inside text-sm text-gray-800"
                           >
                             {list}
@@ -152,13 +147,13 @@ const ViewModule = () => {
                   </td>
                   <td className="px-6 py-4 border-b text-sm">
                     <div className="flex items-center gap-2">
-                      <Link to={`/trainings/edit-module/${id}/${module.id}`}>
+                      <Link to={`/trainings/edit-module/${id}/${module._id}`}>
                         <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
                           <i className="fa-solid fa-pencil"></i>
                         </button>
                       </Link>
                       <button
-                        onClick={() => openDeleteConfirmModal(module.id)}
+                        onClick={() => openDeleteConfirmModal(module._id)}
                         className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-500"
                       >
                         <i className="fa-regular fa-trash-can"></i>

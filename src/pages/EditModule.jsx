@@ -17,47 +17,35 @@ const EditModule = () => {
   // State for managing new list item input
   const [newListItem, setNewListItem] = useState("");
 
-  // Retrieve and set the existing module data from local storage
+  // Fetch module data on component mount
   useEffect(() => {
-    const storedTrainings =
-      JSON.parse(localStorage.getItem("trainingsData")) || [];
-    const trainingToEdit = storedTrainings.find(
-      (training) => training.id === parseInt(id)
-    );
-
-    if (trainingToEdit) {
-      const moduleToEdit = trainingToEdit.module.find(
-        (mod) => mod.id === parseInt(moduleId)
-      );
-
-      if (moduleToEdit) {
-        setModule(moduleToEdit); // Load the module data into the state
+    const fetchModuleData = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8000/api/v1/trainings/${id}/module/${moduleId}`
+        );
+        const data = await response.json();
+        setModule(data.module);
+        console.log(data);
+      } catch (error) {
+        toast.error("Failed to load module data.");
+        console.error("Error:", error);
       }
-    }
+    };
+
+    fetchModuleData();
   }, [id, moduleId]);
 
-  // Handle title input change
-  const handleTitleChange = (e) => {
+  // Handle input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
     setModule((prevModule) => ({
       ...prevModule,
-      title: e.target.value,
+      [name]: value,
     }));
   };
 
-  // Handle subtitle input change
-  const handleSubTitleChange = (e) => {
-    setModule((prevModule) => ({
-      ...prevModule,
-      subTitle: e.target.value,
-    }));
-  };
-
-  // Handle new list item input change
-  const handleListItemChange = (e) => {
-    setNewListItem(e.target.value);
-  };
-
-  // Add a new list item to the module
+  // Add a new list item
   const addListItem = () => {
     if (newListItem.trim()) {
       setModule((prevModule) => ({
@@ -70,7 +58,7 @@ const EditModule = () => {
     }
   };
 
-  // Handle list item update
+  // Update an existing list item
   const updateListItem = (index, newValue) => {
     const updatedLists = module.lists.map((item, i) =>
       i === index ? newValue : item
@@ -81,7 +69,7 @@ const EditModule = () => {
     }));
   };
 
-  // Handle list item removal
+  // Remove a list item
   const removeListItem = (index) => {
     setModule((prevModule) => ({
       ...prevModule,
@@ -90,25 +78,36 @@ const EditModule = () => {
   };
 
   // Handle module update submission
-  const handleUpdateModule = () => {
+  const handleUpdateModule = async () => {
     if (module.title && module.subTitle && module.lists.length) {
-      const storedTrainings =
-        JSON.parse(localStorage.getItem("trainingsData")) || [];
-      const updatedTrainings = storedTrainings.map((training) =>
-        training.id === parseInt(id)
-          ? {
-              ...training,
-              module: training.module.map((mod) =>
-                mod.id === parseInt(moduleId) ? module : mod
-              ),
-            }
-          : training
-      );
+      try {
+        const response = await fetch(
+          `http://localhost:8000/api/v1/trainings/${id}/modules/${moduleId}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              title: module.title,
+              subTitle: module.subTitle,
+              lists: module.lists, // Send lists as JSON
+            }),
+          }
+        );
 
-      localStorage.setItem("trainingsData", JSON.stringify(updatedTrainings));
+        const result = await response.json();
 
-      toast.success("Module updated successfully!");
-      navigate(`/trainings/view-module/${id}`);
+        if (response.ok) {
+          toast.success("Module updated successfully!");
+          navigate(`/trainings/view-module/${id}`);
+        } else {
+          toast.error(result.message || "Failed to update module.");
+        }
+      } catch (error) {
+        toast.error("An error occurred while updating the module.");
+        console.error("Error:", error);
+      }
     } else {
       toast.error("Please fill in all fields and add at least one list item.");
     }
@@ -137,10 +136,11 @@ const EditModule = () => {
         </Typography>
         <Input
           type="text"
+          name="title"
           size="lg"
           placeholder="Enter module title"
           value={module.title}
-          onChange={handleTitleChange}
+          onChange={handleInputChange}
           className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#199bff] focus:!border-t-border-[#199bff] focus:ring-border-[#199bff]/10"
           labelProps={{
             className: "before:content-none after:content-none",
@@ -154,10 +154,11 @@ const EditModule = () => {
         </Typography>
         <Input
           type="text"
+          name="subTitle"
           size="lg"
           placeholder="Enter module sub title"
           value={module.subTitle}
-          onChange={handleSubTitleChange}
+          onChange={handleInputChange}
           className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#199bff] focus:!border-t-border-[#199bff] focus:ring-border-[#199bff]/10"
           labelProps={{
             className: "before:content-none after:content-none",
@@ -176,7 +177,7 @@ const EditModule = () => {
               size="lg"
               placeholder="Enter list item"
               value={newListItem}
-              onChange={handleListItemChange}
+              onChange={(e) => setNewListItem(e.target.value)}
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#199bff] focus:!border-t-border-[#199bff] focus:ring-border-[#199bff]/10"
               labelProps={{
                 className: "before:content-none after:content-none",
