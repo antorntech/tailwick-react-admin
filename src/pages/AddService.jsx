@@ -28,7 +28,7 @@ const AddService = () => {
   const [blockQuote, setBlockQuote] = useState("");
   const [benefits, setBenefits] = useState([]);
   const [currentBenefit, setCurrentBenefit] = useState("");
-  const [courseOffers, setCourseOffers] = useState([]);
+  const [offers, setOffers] = useState([]);
   const [currentCourseOffers, setCurrentCourseOffers] = useState("");
   const [works, setWorks] = useState([]);
   const [currentWorks, setCurrentWorks] = useState("");
@@ -92,14 +92,14 @@ const AddService = () => {
         ];
         setBenefits(newBenefits);
       }
-    } else if (value === "courseOffers") {
+    } else if (value === "offers") {
       if (index > 0) {
-        const newCourseOffers = [...courseOffers];
+        const newCourseOffers = [...offers];
         [newCourseOffers[index - 1], newCourseOffers[index]] = [
           newCourseOffers[index],
           newCourseOffers[index - 1],
         ];
-        setCourseOffers(newCourseOffers);
+        setOffers(newCourseOffers);
       }
     } else {
       if (index > 0) {
@@ -123,14 +123,14 @@ const AddService = () => {
         ];
         setBenefits(newBenefits);
       }
-    } else if (value === "courseOffers") {
-      if (index < courseOffers.length - 1) {
-        const newCourseOffers = [...courseOffers];
+    } else if (value === "offers") {
+      if (index < offers.length - 1) {
+        const newCourseOffers = [...offers];
         [newCourseOffers[index + 1], newCourseOffers[index]] = [
           newCourseOffers[index],
           newCourseOffers[index + 1],
         ];
-        setCourseOffers(newCourseOffers);
+        setOffers(newCourseOffers);
       }
     } else {
       if (index < works.length - 1) {
@@ -154,7 +154,7 @@ const AddService = () => {
     formData.append("title", title);
     formData.append("details", details);
     formData.append("benefits", JSON.stringify(benefits));
-    formData.append("courseOffers", JSON.stringify(courseOffers));
+    formData.append("offers", JSON.stringify(offers));
     formData.append("works", JSON.stringify(works));
     formData.append("tags", JSON.stringify(tags));
     formData.append("category", category);
@@ -174,7 +174,7 @@ const AddService = () => {
         title,
         details,
         benefits,
-        courseOffers,
+        offers,
         works,
         tags,
         category,
@@ -210,7 +210,7 @@ const AddService = () => {
       setTitle("");
       setDetails("");
       setBenefits([]);
-      setCourseOffers([]);
+      setOffers([]);
       setWorks([]);
       setTags([]);
       setCategory("Skill Development Training");
@@ -224,7 +224,7 @@ const AddService = () => {
       setTitle("");
       setDetails("");
       setBenefits([]);
-      setCourseOffers([]);
+      setOffers([]);
       setWorks([]);
       setTags([]);
       setCategory("Skill Development Training");
@@ -386,13 +386,13 @@ const AddService = () => {
                 className: "before:content-none after:content-none",
               }}
               value={currentCourseOffers}
-              name="courseOffers"
+              name="offers"
               onChange={(e) => handleItemChange(e, setCurrentCourseOffers)}
               onKeyDown={(e) =>
                 handleKeyDown(
                   e,
-                  courseOffers,
-                  setCourseOffers,
+                  offers,
+                  setOffers,
                   currentCourseOffers,
                   setCurrentCourseOffers
                 )
@@ -400,7 +400,7 @@ const AddService = () => {
             />
             {/* Display course offers */}
             <div className="mt-2 flex flex-wrap gap-2">
-              {courseOffers.map((courseOffer, index) => (
+              {offers.map((courseOffer, index) => (
                 <div
                   key={index}
                   className="w-full border-2 border-gray-300 bg-gray-200 text-black px-3 py-1 rounded-md flex items-center justify-between"
@@ -411,21 +411,19 @@ const AddService = () => {
                   </div>
                   <div className="flex items-center">
                     <button
-                      onClick={() => moveUp(index, "courseOffers")}
+                      onClick={() => moveUp(index, "offers")}
                       className="text-gray-800 bg-gray-400 hover:bg-green-600 hover:text-white transition-all duration-500 rounded-full w-6 h-6 flex items-center justify-center mr-2"
                     >
                       <i class="fa-solid fa-up-long text-[12px]"></i>
                     </button>
                     <button
-                      onClick={() => moveDown(index, "courseOffers")}
+                      onClick={() => moveDown(index, "offers")}
                       className="text-gray-800 bg-gray-400 hover:bg-green-600 hover:text-white transition-all duration-500 rounded-full w-6 h-6 flex items-center justify-center mr-2"
                     >
                       <i class="fa-solid fa-down-long text-[12px]"></i>
                     </button>
                     <button
-                      onClick={() =>
-                        removeItem(index, courseOffers, setCourseOffers)
-                      }
+                      onClick={() => removeItem(index, offers, setOffers)}
                       className="text-white bg-red-600 rounded-full w-6 h-6 flex items-center justify-center"
                     >
                       <i class="fa-solid fa-xmark text-[12px]"></i>

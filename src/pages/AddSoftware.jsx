@@ -150,42 +150,39 @@ const AddSoftware = () => {
 
   const handleUpload = async () => {
     const formData = new FormData();
-    formData.append("banner", image);
+
+    // Append the file (banner image) to FormData
+    formData.append("banner", image); // File upload (image)
+
+    // Append text fields
     formData.append("title", title);
     formData.append("details", details);
-    formData.append("devTools", JSON.stringify(devTools));
-    formData.append("keyFeatures", JSON.stringify(keyFeatures));
-    formData.append("benefits", JSON.stringify(benefits));
-    formData.append("tags", JSON.stringify(tags));
     formData.append("category", category);
     formData.append("author", "Admin");
     formData.append("date", date);
 
+    // Append arrays as JSON strings
+    formData.append("tags", JSON.stringify(tags));
+    formData.append("benefits", JSON.stringify(benefits));
+    formData.append("devTools", JSON.stringify(devTools));
+    formData.append("keyFeatures", JSON.stringify(keyFeatures));
+
     try {
-      // Retrieve existing data from local storage
-      const existingData =
-        JSON.parse(localStorage.getItem("softwaresData")) || [];
+      // Make a POST request to the Express.js server
+      const response = await fetch(
+        "http://localhost:8000/api/v1/softwares/add",
+        {
+          method: "POST",
+          body: formData, // Send the FormData containing all fields and files
+        }
+      );
 
-      // Create new entry object
-      const newEntry = {
-        id: Date.now(), // Unique ID for the new entry
-        title,
-        details,
-        devTools,
-        keyFeatures,
-        benefits,
-        tags,
-        category,
-        date: date,
-        author: "Admin",
-        banner: imagePreview, // Assuming imagePreview holds the URL or base64 of the image
-      };
+      // Check if the response is okay
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.statusText}`);
+      }
 
-      // Add the new entry to the existing data
-      const updatedData = [...existingData, newEntry];
-
-      // Save the updated data back to local storage
-      localStorage.setItem("softwaresData", JSON.stringify(updatedData));
+      const result = await response.json(); // Parse the server response
 
       // Show success toast
       toast.success("Upload successful", {
@@ -199,10 +196,7 @@ const AddSoftware = () => {
         theme: "light",
       });
 
-      // Navigate to the softwares page
-      navigate("/softwares");
-
-      // Reset the form
+      // Reset the form after successful upload
       setImage(null);
       setImagePreview(null);
       setTitle("");
@@ -214,8 +208,24 @@ const AddSoftware = () => {
       setCategory("Skill Development Training");
       setFileKey(Date.now());
       setUploadProgress(0);
+
+      // Navigate to the softwares page
+      navigate("/softwares");
     } catch (error) {
       console.error("Error uploading file", error);
+
+      // Show error toast
+      toast.error("Error uploading file", {
+        position: "top-right",
+        hideProgressBar: false,
+        autoClose: 1000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+
       // Reset the form in case of error
       setImage(null);
       setImagePreview(null);

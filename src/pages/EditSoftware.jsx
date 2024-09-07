@@ -36,37 +36,21 @@ const EditSoftware = () => {
   const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB limit
 
   useEffect(() => {
-    // Retrieve the specific review from local storage
-    const storedSoftwares =
-      JSON.parse(localStorage.getItem("softwaresData")) || [];
-    const softwareToEdit = storedSoftwares.find(
-      (software) => software.id === parseInt(id)
-    );
-
-    if (softwareToEdit) {
-      setTitle(softwareToEdit.title);
-      setDetails(softwareToEdit.details);
-      setBlockQuote(softwareToEdit.blockQuote);
-      setDevTools(softwareToEdit.devTools);
-      setKeyFeatures(softwareToEdit.keyFeatures);
-      setBenefits(softwareToEdit.benefits);
-      setTags(softwareToEdit.tags);
-      setCategory(softwareToEdit.category);
-      setImagePreview(softwareToEdit.banner);
-    } else {
-      toast.error("Training not found", {
-        position: "top-right",
-        hideProgressBar: false,
-        autoClose: 1000,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
+    fetch(`http://localhost:8000/api/v1/softwares/${id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setTitle(data.title);
+        setDetails(data.details);
+        setBlockQuote(data.blockQuote);
+        setCategory(data.category);
+        setBenefits(data.benefits);
+        setDevTools(data.devTools);
+        setKeyFeatures(data.keyFeatures);
+        setTags(data.tags);
+        setFileKey(Date.now());
+        setImagePreview(`http://localhost:8000/${data.banner}`);
       });
-      navigate("/softwares");
-    }
-  }, [id, navigate]);
+  }, [id]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -175,43 +159,49 @@ const EditSoftware = () => {
     setCategory(value);
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     const formData = new FormData();
-    formData.append("banner", image);
+
+    // Append the file (banner image) to FormData
+    if (image) {
+      formData.append("banner", image);
+    }
+
+    // Append text fields
     formData.append("title", title);
     formData.append("details", details);
-    formData.append("devTools", JSON.stringify(devTools));
-    formData.append("keyFeatures", JSON.stringify(keyFeatures));
-    formData.append("benefits", JSON.stringify(benefits));
-    formData.append("tags", JSON.stringify(tags));
     formData.append("category", category);
     formData.append("author", "Admin");
     formData.append("date", date);
 
+    // Append arrays as JSON strings
+    formData.append("tags", JSON.stringify(tags));
+    formData.append("benefits", JSON.stringify(benefits));
+    formData.append("devTools", JSON.stringify(devTools));
+    formData.append("keyFeatures", JSON.stringify(keyFeatures));
+
+    // Log the data for debugging
+    console.log(title, details, tags, category);
+
     try {
-      const storedSoftwares =
-        JSON.parse(localStorage.getItem("softwaresData")) || [];
-      const updatedSoftwares = storedSoftwares.map((software) =>
-        software.id === parseInt(id)
-          ? {
-              ...software,
-              title,
-              details,
-              blockQuote,
-              devTools,
-              keyFeatures,
-              benefits,
-              tags,
-              category,
-              date,
-              banner: image ? URL.createObjectURL(image) : imagePreview,
-            }
-          : software
+      // Make a POST request to the Express.js server
+      const response = await fetch(
+        `http://localhost:8000/api/v1/softwares/update/${id}`,
+        {
+          method: "PUT",
+          body: formData, // Send the FormData containing all fields and files
+        }
       );
 
-      localStorage.setItem("softwaresData", JSON.stringify(updatedSoftwares));
+      // Check if the response is okay
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.statusText}`);
+      }
 
-      toast.success("Training updated successfully", {
+      const result = await response.json(); // Parse the server response
+
+      // Show success toast
+      toast.success("Update successful", {
         position: "top-right",
         hideProgressBar: false,
         autoClose: 1000,
@@ -222,16 +212,46 @@ const EditSoftware = () => {
         theme: "light",
       });
 
-      navigate("/softwares");
-
+      // Reset the form after successful upload
       setImage(null);
       setImagePreview(null);
+      setTitle("");
+      setDetails("");
+      setDevTools([]);
+      setKeyFeatures([]);
+      setBenefits([]);
+      setTags([]);
+      setCategory("Skill Development Training");
       setFileKey(Date.now());
       setUploadProgress(0);
+
+      // Navigate to the softwares page
+      navigate("/softwares");
     } catch (error) {
-      console.error("Error updating review", error);
+      console.error("Error uploading file", error);
+
+      // Show error toast
+      toast.error("Error uploading file", {
+        position: "top-right",
+        hideProgressBar: false,
+        autoClose: 1000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+
+      // Reset the form in case of error
       setImage(null);
       setImagePreview(null);
+      setTitle("");
+      setDetails("");
+      setDevTools([]);
+      setKeyFeatures([]);
+      setBenefits([]);
+      setTags([]);
+      setCategory("Skill Development Training");
       setFileKey(Date.now());
       setUploadProgress(0);
     }
@@ -246,11 +266,19 @@ const EditSoftware = () => {
 
   return (
     <div>
-      <div>
-        <h1 className="text-xl font-bold">Edit Software</h1>
-        <p className="text-sm text-gray-500">
-          You can edit the software details from here.
-        </p>
+      <div className="flex items-center gap-3">
+        <button
+          onClick={() => window.history.back()}
+          className="flex items-center justify-center gap-1 text-black border-2 border-black px-2 py-2 rounded-md text-sm hover:bg-black hover:text-white transition-all duration-500"
+        >
+          <i class="fa-solid fa-hand-point-left"></i>
+        </button>
+        <div>
+          <h1 className="text-xl font-bold">Edit Software</h1>
+          <p className="text-sm text-gray-500">
+            You can edit software details from here.
+          </p>
+        </div>
       </div>
       <div className="mt-5 w-full md:flex">
         <div className="w-full md:w-1/2 flex flex-col">
