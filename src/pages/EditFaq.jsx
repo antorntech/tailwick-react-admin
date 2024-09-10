@@ -10,27 +10,13 @@ const EditFaq = () => {
   const [answer, setAnswer] = useState("");
 
   useEffect(() => {
-    // Retrieve the specific review from local storage
-    const storedFaqs = JSON.parse(localStorage.getItem("faqsData")) || [];
-    const faqToEdit = storedFaqs.find((faq) => faq.id === parseInt(id));
-
-    if (faqToEdit) {
-      setQuestion(faqToEdit.question);
-      setAnswer(faqToEdit.answer);
-    } else {
-      toast.error("Faq not found", {
-        position: "top-right",
-        hideProgressBar: false,
-        autoClose: 1000,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
+    fetch(`http://localhost:8000/api/v1/faqs/${id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setQuestion(data.question);
+        setAnswer(data.answer);
       });
-      navigate("/faqs");
-    }
-  }, [id, navigate]);
+  }, [id]);
 
   const handleQuestionChange = (e) => {
     setQuestion(e.target.value);
@@ -40,44 +26,28 @@ const EditFaq = () => {
   };
 
   const handleUpdate = async () => {
-    const formData = new FormData();
-    formData.append("question", question);
-    formData.append("answer", answer);
-
-    console.log(question, answer);
+    const data = {
+      question,
+      answer,
+    };
 
     try {
-      //   const response = await fetch("/api/upload", {
-      //     method: "POST",
-      //     body: formData,
-      //     headers: {
-      //       "X-Requested-With": "XMLHttpRequest",
-      //     },
-      //     onUploadProgress: (event) => {
-      //       setUploadProgress(Math.round((event.loaded * 100) / event.total));
-      //     },
-      //   });
-
-      //   if (!response.ok) {
-      //     throw new Error("Upload failed");
-      //   }
-
-      //   const result = await response.json();
-      //   console.log("Upload successful", result);
-
-      // Retrieve existing data from local storage
-      const storedFaqs = JSON.parse(localStorage.getItem("faqsData")) || [];
-      const updatedFaqs = storedFaqs.map((faq) =>
-        faq.id === parseInt(id)
-          ? {
-              ...faq,
-              question,
-              answer,
-            }
-          : faq
+      const response = await fetch(
+        `http://localhost:8000/api/v1/faqs/update/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json", // Set content type to JSON
+          },
+          body: JSON.stringify(data), // Send the data as JSON
+        }
       );
 
-      localStorage.setItem("faqsData", JSON.stringify(updatedFaqs));
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.statusText}`);
+      }
+
+      const result = await response.json();
 
       toast.success("Faq updated successfully", {
         position: "top-right",
@@ -90,16 +60,17 @@ const EditFaq = () => {
         theme: "light",
       });
 
+      // Navigate to faqs page
       navigate("/faqs");
 
       // Reset the form
-      setQuestion("");
-      setAnswer("");
+      setTitleOne("");
+      setTitleTwo("");
+      setTitleThree("");
+      setSubtitle("");
+      setVideoLink("");
     } catch (error) {
-      console.error("Error uploading file", error);
-      // Reset the form
-      setQuestion("");
-      setAnswer("");
+      console.error("Error updating faqs", error);
     }
   };
 

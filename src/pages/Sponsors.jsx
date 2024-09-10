@@ -2,85 +2,128 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Loader from "../loader/Loader";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
+import { toast } from "react-toastify";
 
-const Sponsors = () => {
-  const [open, setOpen] = useState(false);
-  const [selectedItemId, setSelectedItemId] = useState(null);
+const Sponsor = () => {
+  // State variables
   const [sponsors, setSponsors] = useState([]);
-  const handleOpen = () => setOpen(!open);
-  const [layout, setLayout] = useState(true);
+  const [isTableLayout, setIsTableLayout] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState(null);
 
-  const handleDelete = () => {
-    // Refresh the sponsor list after deletion
-    const storedSponsors =
-      JSON.parse(localStorage.getItem("sponsorsData")) || [];
-    setSponsors(storedSponsors);
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  // Fetch sponsor data from the server
+  const fetchSponsors = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("http://localhost:8000/api/v1/sponsors");
+      const data = await response.json();
+      setSponsors(data);
+    } catch (error) {
+      toast.error("Error fetching sponsors.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
-    // Retrieve data from local storage
-    const storedSponsors = localStorage.getItem("sponsorsData");
-    if (storedSponsors) {
-      setSponsors(JSON.parse(storedSponsors));
-    }
+    fetchSponsors();
   }, []);
 
+  // Toggle delete confirmation modal
+  const toggleDeleteModal = () => setOpenDeleteModal(!openDeleteModal);
+
+  // Open delete confirmation modal with selected sponsor ID
   const openDeleteConfirmModal = (itemId) => {
     setSelectedItemId(itemId);
-    handleOpen();
+    toggleDeleteModal();
   };
 
-  const handleLayout = () => setLayout(!layout);
+  // Handle delete action
+  const handleDelete = async () => {
+    if (selectedItemId) {
+      try {
+        const response = await fetch(
+          `http://localhost:8000/api/v1/sponsors/delete/${selectedItemId}`,
+          {
+            method: "DELETE",
+          }
+        );
+        if (response.ok) {
+          toast.success("Sponsor deleted successfully", {
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+          fetchSponsors(); // Refresh sponsor list
+        } else {
+          toast.error("Failed to delete sponsor");
+        }
+      } catch (error) {
+        toast.error("An error occurred while deleting the sponsor");
+      }
+    }
+  };
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // Adjust as needed
+  // Toggle between table and grid layout
+  const toggleLayout = () => setIsTableLayout(!isTableLayout);
 
+  // Pagination calculations
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = sponsors.slice(indexOfFirstItem, indexOfLastItem);
-
   const totalPages = Math.ceil(sponsors.length / itemsPerPage);
 
+  // Pagination controls
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const nextPage = () =>
+    currentPage < totalPages && setCurrentPage(currentPage + 1);
+  const prevPage = () => currentPage > 1 && setCurrentPage(currentPage - 1);
 
-  const nextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const prevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
+  // Show loader while fetching data
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div>
+      {/* Header Section */}
       <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between">
         <div>
           <h1 className="text-xl font-bold">Sponsors</h1>
           <p className="text-sm text-gray-500">
-            sponsors are {sponsors.length > 0 ? "" : "not"} available here.
+            {sponsors.length > 0
+              ? "Sponsors are available"
+              : "No sponsors available."}
           </p>
         </div>
         <div className="flex items-center gap-3">
           <button
-            className="bg-[#2e961a] text-white px-4 py-2 rounded-md mt-2 md:mt-0"
-            onClick={handleLayout}
+            className="bg-green-600 text-white px-4 py-2 rounded-md mt-2 md:mt-0"
+            onClick={toggleLayout}
           >
             Change Layout
           </button>
-          <Link to={"/sponsors/add-sponsor"}>
-            <button className="bg-[#199bff] text-white px-4 py-2 rounded-md mt-2 md:mt-0">
+          <Link to="/sponsors/add-sponsor">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-md mt-2 md:mt-0">
               Add Sponsor
             </button>
           </Link>
         </div>
       </div>
+
+      {/* Sponsors List */}
       {sponsors.length > 0 ? (
         <>
-          {layout ? (
+          {isTableLayout ? (
+            // Table Layout
             <div className="mt-5 overflow-x-auto">
               <table className="min-w-full bg-white border">
                 <thead>
@@ -101,7 +144,7 @@ const Sponsors = () => {
                     <tr key={sponsor.id} className="hover:bg-gray-100">
                       <td className="px-6 py-4 border-b">
                         <img
-                          src={sponsor.banner}
+                          src={`http://localhost:8000/${sponsor.banner}`}
                           alt={sponsor.title}
                           className="w-20 h-20 object-cover rounded"
                         />
@@ -111,13 +154,13 @@ const Sponsors = () => {
                       </td>
                       <td className="px-6 py-4 border-b text-sm">
                         <div className="flex gap-2">
-                          <Link to={`/sponsors/edit-sponsor/${sponsor.id}`}>
+                          <Link to={`/sponsors/edit-sponsor/${sponsor._id}`}>
                             <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
                               <i className="fa-solid fa-pencil"></i>
                             </button>
                           </Link>
                           <button
-                            onClick={() => openDeleteConfirmModal(sponsor.id)}
+                            onClick={() => openDeleteConfirmModal(sponsor._id)}
                             className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-500"
                           >
                             <i className="fa-regular fa-trash-can"></i>
@@ -130,6 +173,7 @@ const Sponsors = () => {
               </table>
             </div>
           ) : (
+            // Grid Layout
             <div className="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {currentItems.map((sponsor) => (
                 <div
@@ -137,19 +181,19 @@ const Sponsors = () => {
                   className="w-full flex flex-col shadow-md rounded-md p-3"
                 >
                   <img
-                    src={sponsor.banner}
+                    src={`http://localhost:8000/${sponsor.banner}`}
                     alt={sponsor.title}
                     className="w-full h-full md:h-[250px]"
                   />
                   <h1 className="text-xl font-bold mt-3">{sponsor.title}</h1>
                   <div className="flex gap-3 mt-3">
-                    <Link to={`/sponsors/edit-sponsor/${sponsor.id}`}>
+                    <Link to={`/sponsors/edit-sponsor/${sponsor._id}`}>
                       <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
                         <i className="fa-solid fa-pencil"></i>
                       </button>
                     </Link>
                     <button
-                      onClick={() => openDeleteConfirmModal(blog.id)}
+                      onClick={() => openDeleteConfirmModal(sponsor._id)}
                       className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-500"
                     >
                       <i className="fa-regular fa-trash-can"></i>
@@ -159,16 +203,10 @@ const Sponsors = () => {
               ))}
             </div>
           )}
-          <DeleteConfirmModal
-            open={open}
-            handleOpen={handleOpen}
-            itemId={selectedItemId}
-            onDelete={handleDelete}
-            itemName="sponsorsData"
-          />
 
-          {/* Enhanced Pagination */}
+          {/* Pagination Controls */}
           <div className="flex justify-center mt-5">
+            {/* Previous Page Button */}
             <button
               onClick={prevPage}
               disabled={currentPage === 1}
@@ -181,6 +219,7 @@ const Sponsors = () => {
               <i className="fa-solid fa-angle-left"></i>
             </button>
 
+            {/* Page Numbers */}
             {Array.from({ length: totalPages }, (_, index) => (
               <button
                 key={index + 1}
@@ -195,6 +234,7 @@ const Sponsors = () => {
               </button>
             ))}
 
+            {/* Next Page Button */}
             <button
               onClick={nextPage}
               disabled={currentPage === totalPages}
@@ -211,8 +251,17 @@ const Sponsors = () => {
       ) : (
         <Loader />
       )}
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmModal
+        open={openDeleteModal}
+        handleOpen={toggleDeleteModal}
+        onDelete={handleDelete}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this sponsor? This action cannot be undone."
+      />
     </div>
   );
 };
 
-export default Sponsors;
+export default Sponsor;

@@ -16,67 +16,36 @@ const AddFaq = () => {
   };
 
   const handleUpload = async () => {
-    const formData = new FormData();
-    formData.append("question", question);
-    formData.append("answer", answer);
-
-    console.log(question, answer);
+    const data = {
+      question,
+      answer,
+    };
 
     try {
-      //   const response = await fetch("/api/upload", {
-      //     method: "POST",
-      //     body: formData,
-      //     headers: {
-      //       "X-Requested-With": "XMLHttpRequest",
-      //     },
-      //     onUploadProgress: (event) => {
-      //       setUploadProgress(Math.round((event.loaded * 100) / event.total));
-      //     },
-      //   });
-
-      //   if (!response.ok) {
-      //     throw new Error("Upload failed");
-      //   }
-
-      //   const result = await response.json();
-      //   console.log("Upload successful", result);
-
-      // Retrieve existing data from local storage
-      const existingData = JSON.parse(localStorage.getItem("faqsData")) || [];
-
-      const newEntry = {
-        id: Date.now(), // Unique ID for the new entry
-        question,
-        answer,
-      };
-
-      // Add the new entry to the existing data
-      const updatedData = [...existingData, newEntry];
-
-      // Save the updated data back to local storage
-      localStorage.setItem("faqsData", JSON.stringify(updatedData));
-
-      toast.success("Upload successful", {
-        position: "top-right",
-        hideProgressBar: false,
-        autoClose: 1000,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
+      const response = await fetch("http://localhost:8000/api/v1/faqs/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
       });
 
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      toast.success("Upload successful");
       navigate("/faqs");
 
       // Reset the form
-      setQuestion("");
-      setAnswer("");
+      setTitleOne("");
+      setTitleTwo("");
+      setTitleThree("");
+      setSubtitle("");
+      setVideoLink("");
     } catch (error) {
-      console.error("Error uploading file", error);
-      // Reset the form
-      setQuestion("");
-      setAnswer("");
+      console.error("Error uploading data:", error);
     }
   };
 

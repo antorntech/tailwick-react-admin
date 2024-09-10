@@ -22,14 +22,7 @@ export default function DeleteConfirmModal({
   return (
     <Dialog open={open} handler={handleOpen}>
       <div className="flex items-center gap-1 p-3">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="size-8 text-red-800"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-        >
-          <path fillRule="evenodd" d="M2.25 12c0-5.385..." clipRule="evenodd" />
-        </svg>
+        <i class="fa-regular fa-circle-question text-2xl text-red-700"></i>
         <h1 className="text-xl font-bold text-black">{title}</h1>
       </div>
       <DialogBody>{message}</DialogBody>

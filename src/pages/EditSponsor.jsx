@@ -16,30 +16,14 @@ const EditSponsor = () => {
   const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB limit
 
   useEffect(() => {
-    // Retrieve the specific review from local storage
-    const storedSponsors =
-      JSON.parse(localStorage.getItem("sponsorsData")) || [];
-    const sponsorToEdit = storedSponsors.find(
-      (sponsor) => sponsor.id === parseInt(id)
-    );
-
-    if (sponsorToEdit) {
-      setTitle(sponsorToEdit.title);
-      setImagePreview(sponsorToEdit.banner);
-    } else {
-      toast.error("Sponsor not found", {
-        position: "top-right",
-        hideProgressBar: false,
-        autoClose: 1000,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
+    fetch(`http://localhost:8000/api/v1/sponsors/${id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setTitle(data.title);
+        setFileKey(Date.now());
+        setImagePreview(`http://localhost:8000/${data.banner}`);
       });
-      navigate("/sponsors");
-    }
-  }, [id, navigate]);
+  }, [id]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -58,61 +42,43 @@ const EditSponsor = () => {
 
   const handleUpdate = async () => {
     const formData = new FormData();
-    formData.append("banner", image);
+    if (image) {
+      formData.append("banner", image);
+    }
     formData.append("title", title);
 
     try {
-      //   const response = await fetch("/api/upload", {
-      //     method: "POST",
-      //     body: formData,
-      //     headers: {
-      //       "X-Requested-With": "XMLHttpRequest",
-      //     },
-      //     onUploadProgress: (event) => {
-      //       setUploadProgress(Math.round((event.loaded * 100) / event.total));
-      //     },
-      //   });
+      fetch(`http://localhost:8000/api/v1/sponsors/update/${id}`, {
+        method: "PUT",
+        body: formData,
+        headers: {
+          "X-Requested-With": "XMLHttpRequest",
+        },
+        onUploadProgress: (event) => {
+          setUploadProgress(Math.round((event.loaded * 100) / event.total));
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          toast.success("Sponsor updated successfully", {
+            position: "top-right",
+            hideProgressBar: false,
+            autoClose: 1000,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+          navigate("/sponsors");
 
-      //   if (!response.ok) {
-      //     throw new Error("Upload failed");
-      //   }
-
-      //   const result = await response.json();
-      //   console.log("Upload successful", result);
-
-      // Retrieve existing data from local storage
-      const storedSponsors =
-        JSON.parse(localStorage.getItem("sponsorsData")) || [];
-      const updatedSponsors = storedSponsors.map((sponsor) =>
-        sponsor.id === parseInt(id)
-          ? {
-              ...sponsor,
-              title,
-              banner: image ? URL.createObjectURL(image) : imagePreview,
-            }
-          : sponsor
-      );
-
-      localStorage.setItem("sponsorsData", JSON.stringify(updatedSponsors));
-
-      toast.success("Sponsor updated successfully", {
-        position: "top-right",
-        hideProgressBar: false,
-        autoClose: 1000,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-      navigate("/sponsors");
-
-      // Reset the form
-      setImage(null);
-      setImagePreview(null);
-      setTitle("");
-      setFileKey(Date.now());
-      setUploadProgress(0);
+          // Reset the form
+          setImage(null);
+          setImagePreview(null);
+          setTitle("");
+          setFileKey(Date.now());
+          setUploadProgress(0);
+        });
     } catch (error) {
       console.error("Error uploading file", error);
       // Reset the form

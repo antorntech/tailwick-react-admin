@@ -43,59 +43,44 @@ const AddSponsor = () => {
     console.log(title);
 
     try {
-      //   const response = await fetch("/api/upload", {
-      //     method: "POST",
-      //     body: formData,
-      //     headers: {
-      //       "X-Requested-With": "XMLHttpRequest",
-      //     },
-      //     onUploadProgress: (event) => {
-      //       setUploadProgress(Math.round((event.loaded * 100) / event.total));
-      //     },
-      //   });
+      fetch("http://localhost:8000/api/v1/sponsors/add", {
+        method: "POST",
+        body: formData,
+        headers: {
+          "X-Requested-With": "XMLHttpRequest",
+        },
+        onUploadProgress: (event) => {
+          setUploadProgress(Math.round((event.loaded * 100) / event.total));
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Success:", data);
+          // Show success toast
+          toast.success("Upload successful", {
+            position: "top-right",
+            hideProgressBar: false,
+            autoClose: 1000,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
 
-      //   if (!response.ok) {
-      //     throw new Error("Upload failed");
-      //   }
+          // Navigate to the sponsors page
+          navigate("/sponsors");
 
-      //   const result = await response.json();
-      //   console.log("Upload successful", result);
-
-      // Retrieve existing data from local storage
-      const existingData =
-        JSON.parse(localStorage.getItem("sponsorsData")) || [];
-
-      // Create new entry object
-      const newEntry = {
-        id: Date.now(), // Unique ID for the new entry
-        title,
-        banner: imagePreview, // Assuming imagePreview holds the URL or base64 of the image
-      };
-
-      // Add the new entry to the existing data
-      const updatedData = [...existingData, newEntry];
-
-      // Save the updated data back to local storage
-      localStorage.setItem("sponsorsData", JSON.stringify(updatedData));
-
-      toast.success("Upload successful", {
-        position: "top-right",
-        hideProgressBar: false,
-        autoClose: 1000,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-      navigate("/sponsors");
-
-      // Reset the form
-      setImage(null);
-      setImagePreview(null);
-      setTitle("");
-      setFileKey(Date.now());
-      setUploadProgress(0);
+          // Reset the form
+          setImage(null);
+          setImagePreview(null);
+          setTitle("");
+          setFileKey(Date.now());
+          setUploadProgress(0);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
     } catch (error) {
       console.error("Error uploading file", error);
       // Reset the form

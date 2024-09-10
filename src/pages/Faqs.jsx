@@ -2,85 +2,126 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Loader from "../loader/Loader";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
+import { toast } from "react-toastify";
 
-const Faqs = () => {
-  const [open, setOpen] = useState(false);
-  const [selectedItemId, setSelectedItemId] = useState(null);
+const Faq = () => {
+  // State variables
   const [faqs, setFaqs] = useState([]);
-  const handleOpen = () => setOpen(!open);
-  const [layout, setLayout] = useState(true);
+  const [isTableLayout, setIsTableLayout] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState(null);
 
-  const handleDelete = () => {
-    // Refresh the faq list after deletion
-    const storedFaqs = JSON.parse(localStorage.getItem("faqsData")) || [];
-    setFaqs(storedFaqs);
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  // Fetch faq data from the server
+  const fetchFaqs = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("http://localhost:8000/api/v1/faqs");
+      const data = await response.json();
+      setFaqs(data);
+    } catch (error) {
+      toast.error("Error fetching faqs.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
-    // Retrieve data from local storage
-    const storedFaqs = localStorage.getItem("faqsData");
-    if (storedFaqs) {
-      setFaqs(JSON.parse(storedFaqs));
-    }
+    fetchFaqs();
   }, []);
 
+  // Toggle delete confirmation modal
+  const toggleDeleteModal = () => setOpenDeleteModal(!openDeleteModal);
+
+  // Open delete confirmation modal with selected faq ID
   const openDeleteConfirmModal = (itemId) => {
     setSelectedItemId(itemId);
-    handleOpen();
+    toggleDeleteModal();
   };
 
-  const handleLayout = () => setLayout(!layout);
+  // Handle delete action
+  const handleDelete = async () => {
+    if (selectedItemId) {
+      try {
+        const response = await fetch(
+          `http://localhost:8000/api/v1/faqs/delete/${selectedItemId}`,
+          {
+            method: "DELETE",
+          }
+        );
+        if (response.ok) {
+          toast.success("Faq deleted successfully", {
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+          fetchFaqs(); // Refresh faq list
+        } else {
+          toast.error("Failed to delete faq");
+        }
+      } catch (error) {
+        toast.error("An error occurred while deleting the faq");
+      }
+    }
+  };
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // Adjust as needed
+  // Toggle between table and grid layout
+  const toggleLayout = () => setIsTableLayout(!isTableLayout);
 
+  // Pagination calculations
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = faqs.slice(indexOfFirstItem, indexOfLastItem);
-  console.log(currentItems);
-
   const totalPages = Math.ceil(faqs.length / itemsPerPage);
 
+  // Pagination controls
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const nextPage = () =>
+    currentPage < totalPages && setCurrentPage(currentPage + 1);
+  const prevPage = () => currentPage > 1 && setCurrentPage(currentPage - 1);
 
-  const nextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const prevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
+  // Show loader while fetching data
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div>
+      {/* Header Section */}
       <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between">
         <div>
           <h1 className="text-xl font-bold">Faqs</h1>
           <p className="text-sm text-gray-500">
-            faqs are {faqs.length > 0 ? "" : "not"} available here.
+            {faqs.length > 0 ? "Faqs are available" : "No faqs available."}
           </p>
         </div>
         <div className="flex items-center gap-3">
           <button
-            className="bg-[#2e961a] text-white px-4 py-2 rounded-md mt-2 md:mt-0"
-            onClick={handleLayout}
+            className="bg-green-600 text-white px-4 py-2 rounded-md mt-2 md:mt-0"
+            onClick={toggleLayout}
           >
             Change Layout
           </button>
-          <Link to={"/faqs/add-faq"}>
-            <button className="bg-[#199bff] text-white px-4 py-2 rounded-md mt-2 md:mt-0">
+          <Link to="/faqs/add-faq">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-md mt-2 md:mt-0">
               Add Faq
             </button>
           </Link>
         </div>
       </div>
+
+      {/* Faqs List */}
       {faqs.length > 0 ? (
         <>
-          {layout ? (
+          {isTableLayout ? (
+            // Table Layout
             <div className="mt-5 overflow-x-auto">
               <table className="min-w-full bg-white border">
                 <thead>
@@ -108,16 +149,16 @@ const Faqs = () => {
 
                       <td className="px-6 py-4 border-b text-sm">
                         <div className="flex gap-2">
-                          <Link to={`/faqs/edit-faq/${faq.id}`}>
+                          <Link to={`/faqs/edit-faq/${faq._id}`}>
                             <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
-                              <i className="fa-solid fa-pencil"></i>
+                              <i class="fa-solid fa-pencil"></i>
                             </button>
                           </Link>
                           <button
-                            onClick={() => openDeleteConfirmModal(faq.id)}
+                            onClick={() => openDeleteConfirmModal(faq._id)}
                             className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-500"
                           >
-                            <i className="fa-regular fa-trash-can"></i>
+                            <i class="fa-regular fa-trash-can"></i>
                           </button>
                         </div>
                       </td>
@@ -127,24 +168,26 @@ const Faqs = () => {
               </table>
             </div>
           ) : (
+            // Grid Layout
             <div className="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {currentItems.map((faq) => (
                 <div
-                  key={faq.id}
+                  key={faq._id}
                   className="w-full flex flex-col shadow-md rounded-md p-3"
                 >
-                  <h1 className="text-xl font-bold mt-3">{faq?.question}</h1>
-                  <p className="text-sm text-gray-500">
-                    {faq?.answer.slice(0, 80)}...
-                  </p>
-                  <div className="flex gap-3 mt-2">
-                    <Link to={`/faqs/edit-faq/${faq.id}`}>
+                  <h1 className="text-lg font-bold">{faq.question}</h1>
+                  <p className="text-sm">{faq.answer}</p>
+                  {/* Action Buttons */}
+                  <div className="flex gap-2 mt-2">
+                    {/* Edit Faq */}
+                    <Link to={`/faqs/edit-faq/${faq._id}`}>
                       <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
                         <i className="fa-solid fa-pencil"></i>
                       </button>
                     </Link>
+                    {/* Delete Faq */}
                     <button
-                      onClick={() => openDeleteConfirmModal(faq.id)}
+                      onClick={() => openDeleteConfirmModal(faq._id)}
                       className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-500"
                     >
                       <i className="fa-regular fa-trash-can"></i>
@@ -154,16 +197,10 @@ const Faqs = () => {
               ))}
             </div>
           )}
-          <DeleteConfirmModal
-            open={open}
-            handleOpen={handleOpen}
-            itemId={selectedItemId}
-            onDelete={handleDelete}
-            itemName={"faqsData"}
-          />
 
-          {/* Enhanced Pagination */}
+          {/* Pagination Controls */}
           <div className="flex justify-center mt-5">
+            {/* Previous Page Button */}
             <button
               onClick={prevPage}
               disabled={currentPage === 1}
@@ -176,6 +213,7 @@ const Faqs = () => {
               <i className="fa-solid fa-angle-left"></i>
             </button>
 
+            {/* Page Numbers */}
             {Array.from({ length: totalPages }, (_, index) => (
               <button
                 key={index + 1}
@@ -190,6 +228,7 @@ const Faqs = () => {
               </button>
             ))}
 
+            {/* Next Page Button */}
             <button
               onClick={nextPage}
               disabled={currentPage === totalPages}
@@ -206,8 +245,17 @@ const Faqs = () => {
       ) : (
         <Loader />
       )}
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmModal
+        open={openDeleteModal}
+        handleOpen={toggleDeleteModal}
+        onDelete={handleDelete}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this faq? This action cannot be undone."
+      />
     </div>
   );
 };
 
-export default Faqs;
+export default Faq;
