@@ -18,30 +18,14 @@ const EditReview = () => {
   const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB limit
 
   useEffect(() => {
-    // Retrieve the specific review from local storage
-    const storedReviews = JSON.parse(localStorage.getItem("reviewsData")) || [];
-    const reviewToEdit = storedReviews.find(
-      (review) => review.id === parseInt(id)
-    );
-
-    if (reviewToEdit) {
-      setName(reviewToEdit.name);
-      setDesignation(reviewToEdit.designation);
-      setComments(reviewToEdit.comments);
-      setImagePreview(reviewToEdit.banner);
-    } else {
-      toast.error("Review not found", {
-        position: "top-right",
-        hideProgressBar: false,
-        autoClose: 1000,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
+    fetch(`http://localhost:8000/api/v1/reviews/${id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setName(data.name);
+        setDesignation(data.designation);
+        setComments(data.comments);
+        setImagePreview(`http://localhost:8000/${data.logo}`);
       });
-      navigate("/reviews");
-    }
   }, [id, navigate]);
 
   const handleImageChange = (e) => {
@@ -69,47 +53,40 @@ const EditReview = () => {
 
   const handleUpdate = () => {
     const formData = new FormData();
-    formData.append("banner", image);
+    if (image) {
+      formData.append("logo", image);
+    }
     formData.append("name", name);
     formData.append("designation", designation);
     formData.append("comments", comments);
 
     try {
-      const storedReviews =
-        JSON.parse(localStorage.getItem("reviewsData")) || [];
-      const updatedReviews = storedReviews.map((review) =>
-        review.id === parseInt(id)
-          ? {
-              ...review,
-              name,
-              designation,
-              comments,
-              banner: image ? URL.createObjectURL(image) : imagePreview,
-            }
-          : review
-      );
+      fetch(`http://localhost:8000/api/v1/reviews/update/${id}`, {
+        method: "PUT",
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          toast.success("Review updated successfully", {
+            position: "top-right",
+            hideProgressBar: false,
+            autoClose: 1000,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
 
-      localStorage.setItem("reviewsData", JSON.stringify(updatedReviews));
+          navigate("/reviews");
 
-      toast.success("Review updated successfully", {
-        position: "top-right",
-        hideProgressBar: false,
-        autoClose: 1000,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-
-      navigate("/reviews");
-
-      setImage(null);
-      setImagePreview(null);
-      setName("");
-      setComments("");
-      setFileKey(Date.now());
-      setUploadProgress(0);
+          setImage(null);
+          setImagePreview(null);
+          setName("");
+          setComments("");
+          setFileKey(Date.now());
+          setUploadProgress(0);
+        });
     } catch (error) {
       console.error("Error updating review", error);
       setImage(null);

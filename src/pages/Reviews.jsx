@@ -2,84 +2,128 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Loader from "../loader/Loader";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
+import { toast } from "react-toastify";
 
 const Reviews = () => {
-  const [open, setOpen] = useState(false);
-  const [selectedItemId, setSelectedItemId] = useState(null);
+  // State variables
   const [reviews, setReviews] = useState([]);
-  const handleOpen = () => setOpen(!open);
-  const [layout, setLayout] = useState(true);
+  const [isTableLayout, setIsTableLayout] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState(null);
 
-  const handleDelete = () => {
-    // Refresh the review list after deletion
-    const storedReviews = JSON.parse(localStorage.getItem("reviewsData")) || [];
-    setReviews(storedReviews);
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  // Fetch review data from the server
+  const fetchReviews = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("http://localhost:8000/api/v1/reviews");
+      const data = await response.json();
+      setReviews(data);
+    } catch (error) {
+      toast.error("Error fetching reviews.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
-    // Retrieve data from local storage
-    const storedReviews = localStorage.getItem("reviewsData");
-    if (storedReviews) {
-      setReviews(JSON.parse(storedReviews));
-    }
+    fetchReviews();
   }, []);
 
+  // Toggle delete confirmation modal
+  const toggleDeleteModal = () => setOpenDeleteModal(!openDeleteModal);
+
+  // Open delete confirmation modal with selected review ID
   const openDeleteConfirmModal = (itemId) => {
     setSelectedItemId(itemId);
-    handleOpen();
+    toggleDeleteModal();
   };
 
-  const handleLayout = () => setLayout(!layout);
+  // Handle delete action
+  const handleDelete = async () => {
+    if (selectedItemId) {
+      try {
+        const response = await fetch(
+          `http://localhost:8000/api/v1/reviews/delete/${selectedItemId}`,
+          {
+            method: "DELETE",
+          }
+        );
+        if (response.ok) {
+          toast.success("Review deleted successfully", {
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+          fetchReviews(); // Refresh review list
+        } else {
+          toast.error("Failed to delete review");
+        }
+      } catch (error) {
+        toast.error("An error occurred while deleting the review");
+      }
+    }
+  };
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // Adjust as needed
+  // Toggle between table and grid layout
+  const toggleLayout = () => setIsTableLayout(!isTableLayout);
 
+  // Pagination calculations
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = reviews.slice(indexOfFirstItem, indexOfLastItem);
-
   const totalPages = Math.ceil(reviews.length / itemsPerPage);
 
+  // Pagination controls
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const nextPage = () =>
+    currentPage < totalPages && setCurrentPage(currentPage + 1);
+  const prevPage = () => currentPage > 1 && setCurrentPage(currentPage - 1);
 
-  const nextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const prevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
+  // Show loader while fetching data
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div>
+      {/* Header Section */}
       <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between">
         <div>
           <h1 className="text-xl font-bold">Reviews</h1>
           <p className="text-sm text-gray-500">
-            reviews are {reviews.length > 0 ? "" : "not"} available here.
+            {reviews.length > 0
+              ? "Reviews are available"
+              : "No reviews available."}
           </p>
         </div>
         <div className="flex items-center gap-3">
           <button
-            className="bg-[#2e961a] text-white px-4 py-2 rounded-md mt-2 md:mt-0"
-            onClick={handleLayout}
+            className="bg-green-600 text-white px-4 py-2 rounded-md mt-2 md:mt-0"
+            onClick={toggleLayout}
           >
             Change Layout
           </button>
-          <Link to={"/reviews/add-review"}>
-            <button className="bg-[#199bff] text-white px-4 py-2 rounded-md mt-2 md:mt-0">
+          <Link to="/reviews/add-review">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-md mt-2 md:mt-0">
               Add Review
             </button>
           </Link>
         </div>
       </div>
+
+      {/* Reviews List */}
       {reviews.length > 0 ? (
         <>
-          {layout ? (
+          {isTableLayout ? (
+            // Table Layout
             <div className="mt-5 overflow-x-auto">
               <table className="min-w-full bg-white border">
                 <thead>
@@ -106,7 +150,7 @@ const Reviews = () => {
                     <tr key={review.id} className="hover:bg-gray-100">
                       <td className="px-6 py-4 border-b">
                         <img
-                          src={review.banner}
+                          src={`http://localhost:8000/${review.logo}`}
                           alt={review.name}
                           className="w-[150px] h-[50px] object-cover rounded"
                         />
@@ -122,13 +166,13 @@ const Reviews = () => {
                       </td>
                       <td className="px-6 py-4 border-b text-sm">
                         <div className="flex gap-2">
-                          <Link to={`/reviews/edit-review/${review.id}`}>
+                          <Link to={`/reviews/edit-review/${review._id}`}>
                             <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
                               <i className="fa-solid fa-pencil"></i>
                             </button>
                           </Link>
                           <button
-                            onClick={() => openDeleteConfirmModal(review.id)}
+                            onClick={() => openDeleteConfirmModal(review._id)}
                             className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-500"
                           >
                             <i className="fa-regular fa-trash-can"></i>
@@ -141,6 +185,7 @@ const Reviews = () => {
               </table>
             </div>
           ) : (
+            // Grid Layout
             <div className="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {currentItems.map((review) => (
                 <div
@@ -148,7 +193,7 @@ const Reviews = () => {
                   className="w-full flex flex-col shadow-md rounded-md p-3"
                 >
                   <img
-                    src={review.banner}
+                    src={`http://localhost:8000/${review.logo}`}
                     alt={review.name}
                     className="w-[150px] h-[50px]"
                   />
@@ -158,13 +203,13 @@ const Reviews = () => {
                     {review?.comments.slice(0, 50)}...
                   </p>
                   <div className="flex gap-3 mt-2">
-                    <Link to={`/reviews/edit-review/${review.id}`}>
+                    <Link to={`/reviews/edit-review/${review._id}`}>
                       <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
                         <i className="fa-solid fa-pencil"></i>
                       </button>
                     </Link>
                     <button
-                      onClick={() => openDeleteConfirmModal(review.id)}
+                      onClick={() => openDeleteConfirmModal(review._id)}
                       className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-500"
                     >
                       <i className="fa-regular fa-trash-can"></i>
@@ -174,16 +219,10 @@ const Reviews = () => {
               ))}
             </div>
           )}
-          <DeleteConfirmModal
-            open={open}
-            handleOpen={handleOpen}
-            itemId={selectedItemId}
-            onDelete={handleDelete}
-            itemName="reviewsData"
-          />
 
-          {/* Enhanced Pagination */}
+          {/* Pagination Controls */}
           <div className="flex justify-center mt-5">
+            {/* Previous Page Button */}
             <button
               onClick={prevPage}
               disabled={currentPage === 1}
@@ -196,6 +235,7 @@ const Reviews = () => {
               <i className="fa-solid fa-angle-left"></i>
             </button>
 
+            {/* Page Numbers */}
             {Array.from({ length: totalPages }, (_, index) => (
               <button
                 key={index + 1}
@@ -210,6 +250,7 @@ const Reviews = () => {
               </button>
             ))}
 
+            {/* Next Page Button */}
             <button
               onClick={nextPage}
               disabled={currentPage === totalPages}
@@ -226,6 +267,15 @@ const Reviews = () => {
       ) : (
         <Loader />
       )}
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmModal
+        open={openDeleteModal}
+        handleOpen={toggleDeleteModal}
+        onDelete={handleDelete}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this review? This action cannot be undone."
+      />
     </div>
   );
 };

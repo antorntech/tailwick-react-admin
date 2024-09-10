@@ -40,43 +40,22 @@ const AddReview = () => {
 
   const handleUpload = async () => {
     const formData = new FormData();
-    formData.append("banner", image);
+    formData.append("logo", image);
     formData.append("name", name);
     formData.append("designation", designation);
     formData.append("comments", comments);
 
     try {
-      // Retrieve existing data from local storage
-      const existingData =
-        JSON.parse(localStorage.getItem("reviewsData")) || [];
-
-      // Create new entry object
-      const newEntry = {
-        id: Date.now(), // Unique ID for the new entry
-        name,
-        designation,
-        comments,
-        banner: imagePreview, // Assuming imagePreview holds the URL or base64 of the image
-      };
-
-      // Add the new entry to the existing data
-      const updatedData = [...existingData, newEntry];
-
-      // Save the updated data back to local storage
-      localStorage.setItem("reviewsData", JSON.stringify(updatedData));
-
-      // Show success toast
-      toast.success("Upload successful", {
-        position: "top-right",
-        hideProgressBar: false,
-        autoClose: 1000,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
+      const response = await fetch("http://localhost:8000/api/v1/reviews/add", {
+        method: "POST",
+        body: formData,
       });
 
+      if (!response.ok) {
+        throw new Error("Failed to upload file");
+      }
+
+      const result = await response.json();
       // Navigate to the reviews page
       navigate("/reviews");
 
