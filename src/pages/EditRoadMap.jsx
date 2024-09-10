@@ -10,30 +10,13 @@ const EditRoadMap = () => {
   const [description, setDescription] = useState("");
 
   useEffect(() => {
-    // Retrieve the specific review from local storage
-    const storedRoadMaps =
-      JSON.parse(localStorage.getItem("roadmapsData")) || [];
-    const roadMapToEdit = storedRoadMaps.find(
-      (roadMap) => roadMap.id === parseInt(id)
-    );
-
-    if (roadMapToEdit) {
-      setTitle(roadMapToEdit.title);
-      setDescription(roadMapToEdit.description);
-    } else {
-      toast.error("Road Map not found", {
-        position: "top-right",
-        hideProgressBar: false,
-        autoClose: 1000,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
+    fetch(`http://localhost:8000/api/v1/roadmaps/${id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setTitle(data.title);
+        setDescription(data.description);
       });
-      navigate("/road-maps");
-    }
-  }, [id, navigate]);
+  }, [id]);
 
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
@@ -43,56 +26,22 @@ const EditRoadMap = () => {
   };
 
   const handleUpdate = async () => {
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("description", description);
-
-    console.log(title, description);
+    const data = {
+      title,
+      description,
+    };
 
     try {
-      //   const response = await fetch("/api/upload", {
-      //     method: "POST",
-      //     body: formData,
-      //     headers: {
-      //       "X-Requested-With": "XMLHttpRequest",
-      //     },
-      //     onUploadProgress: (event) => {
-      //       setUploadProgress(Math.round((event.loaded * 100) / event.total));
-      //     },
-      //   });
-
-      //   if (!response.ok) {
-      //     throw new Error("Upload failed");
-      //   }
-
-      //   const result = await response.json();
-      //   console.log("Upload successful", result);
-
-      // Retrieve existing data from local storage
-      const storedRoadMaps =
-        JSON.parse(localStorage.getItem("roadmapsData")) || [];
-      const updatedRoadMaps = storedRoadMaps.map((roadMap) =>
-        roadMap.id === parseInt(id)
-          ? {
-              ...roadMap,
-              title,
-              description,
-            }
-          : roadMap
+      const response = await fetch(
+        `http://localhost:8000/api/v1/roadmaps/update/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
       );
-
-      localStorage.setItem("roadmapsData", JSON.stringify(updatedRoadMaps));
-
-      toast.success("Road Map updated successfully", {
-        position: "top-right",
-        hideProgressBar: false,
-        autoClose: 1000,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
 
       navigate("/road-maps");
 

@@ -16,46 +16,30 @@ const AddRoadMap = () => {
   };
 
   const handleUpload = async () => {
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("description", description);
+    const data = {
+      title,
+      description,
+    };
 
     console.log(title, description);
 
     try {
-      //   const response = await fetch("/api/upload", {
-      //     method: "POST",
-      //     body: formData,
-      //     headers: {
-      //       "X-Requested-With": "XMLHttpRequest",
-      //     },
-      //     onUploadProgress: (event) => {
-      //       setUploadProgress(Math.round((event.loaded * 100) / event.total));
-      //     },
-      //   });
+      const response = await fetch(
+        "http://localhost:8000/api/v1/roadmaps/add",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
 
-      //   if (!response.ok) {
-      //     throw new Error("Upload failed");
-      //   }
+      if (!response.ok) {
+        throw new Error("Failed to upload file");
+      }
 
-      //   const result = await response.json();
-      //   console.log("Upload successful", result);
-
-      // Retrieve existing data from local storage
-      const existingData =
-        JSON.parse(localStorage.getItem("roadmapsData")) || [];
-
-      const newEntry = {
-        id: Date.now(), // Unique ID for the new entry
-        title,
-        description,
-      };
-
-      // Add the new entry to the existing data
-      const updatedData = [...existingData, newEntry];
-
-      // Save the updated data back to local storage
-      localStorage.setItem("roadmapsData", JSON.stringify(updatedData));
+      const result = await response.json();
 
       toast.success("Upload successful", {
         position: "top-right",
