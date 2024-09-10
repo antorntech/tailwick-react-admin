@@ -14,34 +14,16 @@ const EditPromotion = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    // Retrieve the specific review from local storage
-    const storedPromotions =
-      JSON.parse(localStorage.getItem("promotionsData")) || [];
-
-    const promotionToEdit = storedPromotions.find(
-      (promotion) => promotion.id === parseInt(id)
-    );
-
-    if (promotionToEdit) {
-      setTitleOne(promotionToEdit.titleOne);
-      setTitleTwo(promotionToEdit.titleTwo);
-      setTitleThree(promotionToEdit.titleThree);
-      setSubtitle(promotionToEdit.subtitle);
-      setVideoLink(promotionToEdit.videoLink);
-    } else {
-      toast.error("Promotion not found", {
-        position: "top-right",
-        hideProgressBar: false,
-        autoClose: 1000,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
+    fetch(`http://localhost:8000/api/v1/promotions/${id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setTitleOne(data.titleOne);
+        setTitleTwo(data.titleTwo);
+        setTitleThree(data.titleThree);
+        setSubtitle(data.subtitle);
+        setVideoLink(data.videoLink);
       });
-      navigate("/promotion");
-    }
-  }, [id, navigate]);
+  }, [id]);
 
   const handleTitleOneChange = (e) => {
     setTitleOne(e.target.value);
@@ -71,49 +53,31 @@ const EditPromotion = () => {
   };
 
   const handleUpdate = async () => {
-    const formData = new FormData();
-    formData.append("titleOne", titleOne);
-    formData.append("titleTwo", titleTwo);
-    formData.append("titleThree", titleThree);
-    formData.append("subtitle", subtitle);
-    formData.append("videoLink", videoLink);
+    const data = {
+      titleOne: titleOne,
+      titleTwo: titleTwo,
+      titleThree: titleThree,
+      subtitle: subtitle,
+      videoLink: videoLink,
+    };
 
     try {
-      //   const response = await fetch("/api/upload", {
-      //     method: "POST",
-      //     body: formData,
-      //     headers: {
-      //       "X-Requested-With": "XMLHttpRequest",
-      //     },
-      //     onUploadProgress: (event) => {
-      //       setUploadProgress(Math.round((event.loaded * 100) / event.total));
-      //     },
-      //   });
-
-      //   if (!response.ok) {
-      //     throw new Error("Upload failed");
-      //   }
-
-      //   const result = await response.json();
-      //   console.log("Upload successful", result);
-
-      // Retrieve existing data from local storage
-      const storedPromotions =
-        JSON.parse(localStorage.getItem("promotionsData")) || [];
-      const updatedPromotions = storedPromotions.map((promotion) =>
-        promotion.id === parseInt(id)
-          ? {
-              ...promotion,
-              titleOne,
-              titleTwo,
-              titleThree,
-              subtitle,
-              videoLink,
-            }
-          : promotion
+      const response = await fetch(
+        `http://localhost:8000/api/v1/promotions/update/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json", // Set content type to JSON
+          },
+          body: JSON.stringify(data), // Send the data as JSON
+        }
       );
 
-      localStorage.setItem("promotionsData", JSON.stringify(updatedPromotions));
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.statusText}`);
+      }
+
+      const result = await response.json();
 
       toast.success("Promotion updated successfully", {
         position: "top-right",
@@ -126,6 +90,7 @@ const EditPromotion = () => {
         theme: "light",
       });
 
+      // Navigate to promotions page
       navigate("/promotion");
 
       // Reset the form
@@ -135,13 +100,7 @@ const EditPromotion = () => {
       setSubtitle("");
       setVideoLink("");
     } catch (error) {
-      console.error("Error uploading file", error);
-      // Reset the form
-      setTitleOne("");
-      setTitleTwo("");
-      setTitleThree("");
-      setSubtitle("");
-      setVideoLink("");
+      console.error("Error updating promotion", error);
     }
   };
 

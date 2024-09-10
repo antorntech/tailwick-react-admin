@@ -2,86 +2,128 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Loader from "../loader/Loader";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
+import { toast } from "react-toastify";
 
-const Promotions = () => {
-  const [open, setOpen] = useState(false);
-  const [selectedItemId, setSelectedItemId] = useState(null);
+const Promotion = () => {
+  // State variables
   const [promotions, setPromotions] = useState([]);
-  const handleOpen = () => setOpen(!open);
-  const [layout, setLayout] = useState(true);
+  const [isTableLayout, setIsTableLayout] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState(null);
 
-  const handleDelete = () => {
-    // Refresh the promotion list after deletion
-    const storedPromotions =
-      JSON.parse(localStorage.getItem("promotionsData")) || [];
-    setPromotions(storedPromotions);
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  // Fetch promotion data from the server
+  const fetchPromotions = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("http://localhost:8000/api/v1/promotions");
+      const data = await response.json();
+      setPromotions(data);
+    } catch (error) {
+      toast.error("Error fetching promotions.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
-    // Retrieve data from local storage
-    const storedPromotions = localStorage.getItem("promotionsData");
-    if (storedPromotions) {
-      setPromotions(JSON.parse(storedPromotions));
-    }
+    fetchPromotions();
   }, []);
 
+  // Toggle delete confirmation modal
+  const toggleDeleteModal = () => setOpenDeleteModal(!openDeleteModal);
+
+  // Open delete confirmation modal with selected promotion ID
   const openDeleteConfirmModal = (itemId) => {
     setSelectedItemId(itemId);
-    handleOpen();
+    toggleDeleteModal();
   };
 
-  const handleLayout = () => setLayout(!layout);
+  // Handle delete action
+  const handleDelete = async () => {
+    if (selectedItemId) {
+      try {
+        const response = await fetch(
+          `http://localhost:8000/api/v1/promotions/delete/${selectedItemId}`,
+          {
+            method: "DELETE",
+          }
+        );
+        if (response.ok) {
+          toast.success("Promotion deleted successfully", {
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+          fetchPromotions(); // Refresh promotion list
+        } else {
+          toast.error("Failed to delete promotion");
+        }
+      } catch (error) {
+        toast.error("An error occurred while deleting the promotion");
+      }
+    }
+  };
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // Adjust as needed
+  // Toggle between table and grid layout
+  const toggleLayout = () => setIsTableLayout(!isTableLayout);
 
+  // Pagination calculations
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = promotions.slice(indexOfFirstItem, indexOfLastItem);
-  console.log(currentItems);
-
   const totalPages = Math.ceil(promotions.length / itemsPerPage);
 
+  // Pagination controls
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const nextPage = () =>
+    currentPage < totalPages && setCurrentPage(currentPage + 1);
+  const prevPage = () => currentPage > 1 && setCurrentPage(currentPage - 1);
 
-  const nextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const prevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
+  // Show loader while fetching data
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div>
+      {/* Header Section */}
       <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between">
         <div>
           <h1 className="text-xl font-bold">Promotions</h1>
           <p className="text-sm text-gray-500">
-            promotions are {promotions.length > 0 ? "" : "not"} available here.
+            {promotions.length > 0
+              ? "Promotions are available"
+              : "No promotions available."}
           </p>
         </div>
         <div className="flex items-center gap-3">
           <button
-            className="bg-[#2e961a] text-white px-4 py-2 rounded-md mt-2 md:mt-0"
-            onClick={handleLayout}
+            className="bg-green-600 text-white px-4 py-2 rounded-md mt-2 md:mt-0"
+            onClick={toggleLayout}
           >
             Change Layout
           </button>
-          <Link to={"/promotion/add-promotion"}>
-            <button className="bg-[#199bff] text-white px-4 py-2 rounded-md mt-2 md:mt-0">
+          <Link to="/promotion/add-promotion">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-md mt-2 md:mt-0">
               Add Promotion
             </button>
           </Link>
         </div>
       </div>
+
+      {/* Promotions List */}
       {promotions.length > 0 ? (
         <>
-          {layout ? (
+          {isTableLayout ? (
+            // Table Layout
             <div className="mt-5 overflow-x-auto">
               <table className="min-w-full bg-white border">
                 <thead>
@@ -123,26 +165,28 @@ const Promotions = () => {
                       </td>
                       <td className="px-6 py-4 border-b ">
                         {promotion?.videoLink ? (
-                          <i className="fa-solid fa-check text-green-600 ml-5"></i>
+                          <i class="fa-solid fa-check text-green-600 ml-5"></i>
                         ) : (
-                          <i className="fa-solid fa-xmark text-red-600 ml-5"></i>
+                          <i class="fa-solid fa-xmark text-red-600 ml-5"></i>
                         )}
                       </td>
 
                       <td className="px-6 py-4 border-b text-sm">
                         <div className="flex gap-2">
                           <Link
-                            to={`/promotion/edit-promotion/${promotion.id}`}
+                            to={`/promotion/edit-promotion/${promotion._id}`}
                           >
                             <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
-                              <i className="fa-solid fa-pencil"></i>
+                              <i class="fa-solid fa-pencil"></i>
                             </button>
                           </Link>
                           <button
-                            onClick={() => openDeleteConfirmModal(promotion.id)}
+                            onClick={() =>
+                              openDeleteConfirmModal(promotion._id)
+                            }
                             className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-500"
                           >
-                            <i className="fa-regular fa-trash-can"></i>
+                            <i class="fa-regular fa-trash-can"></i>
                           </button>
                         </div>
                       </td>
@@ -152,35 +196,27 @@ const Promotions = () => {
               </table>
             </div>
           ) : (
+            // Grid Layout
             <div className="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {currentItems.map((promotion) => (
                 <div
-                  key={promotion.id}
+                  key={promotion._id}
                   className="w-full flex flex-col shadow-md rounded-md p-3"
                 >
-                  <ol className="list-decimal list-inside">
-                    <li className="text-xl font-bold">{promotion?.titleOne}</li>
-                    <li className="text-xl font-bold">{promotion?.titleTwo}</li>
-                    <li className="text-xl font-bold">
-                      {promotion?.titleThree}
-                    </li>
-                  </ol>
-                  <p className="">{promotion?.subtitle}</p>
-                  <p className="">
-                    {promotion?.videoLink ? (
-                      <i className="fa-solid fa-check text-green-600"></i>
-                    ) : (
-                      <i className="fa-solid fa-xmark text-red-600"></i>
-                    )}
-                  </p>
-                  <div className="flex gap-3 mt-2">
-                    <Link to={`/promotion/edit-promotion/${promotion.id}`}>
+                  <h1>{promotion.titleOne}</h1>
+                  <h1>{promotion.titleOne}</h1>
+                  <h1>{promotion.titleOne}</h1>
+                  {/* Action Buttons */}
+                  <div className="flex gap-2 mt-2">
+                    {/* Edit Promotion */}
+                    <Link to={`/promotions/edit-promotion/${promotion._id}`}>
                       <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
                         <i className="fa-solid fa-pencil"></i>
                       </button>
                     </Link>
+                    {/* Delete Promotion */}
                     <button
-                      onClick={() => openDeleteConfirmModal(promotion.id)}
+                      onClick={() => openDeleteConfirmModal(promotion._id)}
                       className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-500"
                     >
                       <i className="fa-regular fa-trash-can"></i>
@@ -190,16 +226,10 @@ const Promotions = () => {
               ))}
             </div>
           )}
-          <DeleteConfirmModal
-            open={open}
-            handleOpen={handleOpen}
-            itemId={selectedItemId}
-            onDelete={handleDelete}
-            itemName={"promotionsData"}
-          />
 
-          {/* Enhanced Pagination */}
+          {/* Pagination Controls */}
           <div className="flex justify-center mt-5">
+            {/* Previous Page Button */}
             <button
               onClick={prevPage}
               disabled={currentPage === 1}
@@ -212,6 +242,7 @@ const Promotions = () => {
               <i className="fa-solid fa-angle-left"></i>
             </button>
 
+            {/* Page Numbers */}
             {Array.from({ length: totalPages }, (_, index) => (
               <button
                 key={index + 1}
@@ -226,6 +257,7 @@ const Promotions = () => {
               </button>
             ))}
 
+            {/* Next Page Button */}
             <button
               onClick={nextPage}
               disabled={currentPage === totalPages}
@@ -242,8 +274,17 @@ const Promotions = () => {
       ) : (
         <Loader />
       )}
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmModal
+        open={openDeleteModal}
+        handleOpen={toggleDeleteModal}
+        onDelete={handleDelete}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this promotion? This action cannot be undone."
+      />
     </div>
   );
 };
 
-export default Promotions;
+export default Promotion;

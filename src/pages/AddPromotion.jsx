@@ -40,62 +40,32 @@ const AddPromotion = () => {
   };
 
   const handleUpload = async () => {
-    const formData = new FormData();
-    formData.append("titleOne", titleOne);
-    formData.append("titleTwo", titleTwo);
-    formData.append("titleThree", titleThree);
-    formData.append("subtitle", subtitle);
-    formData.append("videoLink", videoLink);
+    const data = {
+      titleOne,
+      titleTwo,
+      titleThree,
+      subtitle,
+      videoLink,
+    };
 
     try {
-      //   const response = await fetch("/api/upload", {
-      //     method: "POST",
-      //     body: formData,
-      //     headers: {
-      //       "X-Requested-With": "XMLHttpRequest",
-      //     },
-      //     onUploadProgress: (event) => {
-      //       setUploadProgress(Math.round((event.loaded * 100) / event.total));
-      //     },
-      //   });
+      const response = await fetch(
+        "http://localhost:8000/api/v1/promotions/add",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
 
-      //   if (!response.ok) {
-      //     throw new Error("Upload failed");
-      //   }
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.statusText}`);
+      }
 
-      //   const result = await response.json();
-      //   console.log("Upload successful", result);
-
-      // Retrieve existing data from local storage
-      const existingData =
-        JSON.parse(localStorage.getItem("promotionsData")) || [];
-
-      const newEntry = {
-        id: Date.now(), // Unique ID for the new entry
-        titleOne,
-        titleTwo,
-        titleThree,
-        subtitle,
-        videoLink,
-      };
-
-      // Add the new entry to the existing data
-      const updatedData = [...existingData, newEntry];
-
-      // Save the updated data back to local storage
-      localStorage.setItem("promotionsData", JSON.stringify(updatedData));
-
-      toast.success("Upload successful", {
-        position: "top-right",
-        hideProgressBar: false,
-        autoClose: 1000,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-
+      const result = await response.json();
+      toast.success("Upload successful");
       navigate("/promotion");
 
       // Reset the form
@@ -105,13 +75,7 @@ const AddPromotion = () => {
       setSubtitle("");
       setVideoLink("");
     } catch (error) {
-      console.error("Error uploading file", error);
-      // Reset the form
-      setTitleOne("");
-      setTitleTwo("");
-      setTitleThree("");
-      setSubtitle("");
-      setVideoLink("");
+      console.error("Error uploading data:", error);
     }
   };
 
