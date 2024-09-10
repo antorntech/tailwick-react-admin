@@ -40,23 +40,16 @@ const AddSlider = () => {
     formData.append("details", details);
 
     try {
-      // Retrieve existing data from local storage
-      const existingData =
-        JSON.parse(localStorage.getItem("slidersData")) || [];
+      const response = await fetch("http://localhost:8000/api/v1/sliders/add", {
+        method: "POST",
+        body: formData,
+      });
 
-      // Create new entry object
-      const newEntry = {
-        id: Date.now(), // Unique ID for the new entry
-        title,
-        details,
-        banner: imagePreview, // Assuming imagePreview holds the URL or base64 of the image
-      };
+      if (!response.ok) {
+        throw new Error("Failed to upload file");
+      }
 
-      // Add the new entry to the existing data
-      const updatedData = [...existingData, newEntry];
-
-      // Save the updated data back to local storage
-      localStorage.setItem("slidersData", JSON.stringify(updatedData));
+      const result = await response.json();
 
       // Show success toast
       toast.success("Upload successful", {

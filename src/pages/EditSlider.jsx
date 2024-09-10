@@ -17,29 +17,13 @@ const EditSlider = () => {
   const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB limit
 
   useEffect(() => {
-    // Retrieve the specific review from local storage
-    const storedSliders = JSON.parse(localStorage.getItem("slidersData")) || [];
-    const sliderToEdit = storedSliders.find(
-      (slider) => slider.id === parseInt(id)
-    );
-
-    if (sliderToEdit) {
-      setTitle(sliderToEdit.title);
-      setDetails(sliderToEdit.details);
-      setImagePreview(sliderToEdit.banner);
-    } else {
-      toast.error("Slider not found", {
-        position: "top-right",
-        hideProgressBar: false,
-        autoClose: 1000,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
+    fetch(`http://localhost:8000/api/v1/sliders/${id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setTitle(data.title);
+        setDetails(data.details);
+        setImagePreview(`http://localhost:8000/${data.banner}`);
       });
-      navigate("/sliders");
-    }
   }, [id, navigate]);
 
   const handleImageChange = (e) => {
@@ -62,25 +46,26 @@ const EditSlider = () => {
 
   const handleUpdate = async () => {
     const formData = new FormData();
-    formData.append("banner", image);
+    if (image) {
+      formData.append("banner", image);
+    }
     formData.append("title", title);
     formData.append("details", details);
 
     try {
-      const storedSliders =
-        JSON.parse(localStorage.getItem("slidersData")) || [];
-      const updatedSliders = storedSliders.map((slider) =>
-        slider.id === parseInt(id)
-          ? {
-              ...slider,
-              title,
-              details,
-              banner: image ? URL.createObjectURL(image) : imagePreview,
-            }
-          : slider
+      const response = await fetch(
+        `http://localhost:8000/api/v1/sliders/update/${id}`,
+        {
+          method: "PUT",
+          body: formData,
+        }
       );
 
-      localStorage.setItem("slidersData", JSON.stringify(updatedSliders));
+      if (!response.ok) {
+        throw new Error("Failed to upload file");
+      }
+
+      const result = await response.json();
 
       // Show success toast
       toast.success("Slider updated successfully", {
