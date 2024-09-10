@@ -80,7 +80,7 @@ const Header = () => {
                 <PopoverContent className="mt-2 w-[150px]">
                   <Link to={"/notification"}>
                     <div className="w-full flex items-center gap-2 hover:text-blue-700 hover:font-bold transition-all duration-300">
-                      <i class="fa-regular fa-bell"></i>
+                      <i className="fa-regular fa-bell"></i>
                       <p>Notification</p>
                     </div>
                   </Link>

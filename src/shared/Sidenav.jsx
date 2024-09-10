@@ -158,7 +158,7 @@ const Sidenav = () => {
                               }`}
                               onClick={toggleSidebar}
                             >
-                              <i class="fa-solid fa-minus mr-2"></i>
+                              <i className="fa-solid fa-minus mr-2"></i>
                               {subitem.text}
                             </Link>
                           </li>

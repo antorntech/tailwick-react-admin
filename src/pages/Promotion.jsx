@@ -123,9 +123,9 @@ const Promotions = () => {
                       </td>
                       <td className="px-6 py-4 border-b ">
                         {promotion?.videoLink ? (
-                          <i class="fa-solid fa-check text-green-600 ml-5"></i>
+                          <i className="fa-solid fa-check text-green-600 ml-5"></i>
                         ) : (
-                          <i class="fa-solid fa-xmark text-red-600 ml-5"></i>
+                          <i className="fa-solid fa-xmark text-red-600 ml-5"></i>
                         )}
                       </td>
 
@@ -135,14 +135,14 @@ const Promotions = () => {
                             to={`/promotion/edit-promotion/${promotion.id}`}
                           >
                             <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
-                              <i class="fa-solid fa-pencil"></i>
+                              <i className="fa-solid fa-pencil"></i>
                             </button>
                           </Link>
                           <button
                             onClick={() => openDeleteConfirmModal(promotion.id)}
                             className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-500"
                           >
-                            <i class="fa-regular fa-trash-can"></i>
+                            <i className="fa-regular fa-trash-can"></i>
                           </button>
                         </div>
                       </td>
@@ -168,22 +168,22 @@ const Promotions = () => {
                   <p className="">{promotion?.subtitle}</p>
                   <p className="">
                     {promotion?.videoLink ? (
-                      <i class="fa-solid fa-check text-green-600"></i>
+                      <i className="fa-solid fa-check text-green-600"></i>
                     ) : (
-                      <i class="fa-solid fa-xmark text-red-600"></i>
+                      <i className="fa-solid fa-xmark text-red-600"></i>
                     )}
                   </p>
                   <div className="flex gap-3 mt-2">
                     <Link to={`/promotion/edit-promotion/${promotion.id}`}>
                       <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
-                        <i class="fa-solid fa-pencil"></i>
+                        <i className="fa-solid fa-pencil"></i>
                       </button>
                     </Link>
                     <button
                       onClick={() => openDeleteConfirmModal(promotion.id)}
                       className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-500"
                     >
-                      <i class="fa-regular fa-trash-can"></i>
+                      <i className="fa-regular fa-trash-can"></i>
                     </button>
                   </div>
                 </div>

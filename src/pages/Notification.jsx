@@ -121,7 +121,7 @@ const Notification = () => {
                             onClick={() => openDeleteConfirmModal(item.id)}
                             className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-500"
                           >
-                            <i class="fa-regular fa-trash-can"></i>
+                            <i className="fa-regular fa-trash-can"></i>
                           </button>
                         </div>
                       </td>
@@ -146,7 +146,7 @@ const Notification = () => {
                       onClick={() => openDeleteConfirmModal(item.id)}
                       className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-500"
                     >
-                      <i class="fa-regular fa-trash-can"></i>
+                      <i className="fa-regular fa-trash-can"></i>
                     </button>
                   </div>
                 </div>

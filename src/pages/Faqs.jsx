@@ -110,14 +110,14 @@ const Faqs = () => {
                         <div className="flex gap-2">
                           <Link to={`/faqs/edit-faq/${faq.id}`}>
                             <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
-                              <i class="fa-solid fa-pencil"></i>
+                              <i className="fa-solid fa-pencil"></i>
                             </button>
                           </Link>
                           <button
                             onClick={() => openDeleteConfirmModal(faq.id)}
                             className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-500"
                           >
-                            <i class="fa-regular fa-trash-can"></i>
+                            <i className="fa-regular fa-trash-can"></i>
                           </button>
                         </div>
                       </td>
@@ -140,14 +140,14 @@ const Faqs = () => {
                   <div className="flex gap-3 mt-2">
                     <Link to={`/faqs/edit-faq/${faq.id}`}>
                       <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
-                        <i class="fa-solid fa-pencil"></i>
+                        <i className="fa-solid fa-pencil"></i>
                       </button>
                     </Link>
                     <button
                       onClick={() => openDeleteConfirmModal(faq.id)}
                       className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-500"
                     >
-                      <i class="fa-regular fa-trash-can"></i>
+                      <i className="fa-regular fa-trash-can"></i>
                     </button>
                   </div>
                 </div>

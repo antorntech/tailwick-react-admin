@@ -164,58 +164,50 @@ const AddService = () => {
     console.log(title, details, blockQuote, tags, category);
 
     try {
-      // Retrieve existing data from local storage
-      const existingData =
-        JSON.parse(localStorage.getItem("servicesData")) || [];
+      fetch("http://localhost:8000/api/v1/services/add", {
+        method: "POST",
+        body: formData,
+        headers: {
+          "X-Requested-With": "XMLHttpRequest",
+        },
+        onUploadProgress: (event) => {
+          setUploadProgress(Math.round((event.loaded * 100) / event.total));
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Success:", data);
+          // Show success toast
+          toast.success("Upload successful", {
+            position: "top-right",
+            hideProgressBar: false,
+            autoClose: 1000,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
 
-      // Create new entry object
-      const newEntry = {
-        id: Date.now(), // Unique ID for the new entry
-        title,
-        details,
-        benefits,
-        offers,
-        works,
-        tags,
-        category,
-        date: date,
-        author: "Admin",
-        banner: imagePreview, // Assuming imagePreview holds the URL or base64 of the image
-      };
+          // Navigate to the services page
+          navigate("/services");
 
-      // Add the new entry to the existing data
-      const updatedData = [...existingData, newEntry];
-
-      // Save the updated data back to local storage
-      localStorage.setItem("servicesData", JSON.stringify(updatedData));
-
-      // Show success toast
-      toast.success("Upload successful", {
-        position: "top-right",
-        hideProgressBar: false,
-        autoClose: 1000,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-
-      // Navigate to the services page
-      navigate("/services");
-
-      // Reset the form
-      setImage(null);
-      setImagePreview(null);
-      setTitle("");
-      setDetails("");
-      setBenefits([]);
-      setOffers([]);
-      setWorks([]);
-      setTags([]);
-      setCategory("Skill Development Training");
-      setFileKey(Date.now());
-      setUploadProgress(0);
+          // Reset the form
+          setImage(null);
+          setImagePreview(null);
+          setTitle("");
+          setDetails("");
+          setBenefits([]);
+          setOffers([]);
+          setWorks([]);
+          setTags([]);
+          setCategory("Skill Development Training");
+          setFileKey(Date.now());
+          setUploadProgress(0);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
     } catch (error) {
       console.error("Error uploading file", error);
       // Reset the form in case of error
@@ -247,7 +239,7 @@ const AddService = () => {
           onClick={() => window.history.back()}
           className="flex items-center justify-center gap-1 text-black border-2 border-black px-2 py-2 rounded-md text-sm hover:bg-black hover:text-white transition-all duration-500"
         >
-          <i class="fa-solid fa-hand-point-left"></i>
+          <i className="fa-solid fa-hand-point-left"></i>
         </button>
         <div>
           <h1 className="text-xl font-bold">Add Service</h1>
@@ -357,19 +349,19 @@ const AddService = () => {
                       onClick={() => moveUp(index, "benefits")}
                       className="text-gray-800 bg-gray-400 hover:bg-green-600 hover:text-white transition-all duration-500 rounded-full w-6 h-6 flex items-center justify-center mr-2"
                     >
-                      <i class="fa-solid fa-up-long text-[12px]"></i>
+                      <i className="fa-solid fa-up-long text-[12px]"></i>
                     </button>
                     <button
                       onClick={() => moveDown(index, "benefits")}
                       className="text-gray-800 bg-gray-400 hover:bg-green-600 hover:text-white transition-all duration-500 rounded-full w-6 h-6 flex items-center justify-center mr-2"
                     >
-                      <i class="fa-solid fa-down-long text-[12px]"></i>
+                      <i className="fa-solid fa-down-long text-[12px]"></i>
                     </button>
                     <button
                       onClick={() => removeItem(index, benefits, setBenefits)}
                       className="text-white bg-red-600 rounded-full w-6 h-6 flex items-center justify-center"
                     >
-                      <i class="fa-solid fa-xmark text-[12px]"></i>
+                      <i className="fa-solid fa-xmark text-[12px]"></i>
                     </button>
                   </div>
                 </div>
@@ -422,19 +414,19 @@ const AddService = () => {
                       onClick={() => moveUp(index, "offers")}
                       className="text-gray-800 bg-gray-400 hover:bg-green-600 hover:text-white transition-all duration-500 rounded-full w-6 h-6 flex items-center justify-center mr-2"
                     >
-                      <i class="fa-solid fa-up-long text-[12px]"></i>
+                      <i className="fa-solid fa-up-long text-[12px]"></i>
                     </button>
                     <button
                       onClick={() => moveDown(index, "offers")}
                       className="text-gray-800 bg-gray-400 hover:bg-green-600 hover:text-white transition-all duration-500 rounded-full w-6 h-6 flex items-center justify-center mr-2"
                     >
-                      <i class="fa-solid fa-down-long text-[12px]"></i>
+                      <i className="fa-solid fa-down-long text-[12px]"></i>
                     </button>
                     <button
                       onClick={() => removeItem(index, offers, setOffers)}
                       className="text-white bg-red-600 rounded-full w-6 h-6 flex items-center justify-center"
                     >
-                      <i class="fa-solid fa-xmark text-[12px]"></i>
+                      <i className="fa-solid fa-xmark text-[12px]"></i>
                     </button>
                   </div>
                 </div>
@@ -481,19 +473,19 @@ const AddService = () => {
                       onClick={() => moveUp(index, "works")}
                       className="text-gray-800 bg-gray-400 hover:bg-green-600 hover:text-white transition-all duration-500 rounded-full w-6 h-6 flex items-center justify-center mr-2"
                     >
-                      <i class="fa-solid fa-up-long text-[12px]"></i>
+                      <i className="fa-solid fa-up-long text-[12px]"></i>
                     </button>
                     <button
                       onClick={() => moveDown(index, "works")}
                       className="text-gray-800 bg-gray-400 hover:bg-green-600 hover:text-white transition-all duration-500 rounded-full w-6 h-6 flex items-center justify-center mr-2"
                     >
-                      <i class="fa-solid fa-down-long text-[12px]"></i>
+                      <i className="fa-solid fa-down-long text-[12px]"></i>
                     </button>
                     <button
                       onClick={() => removeItem(index, works, setWorks)}
                       className="text-white bg-red-600 rounded-full w-6 h-6 flex items-center justify-center"
                     >
-                      <i class="fa-solid fa-xmark text-[12px]"></i>
+                      <i className="fa-solid fa-xmark text-[12px]"></i>
                     </button>
                   </div>
                 </div>

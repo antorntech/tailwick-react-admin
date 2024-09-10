@@ -15,7 +15,7 @@ const Software = () => {
   const [isTableLayout, setIsTableLayout] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
-  const [selectedSoftwareId, setSelectedSoftwareId] = useState(null);
+  const [selectedItemId, setSelectedItemId] = useState(null);
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
@@ -43,17 +43,17 @@ const Software = () => {
   const toggleDeleteModal = () => setOpenDeleteModal(!openDeleteModal);
 
   // Open delete confirmation modal with selected software ID
-  const openDeleteConfirmModal = (softwareId) => {
-    setSelectedSoftwareId(softwareId);
+  const openDeleteConfirmModal = (itemId) => {
+    setSelectedItemId(itemId);
     toggleDeleteModal();
   };
 
   // Handle delete action
   const handleDelete = async () => {
-    if (selectedSoftwareId) {
+    if (selectedItemId) {
       try {
         const response = await fetch(
-          `http://localhost:8000/api/v1/softwares/delete/${selectedSoftwareId}`,
+          `http://localhost:8000/api/v1/softwares/delete/${selectedItemId}`,
           {
             method: "DELETE",
           }

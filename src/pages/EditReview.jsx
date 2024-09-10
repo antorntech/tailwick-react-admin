@@ -135,7 +135,7 @@ const EditReview = () => {
           onClick={() => window.history.back()}
           className="flex items-center justify-center gap-1 text-black border-2 border-black px-2 py-2 rounded-md text-sm hover:bg-black hover:text-white transition-all duration-500"
         >
-          <i class="fa-solid fa-hand-point-left"></i>
+          <i className="fa-solid fa-hand-point-left"></i>
         </button>
         <div>
           <h1 className="text-xl font-bold">Edit Review</h1>

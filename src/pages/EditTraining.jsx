@@ -277,7 +277,7 @@ const EditTraining = () => {
           onClick={() => window.history.back()}
           className="flex items-center justify-center gap-1 text-black border-2 border-black px-2 py-2 rounded-md text-sm hover:bg-black hover:text-white transition-all duration-500"
         >
-          <i class="fa-solid fa-hand-point-left"></i>
+          <i className="fa-solid fa-hand-point-left"></i>
         </button>
         <div>
           <h1 className="text-xl font-bold">Edit Training</h1>
@@ -387,19 +387,19 @@ const EditTraining = () => {
                       onClick={() => moveUp(index, "benefits")}
                       className="text-gray-800 bg-gray-400 hover:bg-green-600 hover:text-white transition-all duration-500 rounded-full w-6 h-6 flex items-center justify-center mr-2"
                     >
-                      <i class="fa-solid fa-up-long text-[12px]"></i>
+                      <i className="fa-solid fa-up-long text-[12px]"></i>
                     </button>
                     <button
                       onClick={() => moveDown(index, "benefits")}
                       className="text-gray-800 bg-gray-400 hover:bg-green-600 hover:text-white transition-all duration-500 rounded-full w-6 h-6 flex items-center justify-center mr-2"
                     >
-                      <i class="fa-solid fa-down-long text-[12px]"></i>
+                      <i className="fa-solid fa-down-long text-[12px]"></i>
                     </button>
                     <button
                       onClick={() => removeItem(index, benefits, setBenefits)}
                       className="text-white bg-red-600 rounded-full w-6 h-6 flex items-center justify-center"
                     >
-                      <i class="fa-solid fa-xmark text-[12px]"></i>
+                      <i className="fa-solid fa-xmark text-[12px]"></i>
                     </button>
                   </div>
                 </div>
@@ -452,19 +452,19 @@ const EditTraining = () => {
                       onClick={() => moveUp(index, "offers")}
                       className="text-gray-800 bg-gray-400 hover:bg-green-600 hover:text-white transition-all duration-500 rounded-full w-6 h-6 flex items-center justify-center mr-2"
                     >
-                      <i class="fa-solid fa-up-long text-[12px]"></i>
+                      <i className="fa-solid fa-up-long text-[12px]"></i>
                     </button>
                     <button
                       onClick={() => moveDown(index, "offers")}
                       className="text-gray-800 bg-gray-400 hover:bg-green-600 hover:text-white transition-all duration-500 rounded-full w-6 h-6 flex items-center justify-center mr-2"
                     >
-                      <i class="fa-solid fa-down-long text-[12px]"></i>
+                      <i className="fa-solid fa-down-long text-[12px]"></i>
                     </button>
                     <button
                       onClick={() => removeItem(index, offers, setOffers)}
                       className="text-white bg-red-600 rounded-full w-6 h-6 flex items-center justify-center"
                     >
-                      <i class="fa-solid fa-xmark text-[12px]"></i>
+                      <i className="fa-solid fa-xmark text-[12px]"></i>
                     </button>
                   </div>
                 </div>
@@ -511,19 +511,19 @@ const EditTraining = () => {
                       onClick={() => moveUp(index, "works")}
                       className="text-gray-800 bg-gray-400 hover:bg-green-600 hover:text-white transition-all duration-500 rounded-full w-6 h-6 flex items-center justify-center mr-2"
                     >
-                      <i class="fa-solid fa-up-long text-[12px]"></i>
+                      <i className="fa-solid fa-up-long text-[12px]"></i>
                     </button>
                     <button
                       onClick={() => moveDown(index, "works")}
                       className="text-gray-800 bg-gray-400 hover:bg-green-600 hover:text-white transition-all duration-500 rounded-full w-6 h-6 flex items-center justify-center mr-2"
                     >
-                      <i class="fa-solid fa-down-long text-[12px]"></i>
+                      <i className="fa-solid fa-down-long text-[12px]"></i>
                     </button>
                     <button
                       onClick={() => removeItem(index, works, setWorks)}
                       className="text-white bg-red-600 rounded-full w-6 h-6 flex items-center justify-center"
                     >
-                      <i class="fa-solid fa-xmark text-[12px]"></i>
+                      <i className="fa-solid fa-xmark text-[12px]"></i>
                     </button>
                   </div>
                 </div>
