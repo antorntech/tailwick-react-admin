@@ -2,82 +2,117 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Loader from "../loader/Loader";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
+import { toast } from "react-toastify";
 
 const Notification = () => {
-  const [open, setOpen] = useState(false);
-  const [selectedItemId, setSelectedItemId] = useState(null);
+  // State variables
   const [notifications, setNotifications] = useState([]);
-  const handleOpen = () => setOpen(!open);
-  const [layout, setLayout] = useState(true);
+  const [isTableLayout, setIsTableLayout] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState(null);
 
-  const handleDelete = () => {
-    // Refresh the faq list after deletion
-    const storedNotifications =
-      JSON.parse(localStorage.getItem("notificationsData")) || [];
-    setNotifications(storedNotifications);
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  // Fetch notification data from the server
+  const fetchNotifications = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        "http://localhost:8000/api/v1/notifications"
+      );
+      const data = await response.json();
+      setNotifications(data);
+    } catch (error) {
+      toast.error("Error fetching notifications.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
-    // Retrieve data from local storage
-    const storedNotifications = localStorage.getItem("notificationsData");
-    if (storedNotifications) {
-      setNotifications(JSON.parse(storedNotifications));
-    }
+    fetchNotifications();
   }, []);
 
+  // Toggle delete confirmation modal
+  const toggleDeleteModal = () => setOpenDeleteModal(!openDeleteModal);
+
+  // Open delete confirmation modal with selected notification ID
   const openDeleteConfirmModal = (itemId) => {
     setSelectedItemId(itemId);
-    handleOpen();
+    toggleDeleteModal();
   };
 
-  const handleLayout = () => setLayout(!layout);
+  // Handle delete action
+  const handleDelete = async () => {
+    if (selectedItemId) {
+      try {
+        const response = await fetch(
+          `http://localhost:8000/api/v1/notifications/delete/${selectedItemId}`,
+          {
+            method: "DELETE",
+          }
+        );
+        if (response.ok) {
+          toast.success("Notification deleted successfully", {
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+          fetchNotifications(); // Refresh notification list
+        } else {
+          toast.error("Failed to delete notification");
+        }
+      } catch (error) {
+        toast.error("An error occurred while deleting the notification");
+      }
+    }
+  };
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // Adjust as needed
+  // Toggle between table and grid layout
+  const toggleLayout = () => setIsTableLayout(!isTableLayout);
 
+  // Pagination calculations
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = notifications.slice(indexOfFirstItem, indexOfLastItem);
-  console.log(currentItems);
-
   const totalPages = Math.ceil(notifications.length / itemsPerPage);
 
+  // Pagination controls
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const nextPage = () =>
+    currentPage < totalPages && setCurrentPage(currentPage + 1);
+  const prevPage = () => currentPage > 1 && setCurrentPage(currentPage - 1);
 
-  const nextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const prevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
+  // Show loader while fetching data
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div>
+      {/* Header Section */}
       <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between">
         <div>
           <h1 className="text-xl font-bold">Notifications</h1>
           <p className="text-sm text-gray-500">
-            notifications are {notifications.length > 0 ? "" : "not"} available
-            here.
+            {notifications.length > 0
+              ? "Notifications are available"
+              : "No notifications available."}
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          <button
-            className="bg-[#2e961a] text-white px-4 py-2 rounded-md mt-2 md:mt-0"
-            onClick={handleLayout}
-          >
-            Change Layout
-          </button>
-        </div>
       </div>
+
+      {/* Notifications List */}
       {notifications.length > 0 ? (
         <>
-          {layout ? (
+          {isTableLayout ? (
+            // Table Layout
             <div className="mt-5 overflow-x-auto">
               <table className="min-w-full bg-white border">
                 <thead>
@@ -100,28 +135,32 @@ const Notification = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentItems.map((item) => (
-                    <tr key={item.id} className="hover:bg-gray-100">
+                  {currentItems.map((notification) => (
+                    <tr key={notification.id} className="hover:bg-gray-100">
                       <td className="px-6 py-4 border-b">
-                        <h1 className="text-sm font-bold">{item?.name}</h1>
-                      </td>
-                      <td className="px-6 py-4 border-b">
-                        <h1 className="text-sm font-bold">{item?.email}</h1>
-                      </td>
-                      <td className="px-6 py-4 border-b">
-                        <h1 className="text-sm font-bold">{item?.subject}</h1>
+                        <h1 className="text-sm font-bold">
+                          {notification?.name}
+                        </h1>
                       </td>
                       <td className="px-6 py-4 border-b text-sm text-gray-500">
-                        {item?.message.slice(0, 50)}...
+                        {notification?.email}...
+                      </td>
+                      <td className="px-6 py-4 border-b text-sm text-gray-500">
+                        {notification?.subject}...
+                      </td>
+                      <td className="px-6 py-4 border-b text-sm text-gray-500">
+                        {notification?.message.slice(0, 50)}...
                       </td>
 
                       <td className="px-6 py-4 border-b text-sm">
                         <div className="flex gap-2">
                           <button
-                            onClick={() => openDeleteConfirmModal(item.id)}
+                            onClick={() =>
+                              openDeleteConfirmModal(notification._id)
+                            }
                             className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-500"
                           >
-                            <i className="fa-regular fa-trash-can"></i>
+                            <i class="fa-regular fa-trash-can"></i>
                           </button>
                         </div>
                       </td>
@@ -131,19 +170,20 @@ const Notification = () => {
               </table>
             </div>
           ) : (
+            // Grid Layout
             <div className="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {currentItems.map((item) => (
+              {currentItems.map((notification) => (
                 <div
-                  key={item.id}
+                  key={notification._id}
                   className="w-full flex flex-col shadow-md rounded-md p-3"
                 >
-                  <h1 className="text-xl font-bold mt-3">{item?.Name}</h1>
-                  <p className="text-sm text-gray-500">
-                    {item?.message.slice(0, 80)}...
-                  </p>
-                  <div className="flex gap-3 mt-2">
+                  <h1 className="text-lg font-bold">{notification.name}</h1>
+                  <p className="text-sm">{notification.email}</p>
+                  {/* Action Buttons */}
+                  <div className="flex gap-2 mt-2">
+                    {/* Delete Notification */}
                     <button
-                      onClick={() => openDeleteConfirmModal(item.id)}
+                      onClick={() => openDeleteConfirmModal(notification._id)}
                       className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-500"
                     >
                       <i className="fa-regular fa-trash-can"></i>
@@ -153,16 +193,10 @@ const Notification = () => {
               ))}
             </div>
           )}
-          <DeleteConfirmModal
-            open={open}
-            handleOpen={handleOpen}
-            itemId={selectedItemId}
-            onDelete={handleDelete}
-            itemName={"notificationsData"}
-          />
 
-          {/* Enhanced Pagination */}
+          {/* Pagination Controls */}
           <div className="flex justify-center mt-5">
+            {/* Previous Page Button */}
             <button
               onClick={prevPage}
               disabled={currentPage === 1}
@@ -175,6 +209,7 @@ const Notification = () => {
               <i className="fa-solid fa-angle-left"></i>
             </button>
 
+            {/* Page Numbers */}
             {Array.from({ length: totalPages }, (_, index) => (
               <button
                 key={index + 1}
@@ -189,6 +224,7 @@ const Notification = () => {
               </button>
             ))}
 
+            {/* Next Page Button */}
             <button
               onClick={nextPage}
               disabled={currentPage === totalPages}
@@ -205,6 +241,15 @@ const Notification = () => {
       ) : (
         <Loader />
       )}
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmModal
+        open={openDeleteModal}
+        handleOpen={toggleDeleteModal}
+        onDelete={handleDelete}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this notification? This action cannot be undone."
+      />
     </div>
   );
 };
