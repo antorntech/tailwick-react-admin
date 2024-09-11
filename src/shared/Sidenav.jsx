@@ -18,6 +18,7 @@ const menuItems = [
     submenu: [
       { text: "Main About", link: "/main-about" },
       { text: "Home About", link: "/home-about" },
+      { text: "Home Info", link: "/home-info" },
       { text: "Road Map", link: "/road-maps" },
     ],
   },

@@ -41,6 +41,12 @@ import Notification from "../pages/Notification";
 import AddModule from "../pages/AddModule";
 import ViewModule from "../pages/ViewModule";
 import EditModule from "../pages/EditModule";
+import HomeInfo from "../pages/HomeInfo";
+import AddHomeInfo from "../pages/AddHomeInfo";
+import ViewInfoCategory from "../pages/ViewInfoCategory";
+import AddHomeInfoCategory from "../pages/AddHomeInfoCategory";
+import EditHomeInfo from "../pages/EditHomeInfo";
+import EditHomeInfoCategory from "../pages/EditHomeInfoCategory";
 
 const AppRoutes = () => {
   const user = localStorage.getItem("email");
@@ -69,6 +75,24 @@ const AppRoutes = () => {
           <Route path="/sponsors" element={<Sponsors />} />
           <Route path="/sponsors/add-sponsor" element={<AddSponsor />} />
           <Route path="/sponsors/edit-sponsor/:id" element={<EditSponsor />} />
+          <Route path="/home-info" element={<HomeInfo />} />
+          <Route path="/add-home-info" element={<AddHomeInfo />} />
+          <Route
+            path="/home-info/add-info-category/:id"
+            element={<AddHomeInfoCategory />}
+          />
+          <Route
+            path="/home-info/view-info-category/:id"
+            element={<ViewInfoCategory />}
+          />
+          <Route
+            path="/home-info/edit-home-info/:id"
+            element={<EditHomeInfo />}
+          />
+          <Route
+            path="/home-info/edit-info-category/:id/:categoryId"
+            element={<EditHomeInfoCategory />}
+          />
           <Route path="/trainings" element={<Training />} />
           <Route path="/trainings/add-training" element={<AddTraining />} />
           <Route
@@ -77,6 +101,7 @@ const AppRoutes = () => {
           />
           <Route path="/trainings/add-module/:id" element={<AddModule />} />
           <Route path="/trainings/view-module/:id" element={<ViewModule />} />
+
           <Route
             path="/trainings/edit-module/:id/:moduleId"
             element={<EditModule />}
