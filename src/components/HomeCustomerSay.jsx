@@ -108,7 +108,12 @@ const HomeCustomerSay = () => {
           <div key={review.id} className="mt-5">
             <div className="border-2 border-gray-300 mx-1 p-3 rounded-md">
               <div>
-                <img src={review.image} alt={review.name} />
+                <img
+                  src={
+                    review.image ? review.image : "https://placehold.co/400x200"
+                  }
+                  alt={review.name}
+                />
               </div>
               <div>
                 <p className="text-sm py-2">{review.comments}</p>
