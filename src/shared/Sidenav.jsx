@@ -16,9 +16,8 @@ const menuItems = [
     title: "About",
     icon: "/img/icons/about",
     submenu: [
-      { text: "Main About", link: "/main-about" },
-      { text: "Home About", link: "/home-about" },
       { text: "Home Info", link: "/home-info" },
+      { text: "About Details", link: "/about-details" },
       { text: "Road Map", link: "/road-maps" },
     ],
   },

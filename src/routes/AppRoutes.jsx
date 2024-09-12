@@ -6,16 +6,12 @@ import Slider from "../pages/Slider";
 import Software from "../pages/Software";
 import Training from "../pages/Training";
 import Services from "../pages/Services";
-import MainAbout from "../pages/MainAbout";
-import HomeAbout from "../pages/HomeAbout";
 import Login from "../pages/Login";
 import Profile from "../pages/Profile";
 import AddBlog from "../pages/AddBlog";
 import AddSlider from "../pages/AddSlider";
 import AddTraining from "../pages/AddTraining";
 import AddSoftware from "../pages/AddSoftware";
-import HomeContact from "../pages/HomeContact";
-import MainContact from "../pages/MainContact";
 import Sponsors from "../pages/Sponsors";
 import AddSponsor from "../pages/AddSponsor";
 import AddService from "../pages/AddService";
@@ -50,6 +46,10 @@ import EditHomeInfoCategory from "../pages/EditHomeInfoCategory";
 import MyPdf from "../pages/MyPdf";
 import AddMainContact from "../pages/AddMainContact";
 import EditMainContact from "../pages/EditMainContact";
+import AboutDetails from "../pages/AboutDetails";
+import MainContact from "../pages/MainContact";
+import AddAboutDetails from "../pages/AddAboutDetails";
+import EditAboutDetails from "../pages/EditAboutDetails";
 
 const AppRoutes = () => {
   const user = localStorage.getItem("email");
@@ -62,8 +62,15 @@ const AppRoutes = () => {
           <Route path="/sliders" element={<Slider />} />
           <Route path="/sliders/add-slider" element={<AddSlider />} />
           <Route path="/sliders/edit-slider/:id" element={<EditSlider />} />
-          <Route path="/main-about" element={<MainAbout />} />
-          <Route path="/home-about" element={<HomeAbout />} />
+          <Route path="/about-details" element={<AboutDetails />} />
+          <Route
+            path="/about-details/add-about-details"
+            element={<AddAboutDetails />}
+          />
+          <Route
+            path="/about-details/edit-about-details/:id"
+            element={<EditAboutDetails />}
+          />
           <Route path="/main-contact" element={<MainContact />} />
           <Route
             path="/main-contact/add-maincontact"
@@ -73,7 +80,6 @@ const AppRoutes = () => {
             path="/main-contact/edit-maincontact/:id"
             element={<EditMainContact />}
           />
-          <Route path="/home-contact" element={<HomeContact />} />
           <Route path="/services" element={<Services />} />
           <Route path="/services/add-service" element={<AddService />} />
           <Route path="/services/edit-service/:id" element={<EditService />} />
