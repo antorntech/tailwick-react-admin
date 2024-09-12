@@ -147,7 +147,7 @@ const HomeInfo = () => {
                         {homeInfo.subheading}
                       </td>
                       <td className="px-6 py-4 border-b text-sm text-gray-500">
-                        {homeInfo.content.slice(0, 80)}...
+                        {homeInfo.content.slice(0, 50)}...
                       </td>
                       <td className="px-6 py-4 border-b text-sm">
                         {/* Action Buttons */}

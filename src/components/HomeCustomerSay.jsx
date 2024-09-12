@@ -22,48 +22,13 @@ function SamplePrevArrow(props) {
 }
 
 const HomeCustomerSay = () => {
-  const reviews = [
-    {
-      id: 1,
-      name: "Mr. Kamal",
-      designation: "CEO",
-      image: "/img/customer-logo/1.png",
-      comments:
-        "“ISSL are always accommodating our diverse needs and we feel like they are a part of our Company rather than an external supplier”",
-    },
-    {
-      id: 2,
-      name: "Mrs. Rotna",
-      designation: "CFO",
-      image: "/img/customer-logo/2.png",
-      comments:
-        "“ISSL are always accommodating our diverse needs and we feel like they are a part of our Company rather than an external supplier”",
-    },
-    {
-      id: 3,
-      name: "Mr. Jakir",
-      designation: "CTO",
-      image: "/img/customer-logo/3.png",
-      comments:
-        "“ISSL are always accommodating our diverse needs and we feel like they are a part of our Company rather than an external supplier”",
-    },
-    {
-      id: 4,
-      name: "Mr. Jamil",
-      designation: "CMO",
-      image: "/img/customer-logo/4.png",
-      comments:
-        "“ISSL are always accommodating our diverse needs and we feel like they are a part of our Company rather than an external supplier”",
-    },
-    {
-      id: 5,
-      name: "Mr. Mohon",
-      designation: "COO",
-      image: "/img/customer-logo/5.png",
-      comments:
-        "“ISSL are always accommodating our diverse needs and we feel like they are a part of our Company rather than an external supplier”",
-    },
-  ];
+  const [reviews, setReviews] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:8000/api/v1/reviews")
+      .then((res) => res.json())
+      .then((data) => setReviews(data));
+  }, []);
 
   const settings = {
     dots: false,
@@ -110,7 +75,9 @@ const HomeCustomerSay = () => {
               <div>
                 <img
                   src={
-                    review.image ? review.image : "https://placehold.co/400x200"
+                    review.logo
+                      ? `http://localhost:8000/${review.logo}`
+                      : "https://placehold.co/400x200"
                   }
                   alt={review.name}
                 />

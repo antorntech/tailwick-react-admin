@@ -1,62 +1,16 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import HomeCustomerSay from "../components/HomeCustomerSay";
 import { Avatar } from "@material-tailwind/react";
 
 const Home = () => {
-  const latestBlogs = [
-    {
-      id: 1,
-      title: "Blog Title",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid, quod.",
-      link: "/blogs",
-      banner: "/img/1.jpg",
-    },
-    {
-      id: 2,
-      title: "Blog Title",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid, quod.",
-      link: "/blogs",
-      banner: "/img/2.jpg",
-    },
-    {
-      id: 3,
-      title: "Blog Title",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid, quod.",
-      link: "/blogs",
-      banner: "/img/3.jpg",
-    },
-  ];
+  const [latestBlogs, setLatestBlogs] = useState([]);
 
-  const popularTrainings = [
-    {
-      id: 1,
-      title: "Training Title",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid, quod.",
-      link: "/training",
-      banner: "/img/training1.jpg",
-    },
-    {
-      id: 2,
-      title: "Training Title",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid, quod.",
-      link: "/training",
-      banner: "/img/training2.jpg",
-    },
-    {
-      id: 3,
-      title: "Training Title",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid, quod.",
-      link: "/training",
-      banner: "/img/training3.jpg",
-    },
-  ];
+  useEffect(() => {
+    fetch("http://localhost:8000/api/v1/blogs/recent")
+      .then((response) => response.json())
+      .then((data) => setLatestBlogs(data));
+  }, []);
 
   return (
     <div className="flex flex-col lg:flex-row items-start justify-between gap-5">
@@ -112,15 +66,15 @@ const Home = () => {
                 <div className="w-full flex items-center justify-between gap-2">
                   <div className="w-[30%]">
                     <img
-                      src={blog.banner}
+                      src={`http://localhost:8000/${blog.banner}`}
                       alt=""
-                      className="w-full rounded-md"
+                      className="w-full h-16 rounded-md"
                     />
                   </div>
                   <div className="w-[70%]">
-                    <p className="text-md font-bold">{blog.title}</p>
+                    <p className="text-sm font-bold">{blog.title}</p>
                     <p className="text-sm text-gray-500">
-                      {blog.description.slice(0, 30)}...
+                      {blog.details.slice(0, 25)}...
                     </p>
                   </div>
                 </div>

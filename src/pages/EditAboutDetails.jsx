@@ -54,7 +54,7 @@ const EditAboutDetails = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8000/api/v1/sliders/update/${id}`,
+        `http://localhost:8000/api/v1/aboutdetails/update/${id}`,
         {
           method: "PUT",
           body: formData,
@@ -68,7 +68,7 @@ const EditAboutDetails = () => {
       const result = await response.json();
 
       // Show success toast
-      toast.success("Slider updated successfully", {
+      toast.success("About Details updated successfully", {
         position: "top-right",
         hideProgressBar: false,
         autoClose: 1000,
@@ -80,7 +80,7 @@ const EditAboutDetails = () => {
       });
 
       // Navigate to the sliders page
-      navigate("/sliders");
+      navigate("/about-details");
 
       // Reset the form
       setImage(null);
@@ -118,7 +118,7 @@ const EditAboutDetails = () => {
           <i className="fa-solid fa-hand-point-left"></i>
         </button>
         <div>
-          <h1 className="text-xl font-bold">Edit Slider</h1>
+          <h1 className="text-xl font-bold">Edit About Details</h1>
           <p className="text-sm text-gray-500">
             You can edit slider details from here.
           </p>

@@ -137,9 +137,6 @@ const Slider = () => {
                 <thead>
                   <tr>
                     <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                      Select
-                    </th>
-                    <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                       Banner
                     </th>
                     <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
@@ -156,12 +153,6 @@ const Slider = () => {
                 <tbody>
                   {currentItems.map((slider) => (
                     <tr key={slider._id} className="hover:bg-gray-100">
-                      <td className="px-6 py-4 border-b">
-                        <input
-                          type="checkbox"
-                          onChange={() => setSelectedItemId(slider._id)}
-                        />
-                      </td>
                       <td className="px-6 py-4 border-b">
                         <img
                           src={`http://localhost:8000/${slider.banner}`}

@@ -89,25 +89,19 @@ const AboutDetails = () => {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          {selectedItemId ? (
-            <Link
-              to={`/view-pdf/${selectedItemId}`}
-              className="bg-cyan-500 text-white px-4 py-2 rounded-md"
-            >
-              View PDF
-            </Link>
-          ) : null}
           <button
             className="bg-green-600 text-white px-4 py-2 rounded-md mt-2 md:mt-0"
             onClick={toggleLayout}
           >
             Change Layout
           </button>
-          <Link to="/about-details/add-about-details">
-            <button className="bg-blue-500 text-white px-4 py-2 rounded-md mt-2 md:mt-0">
-              Add About Details
-            </button>
-          </Link>
+          {aboutDetails.length < 1 ? (
+            <Link to="/about-details/add-about-details">
+              <button className="bg-blue-500 text-white px-4 py-2 rounded-md mt-2 md:mt-0">
+                Add About Details
+              </button>
+            </Link>
+          ) : null}
         </div>
       </div>
 

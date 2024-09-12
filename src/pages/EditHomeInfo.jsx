@@ -172,7 +172,7 @@ const EditHomeInfo = () => {
             onClick={handleUpdate}
             className="mt-5 bg-[#199bff] text-white px-4 py-2 rounded"
           >
-            Upload
+            Update
           </button>
         </div>
       </div>
