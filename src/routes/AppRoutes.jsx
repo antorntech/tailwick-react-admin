@@ -48,6 +48,8 @@ import AddHomeInfoCategory from "../pages/AddHomeInfoCategory";
 import EditHomeInfo from "../pages/EditHomeInfo";
 import EditHomeInfoCategory from "../pages/EditHomeInfoCategory";
 import MyPdf from "../pages/MyPdf";
+import AddMainContact from "../pages/AddMainContact";
+import EditMainContact from "../pages/EditMainContact";
 
 const AppRoutes = () => {
   const user = localStorage.getItem("email");
@@ -63,6 +65,14 @@ const AppRoutes = () => {
           <Route path="/main-about" element={<MainAbout />} />
           <Route path="/home-about" element={<HomeAbout />} />
           <Route path="/main-contact" element={<MainContact />} />
+          <Route
+            path="/main-contact/add-maincontact"
+            element={<AddMainContact />}
+          />
+          <Route
+            path="/main-contact/edit-maincontact/:id"
+            element={<EditMainContact />}
+          />
           <Route path="/home-contact" element={<HomeContact />} />
           <Route path="/services" element={<Services />} />
           <Route path="/services/add-service" element={<AddService />} />

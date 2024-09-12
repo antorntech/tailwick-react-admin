@@ -25,10 +25,7 @@ const menuItems = [
   {
     title: "Contact",
     icon: "/img/icons/contact",
-    submenu: [
-      { text: "Main Contact", link: "/main-contact" },
-      { text: "Home Contact", link: "/home-contact" },
-    ],
+    link: "/main-contact",
   },
   {
     title: "Sponsors",
