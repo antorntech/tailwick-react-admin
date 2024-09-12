@@ -47,6 +47,7 @@ import ViewInfoCategory from "../pages/ViewInfoCategory";
 import AddHomeInfoCategory from "../pages/AddHomeInfoCategory";
 import EditHomeInfo from "../pages/EditHomeInfo";
 import EditHomeInfoCategory from "../pages/EditHomeInfoCategory";
+import MyPdf from "../pages/MyPdf";
 
 const AppRoutes = () => {
   const user = localStorage.getItem("email");
@@ -129,6 +130,7 @@ const AppRoutes = () => {
           />
           <Route path="/notification" element={<Notification />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/view-pdf/:id" element={<MyPdf />} />
           <Route path="*" element={<Navigate to="/" />} />
         </>
       ) : (

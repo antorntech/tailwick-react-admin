@@ -105,6 +105,14 @@ const Slider = () => {
           </p>
         </div>
         <div className="flex items-center gap-3">
+          {selectedItemId ? (
+            <Link
+              to={`/view-pdf/${selectedItemId}`}
+              className="bg-cyan-500 text-white px-4 py-2 rounded-md"
+            >
+              View PDF
+            </Link>
+          ) : null}
           <button
             className="bg-green-600 text-white px-4 py-2 rounded-md mt-2 md:mt-0"
             onClick={toggleLayout}
@@ -129,6 +137,9 @@ const Slider = () => {
                 <thead>
                   <tr>
                     <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                      Select
+                    </th>
+                    <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                       Banner
                     </th>
                     <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
@@ -144,7 +155,13 @@ const Slider = () => {
                 </thead>
                 <tbody>
                   {currentItems.map((slider) => (
-                    <tr key={slider.id} className="hover:bg-gray-100">
+                    <tr key={slider._id} className="hover:bg-gray-100">
+                      <td className="px-6 py-4 border-b">
+                        <input
+                          type="checkbox"
+                          onChange={() => setSelectedItemId(slider._id)}
+                        />
+                      </td>
                       <td className="px-6 py-4 border-b">
                         <img
                           src={`http://localhost:8000/${slider.banner}`}
